@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Inscripciones – Liga Latina COH</title>
+<link rel="icon" type="image/png" sizes="32x32" href="icono.png">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --ocre:#ffcc55;
+  --panel:rgba(20,20,20,0.92);
+}
+*{box-sizing:border-box}
+
+body{
+font-family:'Roboto Condensed',sans-serif;
+background:url("15b67b48-6267-46f7-b131-7426668e5e33.png") no-repeat center center fixed;
+background-size:cover;
+color:#eaeaea;
+margin:0;
+display:flex;
+flex-direction:column;
+min-height:100vh;
+padding-top:20px;
+align-items:center;
+}
+
+
+.logo-liga {
+    display: block;
+    width: 620px;
+    margin: 0px auto 10px;
+  }
+
+h1{
+  
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    color: #ffcc55;
+    -webkit-text-stroke: 1.2px #000;
+    text-shadow: 0 0 8px rgba(255,200,80,0.6);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+#subtitulo-contador{
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  text-align: center;
+  color: #fff;
+  margin-top: -5px;
+  margin-bottom: 5px;
+
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
+
+#countdown{
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  text-align: center;
+  color: var(--ocre);
+  margin-bottom: 20px;
+
+  text-shadow:
+    0 0 10px rgba(255,204,85,0.8),
+    0 0 20px rgba(255,204,85,0.4);
+}
+
+
+  .menu-btn { 
+    width: 90px; 
+    left: 14px; 
+    top: 14px; 
+  }
+
+.tab-btn{
+  padding:3px 8px;
+  font-size:10px;
+  border-radius:5px;
+}
+
+.tabs{
+  margin-top: -10px; /* 👈 los sube */
+}
+
+
+/* === Botón de menú metálico === */
+.menu-btn {
+  position: fixed;
+  top: 22px;
+  left: 22px;
+  width: 115px;
+  height: auto;
+  cursor: pointer;
+  z-index: 200;
+  transition: transform 0.25s ease, filter 0.25s ease;
+  border-radius: 6px;
+}
+.menu-btn:hover { transform: scale(1.05); filter: brightness(1.25); }
+.menu-btn:active { transform: scale(0.97); filter: brightness(0.9); }
+
+/* === Panel lateral (bajado 15px) === */
+.sidebar {
+  position: fixed;
+  top: 95px;
+  left: -100%;
+  width: 260px;
+
+  background: rgba(10,10,10,0.85); /* fallback */
+
+  box-shadow: 3px 3px 18px rgba(0,0,0,0.6);
+  transition: all 0.6s ease;
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+  overflow: hidden;
+  padding-top: 10px;
+}
+
+/* solo si el navegador soporta blur */
+@supports (backdrop-filter: blur(6px)) {
+  .sidebar {
+    backdrop-filter: blur(6px);
+    background: rgba(10,10,10,0.6);
+  }
+}
+
+
+.sidebar.active { left: 0; }
+
+.sidebar a:active {
+  transform: scale(0.96);
+  background: rgba(60,60,60,0.95);
+  box-shadow: 0 0 10px rgba(255,204,85,0.4);
+}
+
+/* === Botones metálicos === */
+.sidebar a {
+  position: relative;
+  display: flex;              /* 🔥 clave */
+  align-items: center;        /* centra vertical */
+  justify-content: center;    /* centra horizontal */
+
+  height: 48px;               /* 🔥 altura fija */
+  margin: 8px 12px;
+  padding: 0 12px;            /* reducimos padding lateral */
+
+  text-decoration: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;      /* un poco menos para que entre mejor */
+  font-size: 0.8rem;          /* leve ajuste */
+  text-align: center;
+  border-radius: 8px;
+
+  white-space: normal;        /* 🔥 evita salto de línea */
+  height: auto;
+  padding: 10px 8px;
+  line-height: 1.2;    /* opcional: ... si no entra */
+
+  background: rgba(20,20,20,0.75);
+  color: #ddd;
+  border: 1px solid rgba(255,255,255,0.08);
+
+  box-shadow: 0 0 8px rgba(0,0,0,0.6);
+  transition: all 0.25s ease;
+  cursor: pointer;
+
+  text-shadow: none;
+  animation: none;
+}
+
+.sidebar a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, rgba(255,255,255,0.6), rgba(255,255,255,0));
+  transform: skewX(-25deg);
+  transition: all 0.75s ease;
+}
+.sidebar a:hover::before { left: 130%; }
+
+.sidebar a:hover {
+  background: rgba(40,40,40,0.9);
+  border-color: rgba(255,204,85,0.4);
+  box-shadow: 0 0 12px rgba(255,204,85,0.25);
+  transform: translateX(5px);
+  box-shadow: 0 0 15px rgba(255,204,85,0.35);
+}
+
+.sidebar a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: transparent;
+  transition: 0.3s;
+}
+
+.sidebar a:hover::after {
+  background: #ffcc55;
+}
+
+
+.flag-icon {width:22px;height:16px;}
+
+/* === Selector de idioma === */
+.language-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 200;
+}
+.language-selector img.flag-icon {
+  width: 22px;
+  height: 16px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+.language-selector select {
+  background: #111;
+  color: #ddd;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: .9rem;
+  transition: .3s;
+}
+.language-selector select:hover {
+  background: #222;
+  border-color: #666;
+}
+
+
+.main-wrap{
+  width:100%;
+  max-width:700px;
+  margin:20px auto;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+
+.panel{
+  background:var(--panel);border-radius:12px;padding:18px;
+  box-shadow:0 10px 28px rgba(0,0,0,0.6);
+}
+h2{color:var(--ocre);text-align:center;text-transform:uppercase;font-size:1.2rem;margin-top:0;}
+label{font-weight:700;display:block;margin-top:10px;margin-bottom:4px;}
+input,textarea,button{
+  width:100%;background:rgba(0,0,0,0.55);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:8px;padding:8px;color:#eee;
+  font-family:'Roboto Condensed',sans-serif;font-size:1rem;
+}
+button.submit-btn{
+  background:linear-gradient(145deg,#ffd46a,#a0761b);
+  color:#2b1a00;font-weight:800;cursor:pointer;margin-top:10px;
+}
+.notice{
+  text-align:center;background:rgba(255,204,85,0.1);
+  border:1px solid rgba(255,204,85,0.3);
+  color:#ffcc55;border-radius:8px;padding:10px;margin-top:8px;
+}
+.comment{
+  background:rgba(0,0,0,0.45);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px;padding:10px;margin-bottom:10px;position:relative;
+}
+.comment .meta{font-size:0.85rem;color:#ccc;margin-bottom:6px;}
+.comment .flag{width:18px;height:12px;margin-right:6px;vertical-align:middle;}
+.comment .delete{
+  position:absolute;top:6px;right:6px;
+  cursor:pointer;color:#ff7777;font-size:1rem;display:none;
+}
+.comment .delete:hover{color:#fff;}
+#commentsList{max-height:520px;overflow-y:auto;}
+@media(max-width:900px){.main-wrap{grid-template-columns:1fr;}}
+
+/* --- Custom selector de banderas --- */
+.country-select {
+  position: relative;
+  width: 100%;
+}
+.country-select button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.55);
+  color: #eee;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.country-select button img {
+  width: 20px; height: 14px; margin-right: 6px;
+}
+.country-options {
+  position: absolute;
+  background: rgba(0,0,0,0.9);
+  border: 1px solid rgba(255,255,255,0.1);
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 4px;
+  display: none;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 5;
+}
+.country-option {
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.country-option:hover {
+  background: rgba(255,255,255,0.1);
+}
+.country-option img {
+  width: 20px;
+  height: 14px;
+}
+
+.ranking {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  background: rgba(0,0,0,0.6);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0,0,0,0.6);
+}
+
+.ranking-item {
+  display: grid;
+  grid-template-columns: 50px 1fr 120px;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  transition: 0.2s;
+}
+
+.ranking-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.rank-pos {
+  font-weight: 800;
+  color: var(--ocre);
+  text-align: center;
+}
+
+.player {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.player img {
+  width: 22px;
+  height: 16px;
+}
+
+.liga {
+  text-align: center;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.oro { background: #c9a400; color:#000; }
+.plata { background: #aaa; color:#000; }
+.bronce { background: #a05a2c; color:#fff; }
+
+.ranking {
+  width: 100%;
+  background: rgba(0,0,0,0.75);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0,0,0,0.7);
+}
+
+.ranking::before{
+  content: "📊 Jugadores Inscritos";
+  display:block;
+  text-align:center;
+  padding:10px;
+  font-weight:700;
+  color: var(--ocre);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 140;
+}
+
+#overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* === Responsive === */
+
+/* === MOBILE === */
+@media (max-width: 700px){
+
+  .logo-liga {
+    width: 90%;
+    max-width: 320px;
+    margin-top: 0px;
+  }
+
+  .menu-btn { 
+    width: 90px; 
+    left: 14px; 
+    top: 14px; 
+  }
+
+  .tabs{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    margin-top:-10px;
+    width:auto !important;
+  }
+
+  .tab-btn{
+    flex:unset !important;
+    width:auto !important;
+    display:inline-block;
+    padding:3px 8px;
+    font-size:10px;
+    border-radius:5px;
+  }
+
+ .sidebar {
+    width: min(45%, 180px);
+    top: 75px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto; 
+  }
+
+.sidebar a {
+    font-size: 0.7rem;
+    white-space: normal;
+    height: auto;
+    padding: 10px 8px;
+    line-height: 1.2;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+
+/* === TABLET / MOBILE GRANDE === */
+@media (max-width: 900px){
+
+  .panels-wrapper{
+    grid-template-columns: 1fr;
+    gap:20px;
+  }
+
+  .main-content{
+    width: 95%;
+    padding:20px;
+  }
+
+  .donation-panel{
+    padding:20px;
+  }
+
+.donation-buttons img {
+  width: 150px !important;
+}
+
+
+</style>
+</head>
+<body>
+
+
+
+<!-- Botón volver -->
+
+<img src="1811d0cb-36e3-4b23-9d1f-5b4f66ce2d8c-removebg-preview.png" alt="Liga Latina de COH" class="logo-liga">
+
+<h1> Inscripciones TEMPORADA 2</h1>
+
+<h2 id="subtitulo-contador">
+  Tenés tiempo de anotarte hasta el 30 de abril:
+</h2>
+
+<div id="countdown"></div>
+
+<!-- Contenedor de los dos paneles -->
+<div style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; max-width:1050px; margin:20px auto;">
+
+  <!-- Panel 1: requisitos -->
+  <div class="panel notice" style="
+    text-align:center; 
+    max-width:500px; 
+    background: rgba(0,0,0,0.7); 
+    border-radius:12px; 
+    padding:15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  ">
+    <h2 style="text-shadow: 
+      -1px -1px 0 #000,
+       1px -1px 0 #000,
+      -1px  1px 0 #000,
+       1px  1px 0 #000;">⚔️ Recuerda que los requisitos son: ⚔️</h2>
+       
+    <p style="text-shadow: 
+      -1px -1px 0 #000,
+       1px -1px 0 #000,
+      -1px  1px 0 #000,
+       1px  1px 0 #000; color:#ffd46a;">
+      <strong>Liga Oro:</strong> <span style="color:#fff;">Nivel 10 a 13</span>
+    </p>
+    
+    <p style="text-shadow: 
+      -1px -1px 0 #000,
+       1px -1px 0 #000,
+      -1px  1px 0 #000,
+       1px  1px 0 #000; color:#c0c0c0;">
+      <strong>Liga Plata:</strong> <span style="color:#fff;">Nivel 6 a 9</span>
+    </p>
+    
+    <p style="text-shadow: 
+      -1px -1px 0 #000,
+       1px -1px 0 #000,
+      -1px  1px 0 #000,
+       1px  1px 0 #000; color:#d6a67a;">
+      <strong>Liga Bronce:</strong> <span style="color:#fff;">Nivel 3 a 5</span>
+    </p>  
+  </div>
+
+<!-- Panel 2: motivacional con contactos -->
+<div class="panel notice" style="
+  text-align:center; 
+  max-width:300px; 
+  background: rgba(0,0,0,0.7); 
+  border-radius:12px; 
+  padding:15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+">
+  <h2 style="text-shadow: 
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;">🎯 ¿Estas buscando mejorar tu nivel en el COH 1?</h2>
+  <p style="text-shadow: 
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000; color:#ffd46a; color: white;">
+    Contáctame por privado para coordinar clases personalizadas!
+  </p>
+
+  <!-- Botones de contacto -->
+  <div style="display:flex; justify-content:center; gap:10px; margin-top:12px; flex-wrap:wrap;">
+    <!-- Discord -->
+    <a href="https://discord.com/users/480852539328430082" target="_blank" style="
+      display:flex; align-items:center; gap:6px;
+      background:#5865F2; color:white; font-weight:700;
+      padding:6px 10px; border-radius:6px; text-decoration:none;
+      box-shadow:0 2px 6px rgba(0,0,0,0.5); transition:0.2s;
+    ">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" style="width:20px; height:20px;" alt="Discord">
+      Discord
+    </a>
+
+    <!-- WhatsApp -->
+    <a href="https://wa.me/+5492644154678" target="_blank" style="
+      display:flex; align-items:center; gap:6px;
+      background:#25D366; color:white; font-weight:700;
+      padding:6px 10px; border-radius:6px; text-decoration:none;
+      box-shadow:0 2px 6px rgba(0,0,0,0.5); transition:0.2s;
+    ">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" style="width:20px; height:20px;" alt="WhatsApp">
+      WhatsApp
+    </a>
+  </div>
+</div>
+
+</div>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+
+<!-- Panel sidebar-->
+<img src="boton-menu.png" alt="Menú" class="menu-btn" id="menuToggle">
+
+<nav class="sidebar" id="sidebar"> 
+  <a href="index.html">🏠 Menu Principal</a>
+  <a href="reglas.html">📏 Formato - Reglas</a>
+  <a href="cronograma.html">📅 Cronograma - Participantes</a>
+  <a href="resultados.html">📋 Resultados</a>
+  <a href="ranking.html">🏆 Ranking</a>
+  <a href="estadisticas.html">📊 Estadisticas</a>
+  <a href="premios.html">🎁 Premios</a>
+  <a href="donaciones.html">💰 Donaciones</a>
+  <a href="inscripciones.html">✍️ Inscripciones</a>
+</nav>
+
+<div id="overlay"></div>
+
+<!-- Selector de idioma -->
+<div class="language-selector" id="language-selector">
+  <img id="flagIcon" class="flag-icon" src="https://flagcdn.com/w20/es.png" alt="ES">
+  <select id="langSelect">
+    <option value="es" data-flag="https://flagcdn.com/w20/es.png">Español</option>
+    <option value="en" data-flag="https://flagcdn.com/w20/us.png">English</option>
+  </select>
+</div>
+
+<div class="main-wrap">
+  <!-- Panel de Inscripción -->
+  <div class="panel">
+    <h2>📋 Rellena todos los campos (obligatorio)</h2>
+      <form id="formInscripcion">
+      <label>Nombre del Jugador</label>
+      <input type="text" id="nombre" placeholder="Ej: TigerAce">
+
+      <label>País</label>
+      <div class="country-select" id="iPaisSelect">
+        <button type="button" data-value="">
+  <span>Seleccionar país...</span><span>▼</span>
+</button>
+        <div class="country-options"></div>
+      </div>
+
+      <label>Steam ID</label>
+      <input type="text" id="steamid" placeholder="Ej: 76561198012345678">
+      <label>Categoría</label>
+      <select id="liga">
+        <option value="">Seleccionar...</option>
+        <option value="oro">Liga de Oro</option>
+        <option value="plata">Liga de Plata</option>
+        <option value="bronce">Liga de Bronce</option>
+      </select>
+      <label>Comentario / Nota</label>
+      <textarea id="nota" rows="3" placeholder="Opcional..."></textarea>
+      <button type="button" class="submit-btn" id="enviarInscripcion">
+  Enviar Inscripción
+</button>
+    </form>
+  </div>
+
+<div id="listaInscritos" class="ranking"></div>
+
+
+<script>
+const SHEET_INSCRIPCIONES = "https://docs.google.com/spreadsheets/d/1-gKEDW_8lcm54Yrv6v5BVq7fdZvTWuVOmwXeSTZrJjo/gviz/tq?tqx=out:json";
+
+// ------------------ PAISES ------------------
+const countries = [
+  
+  { code:"ar", name:"Argentina" },
+  { code:"bo", name:"Bolivia" },
+  { code:"br", name:"Brasil" },
+  { code:"ca", name:"Canadá" },
+  { code:"cl", name:"Chile" },
+  { code:"co", name:"Colombia" },
+  { code:"cr", name:"Costa Rica" },
+  { code:"cu", name:"Cuba" },
+  { code:"do", name:"República Dominicana" },
+  { code:"ec", name:"Ecuador" },
+  { code:"sv", name:"El Salvador" },
+  { code:"es", name:"España" },
+  { code:"us", name:"Estados Unidos" },
+  { code:"hn", name:"Honduras" },
+  { code:"mx", name:"México" },
+  { code:"ni", name:"Nicaragua" },
+  { code:"pa", name:"Panamá" },
+  { code:"py", name:"Paraguay" },
+  { code:"pe", name:"Perú" },
+  { code:"pr", name:"Puerto Rico" },
+  { code:"uy", name:"Uruguay" },
+  { code:"ve", name:"Venezuela" }
+];
+
+// ------------------ SELECTOR ------------------
+function buildCountrySelect(id){
+  const container = document.getElementById(id);
+  const btn = container.querySelector("button");
+  const optionsDiv = container.querySelector(".country-options");
+
+  countries.forEach(c=>{
+    const opt = document.createElement("div");
+    opt.className = "country-option";
+    opt.innerHTML = `<img src="https://flagcdn.com/w20/${c.code}.png"> ${c.name}`;
+
+    opt.addEventListener("click",()=>{
+      btn.innerHTML = `<img src="https://flagcdn.com/w20/${c.code}.png"> ${c.name}`;
+      btn.dataset.value = c.code;
+      optionsDiv.style.display = "none";
+    });
+
+    optionsDiv.appendChild(opt);
+  });
+
+  btn.addEventListener("click",()=>{
+    optionsDiv.style.display =
+      optionsDiv.style.display === "block" ? "none" : "block";
+  });
+
+  document.addEventListener("click",(e)=>{
+    if(!container.contains(e.target)){
+      optionsDiv.style.display = "none";
+    }
+  });
+}
+
+// ------------------ CARGAR INSCRIPTOS ------------------
+
+async function cargarInscritos() {
+  const res = await fetch(SHEET_INSCRIPCIONES);
+  const text = await res.text();
+  const json = JSON.parse(text.substr(47).slice(0, -2));
+
+  const contenedor = document.getElementById("listaInscritos");
+  contenedor.innerHTML = "";
+
+  json.table.rows.forEach((r, index) => {
+    const nombre = r.c[1]?.v || "—";
+    const pais = r.c[2]?.v || "xx";
+    const liga = r.c[4]?.v || "-";
+
+    const div = document.createElement("div");
+    div.className = "ranking-item";
+
+    div.innerHTML = `
+      <div class="rank-pos">#${index + 1}</div>
+      <div class="player">
+        <img src="https://flagcdn.com/w20/${pais}.png">
+        <span>${nombre}</span>
+      </div>
+      <div class="liga ${liga}">
+        ${liga.toUpperCase()}
+      </div>
+    `;
+
+    contenedor.appendChild(div);
+  });
+}
+
+// ------------------ INIT ------------------
+document.addEventListener("DOMContentLoaded", () => {
+
+  buildCountrySelect("iPaisSelect");
+
+  cargarInscritos();
+  setInterval(cargarInscritos, 30000);
+
+  document.getElementById("enviarInscripcion")
+.addEventListener("click", async () => {
+
+    const nombre = document.getElementById("nombre").value.trim();
+    const pais = document.querySelector('#iPaisSelect button').dataset.value;
+    const steamid = document.getElementById("steamid").value.trim();
+    const liga = document.getElementById("liga").value;
+    const nota = document.getElementById("nota").value.trim();
+
+    if (!nombre || !pais || !steamid || !liga) {
+      alert("Completa todos los campos obligatorios");
+      return;
+    }
+
+    if (!/^7656119\d{10}$/.test(steamid)) {
+      alert("SteamID inválido");
+      return;
+    }
+
+    try {
+  await fetch("https://script.google.com/macros/s/AKfycbwtoo9vA1mnnJtchWSLfzsoEJDDN8jG0SNujddcFh0VJBKGi5SkMzsKqSAcEV_EvA_L/exec", {
+  method: "POST",
+  mode: "no-cors", // 👈 esto es obligatorio
+  body: JSON.stringify({
+    nombre,
+    pais,
+    steamid,
+    liga,
+    nota
+  })
+});
+
+      alert("Inscripción enviada 🔥");
+      document.getElementById("formInscripcion").reset();
+
+// reset selector país
+const btn = document.querySelector('#iPaisSelect button');
+btn.dataset.value = "";
+btn.innerHTML = "<span>Seleccionar país...</span><span>▼</span>";
+
+    } catch (err) {
+      alert("Error al enviar");
+      console.error(err);
+    }
+  });
+
+});
+</script>
+
+<script>
+const menuToggle = document.getElementById("menuToggle");
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+
+menuToggle.addEventListener("click", () => {
+  sidebar.classList.toggle("active");
+  overlay.classList.toggle("active");
+});
+
+overlay.addEventListener("click", () => {
+  sidebar.classList.remove("active");
+  overlay.classList.remove("active");
+});
+</script>
+
+<script>
+function actualizarCountdown(){
+  const objetivo = new Date("May 1, 2026 23:59:59").getTime();
+  const ahora = new Date().getTime();
+  const diferencia = objetivo - ahora;
+
+  if(diferencia <= 0){
+    document.getElementById("countdown").innerHTML = "⛔ Inscripciones cerradas";
+    return;
+  }
+
+  const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+  const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+  const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+  document.getElementById("countdown").innerHTML =
+    `${dias}d ${horas}h ${minutos}m ${segundos}s`;
+}
+
+setInterval(actualizarCountdown, 1000);
+actualizarCountdown();
+</script>
+
+</body>
+</html>

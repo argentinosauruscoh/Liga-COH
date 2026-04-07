@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Bracket Overlay FIXED</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+background:transparent;
+font-family:'Orbitron',sans-serif;
+overflow:hidden;
+}
+
+#overlay{
+width:1920px;
+height:1080px;
+position:relative;
+}
+
+/* 🔥 IMPORTANTE: anulamos layout viejo */
+.row, .round{
+all: unset;
+}
+
+.match{
+width:320px;
+height:70px;
+position:absolute;
+background:#222;
+border:2px solid #ff7b00;
+border-radius:10px;
+overflow:hidden;
+}
+
+.player{
+display:flex;
+justify-content:space-between;
+padding:10px 14px;
+font-size:16px;
+color:white;
+}
+
+.player:first-child{
+border-bottom:1px solid #111;
+}
+
+.score{
+color:#ffb300;
+}
+
+#lines{
+position:absolute;
+width:1920px;
+height:1080px;
+top:0;
+left:0;
+pointer-events:none;
+}
+
+path{
+stroke:#ff7b00;
+stroke-width:4;
+fill:none;
+}
+
+.title{
+position:absolute;
+color:#ffb300;
+font-size:23px;
+font-weight:900;
+letter-spacing:2px;
+text-shadow:0 0 10px #400;
+}
+
+#panel{
+position:absolute;
+right:40px;
+top:40px;
+width:420px;
+background:#111;
+border:3px solid #ff7b00;
+padding:20px;
+color:white;
+font-size:18px;
+z-index:999;
+border-radius:12px;
+box-shadow:0 0 20px rgba(0,0,0,0.8);
+}
+
+#panel h3{
+margin-top:0;
+font-size:22px;
+text-align:center;
+color:#ffb300;
+}
+
+#panel input{
+width:100%;
+margin-bottom:12px;
+background:#222;
+border:2px solid #555;
+color:white;
+padding:10px;
+font-size:16px;
+border-radius:6px;
+}
+
+.scoreRow{
+display:flex;
+gap:10px;
+}
+
+.scoreRow input{
+width:50%;
+}
+
+#panel button{
+width:100%;
+background:#ff7b00;
+border:none;
+padding:12px;
+font-weight:bold;
+font-size:18px;
+cursor:pointer;
+border-radius:8px;
+transition:0.2s;
+}
+
+#panel button:hover{
+background:#ff9d2f;
+}
+
+#matchButtons{
+display:grid;
+grid-template-columns: repeat(3, 1fr);
+gap:6px;
+margin-bottom:12px;
+}
+
+#matchButtons button{
+background:#222;
+border:1px solid #555;
+color:white;
+padding:8px;
+cursor:pointer;
+font-size:14px;
+border-radius:6px;
+}
+
+#matchButtons button:hover{
+background:#ff7b00;
+}
+
+#matchButtons button.active{
+background:#ff7b00;
+border-color:#ffb300;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<div id="overlay">
+
+<div id="panel">
+
+<h3>CONTROL</h3>
+
+<div id="matchButtons">
+
+<button onclick="selectMatch('qf1', this)">QF1</button>
+<button onclick="selectMatch('qf2', this)">QF2</button>
+<button onclick="selectMatch('qf3', this)">QF3</button>
+<button onclick="selectMatch('qf4', this)">QF4</button>
+
+<button onclick="selectMatch('sf1', this)">SF1</button>
+<button onclick="selectMatch('sf2', this)">SF2</button>
+
+<button onclick="selectMatch('uf', this)">UF</button>
+
+<button onclick="selectMatch('lb_r1a', this)">LB R1A</button>
+<button onclick="selectMatch('lb_r1b', this)">LB R1B</button>
+
+<button onclick="selectMatch('lb_r2a', this)">LB R2A</button>
+<button onclick="selectMatch('lb_r2b', this)">LB R2B</button>
+
+<button onclick="selectMatch('lb_r3', this)">LB R3</button>
+
+<button onclick="selectMatch('lb_final', this)">LB FINAL</button>
+
+<button onclick="selectMatch('gf', this)">GF</button>
+
+</div>
+
+<input id="p1" placeholder="Jugador 1">
+<input id="p2" placeholder="Jugador 2">
+
+<div class="scoreRow">
+<input id="s1" type="number" min="0" max="5" placeholder="P1">
+<input id="s2" type="number" min="0" max="5" placeholder="P2">
+</div>
+
+<button onclick="apply()">Aplicar</button>
+<button onclick="resetData()">RESET</button>
+
+</div>
+
+<svg id="lines" viewBox="0 0 1920 1080"></svg>
+
+<!-- TITULOS -->
+<div class="title" id="t_qf">CUARTOS SUPERIOR</div>
+<div class="title" id="t_qf2">CUARTOS INFERIOR</div>
+<div class="title" id="t_sf">SEMIFINAL SUPERIOR</div>
+<div class="title" id="t_sf2">SEMIFINAL INFERIOR</div>
+<div class="title" id="t_f">FINAL SUPERIOR</div>
+<div class="title" id="t_lbf">FINAL INFERIOR</div>
+<div class="title" id="t_gf">GRAN FINAL</div>
+
+<!-- MATCHES -->
+<div class="match" id="qf1"><div class="player">Green Beret<span>0</span></div><div class="player">Noggano<span>0</span></div></div>
+<div class="match" id="qf2"><div class="player">Happiness<span>0</span></div><div class="player">Statement<span>0</span></div></div>
+<div class="match" id="qf3"><div class="player">Wilson<span>0</span></div><div class="player">Bulat<span>0</span></div></div>
+<div class="match" id="qf4"><div class="player">Revo<span>0</span></div><div class="player">Diamondback<span>0</span></div></div>
+
+<div class="match" id="sf1"><div class="player">A determinar<span>0</span></div><div class="player">A determinar<span>0</span></div></div>
+<div class="match" id="sf2"><div class="player">A determinar<span>0</span></div><div class="player">A determinar<span>0</span></div></div>
+
+<div class="match" id="uf"><div class="player">A determinar<span>0</span></div><div class="player">A determinar<span>0</span></div></div>
+
+<div class="match" id="lb_r1a"><div class="player">QF1 Loser<span>0</span></div><div class="player">QF2 Loser<span>0</span></div></div>
+<div class="match" id="lb_r1b"><div class="player">QF3 Loser<span>0</span></div><div class="player">QF4 Loser<span>0</span></div></div>
+
+<div class="match" id="lb_r2a"><div class="player">LB-R1 Winner<span>0</span></div><div class="player">SF1 Loser<span>0</span></div></div>
+<div class="match" id="lb_r2b"><div class="player">LB-R1 Winner<span>0</span></div><div class="player">SF2 Loser<span>0</span></div></div>
+
+<div class="match" id="lb_r3"><div class="player">A determinar<span>0</span></div><div class="player">A determinar<span>0</span></div></div>
+
+<div class="match" id="lb_final"><div class="player">LB Winner<span>0</span></div><div class="player">UB Final Loser<span>0</span></div></div>
+
+<div class="match" id="gf"><div class="player">UB Winner<span>0</span></div><div class="player">LB Winner<span>0</span></div></div>
+
+</div>
+
+<script>
+
+let currentMatch = "qf1"
+
+function selectMatch(id, el){
+currentMatch = id
+document.querySelectorAll("#matchButtons button").forEach(b => b.classList.remove("active"))
+el.classList.add("active")
+}
+
+function resetData(){
+localStorage.removeItem("bracketData")
+location.reload()
+}
+
+const C = {
+W:320,
+H:70,
+G:220,
+X:120,
+YU:120,
+YL:650,
+N:60
+}
+
+const P = {}
+
+function set(id,x,y){
+P[id]={x,y}
+const e=document.getElementById(id)
+e.style.left=x+"px"
+e.style.top=y+"px"
+}
+
+// ---------- LAYOUT CORRECTO ----------
+
+function layout(){
+
+const base = 70
+const gap = 170
+const col = 440
+const x = 60
+
+// UPPER
+set("qf1", x, base + gap*0)
+set("qf2", x, base + gap*1)
+set("qf3", x, base + gap*2)
+set("qf4", x, base + gap*3)
+
+
+
+set("sf1", x+col, base + gap*0.5)
+set("sf2", x+col, base + gap*2.5)
+
+set("uf", x+col*3, base + gap*1.5)
+
+// LOWER
+const lowerBase = 740
+
+set("lb_r1a", x, lowerBase + gap*0)
+set("lb_r1b", x, lowerBase + gap*1)
+
+set("lb_r2a", x+col, lowerBase + gap*0.5)
+set("lb_r2b", x+col, lowerBase + gap*1.5)
+
+set("lb_r3", x+col*2, lowerBase + gap*1)
+
+// LB FINAL
+set("lb_final", x+col*3, lowerBase + gap*0.8)
+
+// GRAND FINAL
+set("gf", x+col*4, 520)
+
+
+// 🔥 TITULOS (AHORA SÍ FUNCIONA)
+posTitle("t_qf", x, 30)
+posTitle("t_qf2", x, 700)
+
+posTitle("t_sf", x+col, 120)
+posTitle("t_sf2", x+col, 790)
+
+posTitle("t_f", x+col*3, 290)
+posTitle("t_lbf", x+col*3, 820)
+posTitle("t_gf", x+col*4, 450)
+
+}
+
+
+function posTitle(id,x,y){
+const e=document.getElementById(id)
+e.style.left = x+"px"
+e.style.top = y+"px"
+}
+
+// ---------- DIBUJO ----------
+
+function linkSlot(a,slotA,b,slotB){
+
+const s=document.getElementById("lines")
+
+const A=P[a], B=P[b]
+
+const yA = A.y + (slotA === 0 ? C.H*0.25 : C.H*0.75)
+const yB = B.y + (slotB === 0 ? C.H*0.25 : C.H*0.75)
+
+const sx = A.x + C.W
+const midX = sx + 40
+const joinX = B.x - 40
+
+const p=document.createElementNS("http://www.w3.org/2000/svg","path")
+
+p.setAttribute("d",`
+M ${sx} ${yA}
+L ${midX} ${yA}
+L ${midX} ${yB}
+L ${joinX} ${yB}
+L ${B.x} ${yB}
+`)
+
+s.appendChild(p)
+
+}
+
+function linkMatch(a,b,slot){
+
+const s=document.getElementById("lines")
+
+const A=P[a], B=P[b]
+
+// salida centrada
+const y1 = A.y + C.H/2
+
+// entrada diferenciada (arriba o abajo)
+const y2 = B.y + (slot === 0 ? C.H*0.25 : C.H*0.75)
+
+const sx = A.x + C.W
+const midX = sx + 50
+const joinX = B.x - 50
+
+const p=document.createElementNS("http://www.w3.org/2000/svg","path")
+
+p.setAttribute("d",`
+M ${sx} ${y1}
+L ${midX} ${y1}
+L ${midX} ${y2}
+L ${joinX} ${y2}
+L ${B.x} ${y2}
+`)
+
+s.appendChild(p)
+
+}
+
+function draw(){
+
+const s=document.getElementById("lines")
+s.innerHTML=""
+
+// ---------- UPPER
+linkMatch("qf1","sf1",0)
+linkMatch("qf2","sf1",1)
+
+linkMatch("qf3","sf2",0)
+linkMatch("qf4","sf2",1)
+
+// antes
+linkMatch("sf1","uf",0)
+linkMatch("sf2","uf",1)
+
+// ---------- LOWER
+linkMatch("lb_r1a","lb_r2a",0)
+linkMatch("lb_r1b","lb_r2b",1)
+
+linkMatch("lb_r2a","lb_r3",0)
+linkMatch("lb_r2b","lb_r3",1)
+
+linkMatch("lb_r3","lb_final",0)
+
+// ---------- FINALES
+linkMatch("uf","gf",0)
+linkMatch("lb_final","gf",1)
+
+}
+
+function apply(){
+
+const match = document.getElementById(currentMatch)
+
+const p1 = document.getElementById("p1").value
+const p2 = document.getElementById("p2").value
+const s1 = parseInt(document.getElementById("s1").value) || 0
+const s2 = parseInt(document.getElementById("s2").value) || 0
+
+const players = match.querySelectorAll(".player")
+
+if(p1) players[0].childNodes[0].nodeValue = p1
+if(p2) players[1].childNodes[0].nodeValue = p2
+
+players[0].querySelector("span").innerText = s1
+players[1].querySelector("span").innerText = s2
+
+players[0].style.background = ""
+players[1].style.background = ""
+
+if(s1 >= 3 || s2 >= 3){
+
+let winner, loser
+
+if(s1 > s2){
+players[0].style.background = "#1f5f1f"
+winner = p1
+loser = p2
+}else{
+players[1].style.background = "#1f5f1f"
+winner = p2
+loser = p1
+}
+
+advance(currentMatch, winner, loser)
+}
+
+saveData()
+
+}
+
+function advance(matchId, winner, loser){
+
+const map = {
+
+// UPPER
+qf1: {win:["sf1",0], lose:["lb_r1a",0]},
+qf2: {win:["sf1",1], lose:["lb_r1a",1]},
+qf3: {win:["sf2",0], lose:["lb_r1b",0]},
+qf4: {win:["sf2",1], lose:["lb_r1b",1]},
+
+sf1: {win:["uf",0], lose:["lb_r2a",1]},
+sf2: {win:["uf",1], lose:["lb_r2b",1]},
+
+uf: {win:["gf",0], lose:["lb_final",1]},
+
+// LOWER
+lb_r1a: {win:["lb_r2a",0]},
+lb_r1b: {win:["lb_r2b",0]},
+
+lb_r2a: {win:["lb_r3",0]},
+lb_r2b: {win:["lb_r3",1]},
+
+lb_r3: {win:["lb_final",0]},
+
+lb_final: {win:["gf",1]}
+
+}
+
+const rule = map[matchId]
+if(!rule) return
+
+// WINNER
+if(rule.win){
+const [target, slot] = rule.win
+setPlayer(target, slot, winner)
+}
+
+// LOSER
+if(rule.lose){
+const [target, slot] = rule.lose
+setPlayer(target, slot, loser)
+}
+
+}
+
+function setPlayer(matchId, slot, name){
+
+const match = document.getElementById(matchId)
+const players = match.querySelectorAll(".player")
+
+players[slot].childNodes[0].nodeValue = name
+players[slot].querySelector("span").innerText = 0
+
+}
+
+// ===============================
+// 🔥 TOGGLE PANEL CON CTRL
+// ===============================
+
+let panelVisible = false
+let ctrlPressed = false
+
+// ocultar panel al inicio
+window.addEventListener("load", () => {
+const panel = document.getElementById("panel")
+panel.style.display = "none"
+})
+
+document.addEventListener("keydown", (e) => {
+
+if(e.key === "Control" && !ctrlPressed){
+ctrlPressed = true
+togglePanel()
+}
+
+})
+
+document.addEventListener("keyup", (e) => {
+
+if(e.key === "Control"){
+ctrlPressed = false
+}
+
+})
+
+function togglePanel(){
+
+const panel = document.getElementById("panel")
+
+panelVisible = !panelVisible
+
+panel.style.display = panelVisible ? "block" : "none"
+
+}
+
+function saveData(){
+
+const data = {}
+
+document.querySelectorAll(".match").forEach(match => {
+
+const id = match.id
+const players = match.querySelectorAll(".player")
+
+data[id] = {
+p1: players[0].childNodes[0].nodeValue,
+p2: players[1].childNodes[0].nodeValue,
+s1: players[0].querySelector("span").innerText,
+s2: players[1].querySelector("span").innerText
+}
+
+})
+
+localStorage.setItem("bracketData", JSON.stringify(data))
+
+}
+
+function loadData(){
+
+const data = JSON.parse(localStorage.getItem("bracketData"))
+if(!data) return
+
+for(const id in data){
+
+const match = document.getElementById(id)
+if(!match) continue
+
+const players = match.querySelectorAll(".player")
+
+players[0].childNodes[0].nodeValue = data[id].p1
+players[1].childNodes[0].nodeValue = data[id].p2
+
+players[0].querySelector("span").innerText = data[id].s1
+players[1].querySelector("span").innerText = data[id].s2
+
+}
+
+}
+
+// ---------- INIT ----------
+
+window.onload = () => {
+layout()
+draw()
+loadData()
+
+// marcar primer botón activo
+document.querySelector("#matchButtons button").classList.add("active")
+}
+
+</script>
+
+</body>
+</html>
+
