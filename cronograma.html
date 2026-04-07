@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cronograma Ligas</title>
+<link rel="icon" type="image/png" sizes="32x32" href="icono.png">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --panel: rgba(20,20,20,0.88);
+    --head: rgba(15,15,15,0.92);
+    --ocre: #ffcc55;
+    --verde-enjuego: #3bff77;
+    --granate-pendiente: #8b1212;
+  }
+
+  body{
+font-family:'Roboto Condensed',sans-serif;
+background:url("15b67b48-6267-46f7-b131-7426668e5e33.png") no-repeat center center fixed;
+background-size:cover;
+color:#eaeaea;
+margin:0;
+display:flex;
+flex-direction:column;
+min-height:100vh;
+padding-top:80px;
+align-items:center;
+  text-shadow: 
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
+
+
+/* === Botón de menú metálico === */
+.menu-btn {
+  position: fixed;
+  top: 22px;
+  left: 22px;
+  width: 115px;
+  height: auto;
+  cursor: pointer;
+  z-index: 200;
+  transition: transform 0.25s ease, filter 0.25s ease;
+  border-radius: 6px;
+}
+.menu-btn:hover { transform: scale(1.05); filter: brightness(1.25); }
+.menu-btn:active { transform: scale(0.97); filter: brightness(0.9); }
+
+/* === Panel lateral (bajado 15px) === */
+.sidebar {
+  position: fixed;
+  top: 95px;
+  left: -100%;
+  width: 260px;
+
+  background: rgba(10,10,10,0.85); /* fallback */
+
+  box-shadow: 3px 3px 18px rgba(0,0,0,0.6);
+  transition: all 0.6s ease;
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+  overflow: hidden;
+  padding-top: 10px;
+}
+
+/* solo si el navegador soporta blur */
+@supports (backdrop-filter: blur(6px)) {
+  .sidebar {
+    backdrop-filter: blur(6px);
+    background: rgba(10,10,10,0.6);
+  }
+}
+
+
+.sidebar.active { left: 0; }
+
+.sidebar a:active {
+  transform: scale(0.96);
+  background: rgba(60,60,60,0.95);
+  box-shadow: 0 0 10px rgba(255,204,85,0.4);
+}
+
+/* === Botones metálicos === */
+.sidebar a {
+  position: relative;
+  display: flex;              /* 🔥 clave */
+  align-items: center;        /* centra vertical */
+  justify-content: center;    /* centra horizontal */
+
+  height: 48px;               /* 🔥 altura fija */
+  margin: 8px 12px;
+  padding: 0 12px;            /* reducimos padding lateral */
+
+  text-decoration: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;      /* un poco menos para que entre mejor */
+  font-size: 0.8rem;          /* leve ajuste */
+  text-align: center;
+  border-radius: 8px;
+
+  white-space: normal;        /* 🔥 evita salto de línea */
+  height: auto;
+  padding: 10px 8px;
+  line-height: 1.2;    /* opcional: ... si no entra */
+
+  background: rgba(20,20,20,0.75);
+  color: #ddd;
+  border: 1px solid rgba(255,255,255,0.08);
+
+  box-shadow: 0 0 8px rgba(0,0,0,0.6);
+  transition: all 0.25s ease;
+  cursor: pointer;
+
+  text-shadow: none;
+  animation: none;
+}
+
+.sidebar a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, rgba(255,255,255,0.6), rgba(255,255,255,0));
+  transform: skewX(-25deg);
+  transition: all 0.75s ease;
+}
+.sidebar a:hover::before { left: 130%; }
+
+.sidebar a:hover {
+  background: rgba(40,40,40,0.9);
+  border-color: rgba(255,204,85,0.4);
+  box-shadow: 0 0 12px rgba(255,204,85,0.25);
+  transform: translateX(5px);
+  box-shadow: 0 0 15px rgba(255,204,85,0.35);
+}
+
+.sidebar a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: transparent;
+  transition: 0.3s;
+}
+
+.sidebar a:hover::after {
+  background: #ffcc55;
+}
+
+/* === Selector de idioma === */
+.language-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 200;
+}
+.language-selector img.flag-icon {
+  width: 22px;
+  height: 16px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+.language-selector select {
+  background: #111;
+  color: #ddd;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: .9rem;
+  transition: .3s;
+}
+.language-selector select:hover {
+  background: #222;
+  border-color: #666;
+}
+
+  .filter-bar{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;background:rgba(0,0,0,0.5);padding:8px 12px;border-radius:8px;align-self:flex-start;margin-left:2rem;flex-wrap:wrap;}
+  select,button.filter-btn{background:#111;color:#ddd;border:1px solid #444;border-radius:6px;padding:6px 10px;cursor:pointer;font-family:inherit;font-weight:600;font-size:.9rem;transition:.3s;}
+  button.filter-btn:hover,select:hover{background:#222;border-color:#666;}
+  .filter-btn.active{
+  background:#3bff77;
+  color:#000;
+  box-shadow:0 0 12px #3bff77aa;
+}
+
+#temporadaSelect.activo{
+  border-color:#3bff77;
+  box-shadow:0 0 12px #3bff77aa;
+  background:#111;   /* ← fondo normal */
+  color:#ddd;
+}
+
+  .titulo-temporada {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    color: #ffcc55;
+    -webkit-text-stroke: 1.2px #000;
+    text-shadow: 0 0 8px rgba(255,200,80,0.6);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .selector-temporada {
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+    margin-bottom:.7rem;
+    align-self:flex-start;
+    margin-left:2rem;
+  }
+
+/* === Footer === */
+footer {
+  position: relative;
+  margin-top: 2rem;
+  color: #ffda84;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1.5rem 0;
+  text-shadow: 0 0 4px #000;
+}
+.footer-legal {
+  margin-top: 1rem;
+  color: #ccc;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  opacity: 0.85;
+    text-shadow: 
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
+
+
+
+
+  .cronograma-wrap{width:100%;max-width:1000px;margin-top:.3rem;}
+
+  table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:8px;overflow:visible;text-align:center;table-layout:fixed;}
+  col.col-local{width:35%;} col.col-versus{width:10%;} col.col-visit{width:35%;} col.col-estado{width:20%;}
+
+  th,td{font-size:1.02rem;padding:8px;border:none;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  th{background:var(--head);color:#a0a0a0;text-transform:uppercase;font-size:.95rem;letter-spacing:.5px;}
+
+  tbody tr:not(.grupo-fecha):not(.subheader){position:relative;overflow:hidden;}
+  tbody tr:not(.grupo-fecha):not(.subheader)::after{content:"";position:absolute;inset:0;background:transparent;transition:background .25s ease;z-index:0;pointer-events:none;}
+  tbody tr:not(.grupo-fecha):not(.subheader):hover::after{background:rgba(212,175,55,0.1);}
+
+  img.flag{width:24px;height:16px;vertical-align:middle;margin-right:6px;border-radius:2px;object-fit:cover;}
+
+  .grupo-fecha td{
+    position:relative;
+    overflow:visible!important;
+    background:linear-gradient(90deg, rgba(180,120,40,0.25), rgba(0,0,0,0.3));
+    color:#ffdca8;
+    font-weight:700;
+    text-transform:uppercase;
+    padding:8px 0;
+    border-top:1px solid rgba(80,60,30,0.6);
+    border-bottom:1px solid rgba(80,60,30,0.6);
+    font-size:1.05rem;
+  }
+
+  .grupo-fecha td:hover .tooltip-text{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+  .grupo-fecha.activa td{color:#fff2c5;background:linear-gradient(90deg, rgba(255,180,80,0.25), rgba(200,140,60,0.18));animation:parpadeoOcre 1.5s ease-in-out infinite alternate;}
+
+  .tooltip-text{
+    position:absolute;left:50%;transform:translateX(-50%) translateY(8px);bottom:120%;
+    background:rgba(0,0,0,0.88);color:#ffdca8;padding:6px 10px;border-radius:6px;white-space:nowrap;
+    font-size:0.9rem;z-index:200;opacity:0;visibility:hidden;transition:opacity .22s ease, transform .22s ease;
+    pointer-events:none;box-shadow:0 6px 18px rgba(0,0,0,0.45);
+  }
+
+  .versus{font-style:italic;color:#aaa;font-size:.95rem;}
+  .jugado{color:#e2b46a;font-style:italic;font-weight:400;}
+  .pendiente{color:var(--granate-pendiente);font-style:italic;font-weight:600;}
+  .enjuego{color:var(--verde-enjuego);font-weight:700;text-shadow:0 0 10px var(--verde-enjuego);}
+
+  
+/* === PANEL PARTICIPANTES (una sola fila completa por nombre) === */
+#panel-participantes {
+  position: fixed !important;
+  top: 550px;  /* ✅ mantenido */
+  right: 25px;
+  width: 280px;  /* 🔧 un poco más ancho para nombres largos */
+  background: rgba(0,0,0,0.75);
+  border-radius: 10px;
+  box-shadow: 0 0 18px rgba(0,0,0,0.5);
+  padding: 12px 14px 15px 14px;
+  color: #fff;
+  font-family: "Roboto Condensed", sans-serif;
+  transform: translateY(-40px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.6s ease;
+  z-index: 999;
+  overflow: hidden;
+}
+
+#panel-participantes.visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+#toggle-participantes {
+  position: fixed !important;
+  top: 500px;
+  right: 25px;
+
+  width: 280px;              /* 🔥 misma anchura que el panel */
+  text-align: center;
+
+  cursor: pointer;
+  font-size: 1.25em;
+  letter-spacing: 1px;
+  color: #ffd966;
+  font-weight: 700;
+
+  background: rgba(0,0,0,0.6);
+  padding: 6px 0;            /* 🔥 centrado perfecto vertical */
+  border-radius: 6px;
+
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  text-shadow: 0 0 8px rgba(0,0,0,0.6);
+
+  transition: color 0.3s, background 0.3s;
+  z-index: 1000;
+}
+
+#toggle-participantes:hover {
+  color: #fff4b3;
+  background: rgba(0,0,0,0.8);
+}
+
+/* === TABLA INTERNA === */
+#tabla-participantes {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+#panel-participantes.visible #tabla-participantes {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Columnas y celdas alineadas */
+#tabla-participantes th {
+  text-align: left;
+  padding: 6px 8px;
+}
+#tabla-participantes td {
+  text-align: left;
+  padding: 4px 8px;
+  white-space: nowrap;        /* 🔧 mantiene todo en una sola línea */
+  overflow: visible;          /* 🔧 permite que se vea completo */
+  text-overflow: unset;       /* 🔧 evita los “…” */
+}
+/* --- Alinear perfectamente la columna de números --- */
+#tabla-participantes th:nth-child(1),
+#tabla-participantes td:nth-child(1) {
+    width: 35px;           /* un pequeño ancho fijo */
+    text-align: center;    /* centra el # y los números */
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#tabla-participantes img.flag {
+  width: 20px;
+  height: 14px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-radius: 2px;
+}
+
+.cronograma-layout{
+  display:flex;
+  align-items:stretch;
+  gap:16px;
+  width:100%;
+  max-width:1200px;
+}
+
+.videos-fechas{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  width:420px;
+  height:100%;
+}
+
+.video-fecha{
+  background:rgba(0,0,0,0.55);
+  padding:8px;
+  border-radius:8px;
+
+  display:flex;
+  flex-direction:column;
+}
+
+.video-fecha img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:6px;
+  cursor:pointer;
+  transition:transform .2s;
+}
+
+.video-fecha img:hover{
+  transform:scale(1.04);
+}
+
+.video-fecha iframe{
+  display:none;
+  width:100%;
+  height:100%;
+}
+
+.video-fecha + .video-fecha{
+  margin-top:6px;
+}
+
+.video-item{
+  display:flex;
+  flex-direction:column;
+  justify-content:stretch;
+}
+
+.video-item img,
+.video-item iframe{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:6px;
+}
+
+
+
+.video-label{
+  font-family:'Orbitron',sans-serif;
+  color:#ffd966;
+  font-size:.75rem;
+  text-align:center;
+  margin-bottom:6px;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  line-height:1.1;
+}
+
+
+#toggle-videos{
+  display:none;
+}
+
+/* === Tabs liga === */
+
+.tabs{
+  display:flex;
+  gap:10px;
+  margin:10px 0;
+}
+
+.tab-btn{
+  font-family: 'Orbitron', sans-serif;  /* 🔥 clave */
+  background: rgba(20,20,20,0.7);
+  color:#ccc;
+  border:1px solid rgba(255,255,255,0.1);
+
+  padding:10px 18px;        /* un poco más grande */
+  border-radius:8px;
+
+  font-weight:700;
+  letter-spacing:1px;       /* 🔥 más “tech” */
+  font-size:0.95rem;
+
+  cursor:pointer;
+  transition: all 0.25s ease;
+
+  text-transform: uppercase;
+}
+
+.tab-btn.active-oro,
+.tab-btn.active-plata{
+  transform: scale(1.08);   /* leve zoom */
+}
+
+.tabs{
+  margin-left: 2rem;
+}
+
+/* 🟡 ORO */
+.tab-btn.active-oro{
+  color:#000;
+  background: linear-gradient(145deg,#ffd700,#ffb700);
+  box-shadow: 0 0 12px rgba(255,215,0,0.6);
+  border-color:#ffd700;
+}
+
+/* ⚪ PLATA */
+.tab-btn.active-plata{
+  color:#000;
+  background: linear-gradient(145deg,#d9d9d9,#a8a8a8);
+  box-shadow: 0 0 12px rgba(200,200,200,0.6);
+  border-color:#ccc;
+}
+
+/* hover suave */
+.tab-btn:hover{
+  transform: scale(1.05);
+}
+
+
+
+
+
+
+
+/* === Responsive === */
+
+@media (max-width: 700px){
+
+  .logo-liga { width: 320px; }
+
+  .menu-btn { 
+    width: 90px; 
+    left: 14px; 
+    top: 14px; 
+  }
+
+.tab-btn{
+  padding:3px 8px;
+  font-size:10px;
+  border-radius:5px;
+}
+
+.tab-btn{
+  padding:3px 8px;
+  font-size:10px;
+  border-radius:5px;
+}
+
+  .language-selector { 
+    top: 12px; 
+    right: 12px; 
+  }
+
+  .sidebar {
+    width: min(45%, 180px);
+    top: 75px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto; 
+  }
+
+  .sidebar a {
+    font-size: 0.7rem;
+    white-space: normal;
+    height: auto;
+    padding: 10px 8px;
+    line-height: 1.2;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cronograma-layout{
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .cronograma-wrap{
+    width: 100%;
+    max-width: 100%;
+  }
+
+body{
+  align-items:center;
+}
+
+main,
+.container,
+.contenedor{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.selector-temporada,
+.filter-bar,
+.tabs{
+  margin-left:0;
+  align-self:center;
+  justify-content:center;
+  width:100%;
+  text-align:center;
+}
+
+.selector-temporada{
+  display:flex;
+  justify-content:center;
+}
+
+.filter-bar{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.tabs{
+  display:flex;
+  justify-content:center;
+}
+
+
+.botones-fechas{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.botones-fechas button{
+  margin:4px;
+}
+
+.botones-superiores{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+
+  .videos-fechas{
+    display: none;
+  }
+
+  .videos-fechas.visible{
+    display: flex;
+  }
+
+#toggle-participantes{
+  position: fixed;
+  bottom: 18px;
+  right: 12px;
+  top: auto;
+
+  width: auto;
+  padding: 6px 12px;
+
+  font-size: .75rem;
+  letter-spacing: .5px;
+
+  border-radius: 20px;
+  background: rgba(0,0,0,0.75);
+
+  z-index: 1200;
+}
+
+#panel-participantes{
+  position: fixed !important;
+
+  bottom: 60px;
+  right: 12px;
+  top: auto;
+
+  width: 88vw;
+  max-width: 260px;
+
+  font-size: .85rem;
+}
+
+
+#tabla-participantes tr:last-child td,
+#tabla-participantes tr:nth-last-child(2) td{
+  white-space: normal !important;
+  word-break: break-word;
+}
+
+  table{
+    font-size: 0.78rem;
+  }
+
+  th, td{
+    font-size: 0.70rem;
+    padding:4px 2px;
+  }
+
+  td{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+img.flag{
+    width:18px;
+    height:12px;
+    margin-right:3px;
+  }
+
+
+  .versus{
+    font-size: 0.65rem;
+  }
+
+  .grupo-fecha td{
+    font-size: 0.8rem;
+  }
+
+}
+
+@media (hover: none) {
+  .sidebar a:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 700px){
+  .videos-fechas{
+  display:none !important;
+}
+
+.video-inline td{
+  padding:6px;
+  background:transparent;
+}
+
+.video-inline-box{
+  background:rgba(0,0,0,0.5);
+  padding:8px;
+  border-radius:8px;
+}
+
+.video-inline img{
+  width:100%;
+  height:150px;
+  object-fit:cover;
+  border-radius:6px;
+}
+
+.video-inline iframe{
+  width:100%;
+  height:150px;
+  border:none;
+  border-radius:6px;
+  display:none;
+}
+
+
+
+
+
+
+  .videos-fechas.visible{
+    display: flex;
+  }
+}
+
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s;
+  z-index: 140;
+}
+
+#overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/
+</style>
+</head>
+<body>
+
+<!-- Panel sidebar-->
+<img src="boton-menu.png" alt="Menú" class="menu-btn" id="menuToggle">
+<nav class="sidebar" id="sidebar"> 
+  <a href="index.html">🏠 Menu Principal</a>
+  <a href="reglas.html">📏 Formato - Reglas</a>
+  <a href="cronograma.html">📅 Cronograma - Participantes</a>
+  <a href="resultados.html">📋 Resultados</a>
+  <a href="ranking.html">🏆 Ranking</a>
+  <a href="estadisticas.html">📊 Estadisticas</a>
+  <a href="premios.html">🎁 Premios</a>
+  <a href="donaciones.html">💰 Donaciones</a>
+  <a href="inscripciones.html">✍️ Inscripciones</a>
+</nav>
+
+<div id="overlay"></div>
+
+<!-- Idioma -->
+<div class="language-selector">
+  <img id="current-flag" class="flag-icon" src="https://flagcdn.com/w20/es.png" alt="ES">
+  <select id="lang-select">
+    <option value="es" data-flag="https://flagcdn.com/w20/es.png">Español</option>
+    <option value="en" data-flag="https://flagcdn.com/w20/us.png">English</option>
+  </select>
+</div>
+
+<img src="1811d0cb-36e3-4b23-9d1f-5b4f66ce2d8c-removebg-preview.png" alt="Liga Latina de COH" class="logo-liga">
+
+<div class="tabs">
+  <button class="tab-btn active-oro" data-liga="oro">🏅 Liga de Oro</button>
+  <button class="tab-btn" data-liga="plata">🥈 Liga de Plata</button>
+</div>
+
+<h2 class="titulo-temporada">TEMPORADA 1</h2>
+
+<div class="selector-temporada">
+  <label>📜 Temporada:</label>
+  <select id="temporadaSelect">
+    <option value="1" selected>Temporada 1</option>
+    <option value="2" disabled>Temporada 2 (Próximamente)</option>
+  </select>
+</div>
+
+<div class="filter-bar">
+  <label id="label-fecha" for="fechaSelect">📅 Fecha:</label>
+  <select id="fechaSelect"><option value="todas">Seleccionar...</option></select>
+  <button id="btnActivas" class="filter-btn">Ver solo Fechas Activas</button>
+  <button id="btnCompleto" class="filter-btn active">Ver Cronograma Completo</button>
+
+
+   <!-- 🔥 ACÁ -->
+  <button id="toggle-videos" class="filter-btn">🎥 Ver Videos</button>
+
+
+</div>
+
+
+<!-- BOTÓN Y PANEL PARTICIPANTES -->
+<h2 id="toggle-participantes">📋 Participantes</h2>
+<div id="panel-participantes">
+  <table id="tabla-participantes">
+    <thead>
+      <tr><th>#</th><th>Jugador</th></tr>
+    </thead>
+    <tbody id="lista-participantes"></tbody>
+  </table>
+</div>
+
+
+<div class="cronograma-layout">
+
+<div class="cronograma-wrap">
+  <div id="status-area"></div>
+  <table id="cronograma">
+    <colgroup>
+      <col class="col-local"><col class="col-versus"><col class="col-visit"><col class="col-estado">
+    </colgroup>
+
+
+    <tbody></tbody>
+  </table>
+</div>
+
+
+<div class="videos-fechas">
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/qkrYJyHofbI/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/f9mPUruofr0/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/iFF_PpMwMRo/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/q8jjTZkq2yc/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/WpjZ2d54qtg/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/0K5r1uRZSlQ/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/W_g_QipvLuc/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/W6ECWPNURbw/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/_v0Ic5rGCHs/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/kPAD9v0wMTk/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/syrwFyP4pq4/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/OoYVkuPKR98/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+
+<img src="https://img.youtube.com/vi/f9NYZBqhcdE/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/oXO80N3don4/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/8uA86TdeMDs/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/-JidQnE4pTU/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/bRsSTGKwj5A/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+
+<img src="https://img.youtube.com/vi/0ygYJ8em868/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+<div class="video-fecha">
+<div class="video-label">Definición Liga de Plata</div>
+<img src="https://img.youtube.com/vi/1vYSU0r6sMI/hqdefault.jpg">
+<iframe></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>© Liga Latina de Company of Heroes</p>
+  <div class="footer-legal">
+    <p>Este es un sitio web no oficial creado por fans de Company of Heroes 1.</p>
+    <p><strong>Company of Heroes</strong> es una marca registrada de <strong>Relic Entertainment</strong>.</p>
+    <p>Las imágenes y demás recursos de COH son propiedad de Relic Entertainment.</p>
+  </div>
+</footer>
+
+
+<script>
+const urls = {
+  "1": {
+    oro: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDy3ZFnj4_YThlDsu8ZnzHec7GqwHH_0SePTjw2IMos-HhK8-Z7YAUcKHy1nXD7PY9aLSNr0UAKC9Z/pub?gid=1819973427&single=true&output=csv",
+    plata: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDy3ZFnj4_YThlDsu8ZnzHec7GqwHH_0SePTjw2IMos-HhK8-Z7YAUcKHy1nXD7PY9aLSNr0UAKC9Z/pub?gid=1374166084&single=true&output=csv",
+
+    leaderboard_oro: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDy3ZFnj4_YThlDsu8ZnzHec7GqwHH_0SePTjw2IMos-HhK8-Z7YAUcKHy1nXD7PY9aLSNr0UAKC9Z/pub?gid=1648176460&single=true&output=csv",
+    leaderboard_plata: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDy3ZFnj4_YThlDsu8ZnzHec7GqwHH_0SePTjw2IMos-HhK8-Z7YAUcKHy1nXD7PY9aLSNr0UAKC9Z/pub?gid=1727004674&single=true&output=csv"
+  },
+
+  "2": {
+    oro: "URL_TEMPORADA_2_ORO",
+    plata: "URL_TEMPORADA_2_PLATA",
+
+    leaderboard_oro: "URL_TEMPORADA_2_LEADERBOARD_ORO",
+    leaderboard_plata: "URL_TEMPORADA_2_LEADERBOARD_PLATA"
+  }
+};
+
+const videosPorTemporada = {
+  "1": [
+    "qkrYJyHofbI",
+    "f9mPUruofr0",
+    "iFF_PpMwMRo",
+    "q8jjTZkq2yc",
+    "WpjZ2d54qtg",
+    "0K5r1uRZSlQ",
+    "W_g_QipvLuc",
+    "W6ECWPNURbw",
+    "_v0Ic5rGCHs",
+    "kPAD9v0wMTk",
+    "syrwFyP4pq4",
+    "OoYVkuPKR98",
+    "f9NYZBqhcdE",
+    "oXO80N3don4",
+    "8uA86TdeMDs",
+    "-JidQnE4pTU",
+    "bRsSTGKwj5A",
+    "0ygYJ8em868",
+    "1vYSU0r6sMI"
+  ],
+
+  "2": [
+    // cuando tengas los videos de temporada 2
+  ]
+};
+
+
+
+const fechasActivas = [17,18];
+const fechasInfo = {
+  es:{fecha1:"📅 Del 7 al 13 de septiembre 2025",fecha2:"📅 Del 7 al 13 de septiembre 2025",fecha3:"📅 Del 14 al 20 de septiembre 2025",fecha4:"📅 Del 14 al 20 de septiembre 2025",fecha5:"📅 Del 21 al 27 de septiembre 2025",fecha6:"📅 Del 21 al 27 de septiembre 2025",fecha7:"📅 Del 28 de septiembre al 4 de octubre 2025",fecha8:"📅 Del 28 de septiembre al 4 de octubre 2025",fecha9:"📅 Del 5 al 11 de octubre 2025",fecha10:"📅 Del 5 al 11 de octubre 2025",fecha11:"📅 Del 12 al 18 de octubre 2025",fecha12:"📅 Del 12 al 18 de octubre 2025",fecha13:"📅 Del 19 al 25 de octubre 2025",fecha14:"📅 Del 19 al 25 de octubre 2025",fecha15:"📅 Del 26 de octubre al 1 de noviembre 2025",fecha16:"📅 Del 26 de octubre al 1 de noviembre 2025",fecha17:"📅 Del 2 al 8 de noviembre 2025",fecha18:"📅 Del 2 al 8 de noviembre 2025"},
+  en:{fecha1:"📅 From September 7 to 13",fecha2:"📅 From September 7 to 13",fecha3:"📅 From September 14 to 20",fecha4:"📅 From September 14 to 20",fecha5:"📅 From September 21 to 27",fecha6:"📅 From September 21 to 27",fecha7:"📅 From Sept 28 to Oct 4",fecha8:"📅 From Sept 28 to Oct 4",fecha9:"📅 From October 5 to 11",fecha10:"📅 From October 5 to 11",fecha11:"📅 From October 12 to 18",fecha12:"📅 From October 12 to 18",fecha13:"📅 From October 19 to 25",fecha14:"📅 From October 19 to 25",fecha15:"📅 From October 26 to Nov 1",fecha16:"📅 From October 26 to Nov 1",fecha17:"📅 From November 2 to 8",fecha18:"📅 From November 2 to 8"}
+};
+const traducciones={es:{fechaLabel:"📅 Fecha:",selectPlaceholder:"Seleccionar...",btnActivas:"Ver solo Fechas Activas",btnCompleto:"Ver Cronograma Completo",temporada:"TEMPORADA 1",thLocal:"Local",thVisitante:"Visitante",thEstado:"Estado",versus:"vs",jugado:"Jugado",pendiente:"Pendiente",enjuego:"En juego"},en:{fechaLabel:"📅 Date:",selectPlaceholder:"Select...",btnActivas:"Show Active Rounds",btnCompleto:"View Full Schedule",temporada:"SEASON 1",thLocal:"Home",thVisitante:"Away",thEstado:"Status",versus:"vs",jugado:"Played",pendiente:"Pending",enjuego:"Now playing"}};
+
+
+
+let idiomaActual="es",
+    ligaActual="oro",
+    modo="todas",
+    dataCompleta=[],
+    temporadaActual="1";
+
+function actualizarVideos(){
+
+  const lista = videosPorTemporada[temporadaActual] || [];
+
+  // ---------- MOBILE ----------
+  if(window.innerWidth <= 700){
+
+    document.querySelectorAll(".video-inline").forEach(v=>v.remove());
+
+    const filas = [...document.querySelectorAll("#cronograma tbody tr")];
+
+    let fechaIndex = null;
+
+    filas.forEach((row)=>{
+
+      if(row.classList.contains("grupo-fecha")){
+  const key = row.dataset.fecha;
+  fechaIndex = parseInt(key.replace("fecha","")) - 1;
+  return;
+}
+
+      const siguiente = row.nextElementSibling;
+      const esUltimo = !siguiente || siguiente.classList.contains("grupo-fecha");
+
+      if(esUltimo && lista[fechaIndex]){
+
+        const videoID = lista[fechaIndex];
+
+        const tr = document.createElement("tr");
+        tr.className="video-inline";
+
+        tr.innerHTML=`
+          <td colspan="4">
+            <div class="video-inline-box">
+              <img src="https://img.youtube.com/vi/${videoID}/hqdefault.jpg">
+              <iframe></iframe>
+            </div>
+          </td>
+        `;
+
+        row.after(tr);
+
+        const img=tr.querySelector("img");
+        const iframe=tr.querySelector("iframe");
+
+        img.onclick=()=>{
+          iframe.src=`https://www.youtube.com/embed/${videoID}?autoplay=1`;
+          iframe.style.display="block";
+          img.style.display="none";
+        };
+
+      }
+
+    });
+
+    return;
+  }
+
+// ---------- PC ----------
+const videos = document.querySelectorAll(".video-fecha");
+videos.forEach(v=>v.style.display="none");
+
+const fechas = document.querySelectorAll(".grupo-fecha");
+
+fechas.forEach((f)=>{
+
+  const key = f.dataset.fecha; // "fecha5"
+  const numero = parseInt(key.replace("fecha","")) - 1;
+
+  const video = videos[numero];
+
+  if(video) video.style.display="flex";
+
+});
+
+}
+
+
+function normalizarFecha(txt){return(txt||'').toLowerCase().replace(/[^a-z0-9]/g,'');}
+function obtenerIndiceFecha(key){
+  const fechas = [...document.querySelectorAll(".grupo-fecha")]
+    .map(f=>f.dataset.fecha);
+
+  return fechas.indexOf(key);
+}
+
+
+
+
+function traducirTextoFechaVisible(texto){if(idiomaActual==='en'){const m=texto.match(/(\d+)/);if(m)return`ROUND #${m[1]}`;}return texto;}
+function showStatus(type,text){document.getElementById('status-area').innerHTML=`<div class="message ${type==='error'?'error':'info'}">${text}</div>`;}
+function clearStatus(){document.getElementById('status-area').innerHTML='';}
+const paises_es={us:"Estados Unidos",de:"Alemania",gb:"Reino Unido",ca:"Canadá",fr:"Francia",es:"España",br:"Brasil",ar:"Argentina",lb:"Líbano",mx:"México",ec:"Ecuador",it:"Italia",pt:"Portugal",ve:"Venezuela",sr:"Surinam"};
+const paises_en={us:"United States",de:"Germany",gb:"United Kingdom",ca:"Canada",fr:"France",es:"Spain",br:"Brazil",ar:"Argentina",lb:"Lebanon",mx:"Mexico",ec:"Ecuador",it:"Italy",pt:"Portugal",ve:"Venezuela",sr:"Suriname"};
+function formatearNombreConBandera(n){n=(n||'').trim();if(!n)return'';const parts=n.split(/\s+/);const c=(parts.at(-1)||'').toLowerCase().replace(/[^a-z]/g,'');const map=idiomaActual==='en'?paises_en:paises_es;if(/^[a-z]{2}$/.test(c)){const tt=map[c]||c.toUpperCase();parts.pop();return`<img class="flag" src="https://flagcdn.com/w20/${c}.png" alt="${tt}" title="${tt}"> ${parts.join(' ')}`;}return n;}
+async function cargarCronograma(){
+  clearStatus();
+  const tbody=document.querySelector("#cronograma tbody");tbody.innerHTML='';
+  showStatus('info',idiomaActual==='en'?'Loading schedule...':'Cargando cronograma...');
+  try{
+    const resp=await fetch(urls[temporadaActual][ligaActual],{cache:"no-store"});
+    const text=await resp.text();
+    const lines=text.trim().split(/\r?\n/).filter(l=>l.trim()!=='');
+    const delim=text.includes(';')?';':',';
+    const rows=lines.map(l=>l.split(delim));
+    dataCompleta=rows.slice(1);
+    llenarSelectorFechas(dataCompleta);
+    renderFiltrado();
+    clearStatus();
+  }catch(err){showStatus('error',`Error cargando cronograma: ${err.message}`);}
+}
+function llenarSelectorFechas(rows){
+  const select=document.getElementById("fechaSelect");
+  const t=traducciones[idiomaActual];
+  select.innerHTML=`<option value="todas">${t.selectPlaceholder}</option>`;
+  const fechasUnicas=[...new Set(rows.map(r=>(r[0]||'').trim()).filter(Boolean))];
+  fechasUnicas.forEach(f=>{
+    const opt=document.createElement("option");
+    opt.value=normalizarFecha(f);
+    opt.textContent=idiomaActual==='en'?traducirTextoFechaVisible(f):f;
+    select.appendChild(opt);
+  });
+}
+
+
+function renderFiltrado(filtro=""){
+  const tbody=document.querySelector("#cronograma tbody");tbody.innerHTML='';
+  const t=traducciones[idiomaActual];let fechaActual=null;
+
+  const filas=dataCompleta.filter(r=>{
+    const key=normalizarFecha(r[0]);
+    if(modo==="activas")return fechasActivas.includes(key);
+    if(modo==="una")return filtro&&key===filtro;
+    return true;
+  });
+
+  filas.forEach((row)=>{
+    const [fechaRaw,localRaw,visitanteRaw,estadoRaw=""]=row.map(x=>(x||'').trim());
+
+    if(fechaRaw!==fechaActual){
+      fechaActual=fechaRaw;
+
+      const key=normalizarFecha(fechaRaw);
+      const tooltip=(fechasInfo[idiomaActual]&&fechasInfo[idiomaActual][key])||"";
+      const tituloVisible=idiomaActual==='en'?traducirTextoFechaVisible(fechaRaw):fechaRaw;
+
+      const trFecha=document.createElement("tr");
+      trFecha.dataset.fecha = key;   // ← ACA EXACTAMENTE
+      trFecha.className="grupo-fecha"+(fechasActivas.includes(key)?" activa":"");
+      trFecha.innerHTML=`<td colspan="4">${tituloVisible}${tooltip?`<span class='tooltip-text'>${tooltip}</span>`:''}</td>`;
+      tbody.appendChild(trFecha);
+
+      const trH=document.createElement("tr");
+      trH.className="subheader";
+      trH.innerHTML=`<th>${t.thLocal}</th><th></th><th>${t.thVisitante}</th><th>${t.thEstado}</th>`;
+      tbody.appendChild(trH);
+    }
+
+    const local=formatearNombreConBandera(localRaw);
+    const visitante=formatearNombreConBandera(visitanteRaw);
+
+    const estadoLower=(estadoRaw||'').toLowerCase();
+    let clase="",texto=t.pendiente;
+
+    if(estadoLower.includes("jugado")||estadoLower.includes("played")){
+      clase="jugado";texto=t.jugado;
+    }
+    else if(estadoLower.includes("pendiente")||estadoLower.includes("pending")){
+      clase="pendiente";texto=t.pendiente;
+    }
+    else if(estadoLower.includes("juego")||estadoLower.includes("playing")){
+      clase="enjuego";texto=t.enjuego;
+    }
+
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${local}</td><td class="versus">${t.versus}</td><td>${visitante}</td><td class="${clase}">${texto}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // 🔥 ACA VA (una sola vez)
+  actualizarVideos();
+}
+
+
+
+document.getElementById("btnActivas").onclick=()=>{modo="activas";document.getElementById("btnActivas").classList.add("active");document.getElementById("btnCompleto").classList.remove("active");document.getElementById("fechaSelect").value="todas";renderFiltrado();};
+
+document.getElementById("btnCompleto").onclick=()=>{modo="todas";document.getElementById("btnCompleto").classList.add("active");document.getElementById("btnActivas").classList.remove("active");document.getElementById("fechaSelect").value="todas";renderFiltrado();};
+
+document.getElementById("fechaSelect").onchange=e=>{const val=e.target.value;if(val==="todas")return;modo="una";document.getElementById("btnActivas").classList.remove("active");document.getElementById("btnCompleto").classList.remove("active");renderFiltrado(val);};
+
+document.getElementById("lang-select").addEventListener("change",e=>{
+  idiomaActual=e.target.value;
+  const sel=e.target.selectedOptions[0];
+  document.getElementById("current-flag").src=sel.dataset.flag;
+  const t=traducciones[idiomaActual];
+  document.getElementById("label-fecha").textContent=t.fechaLabel;
+  document.getElementById("btnActivas").textContent=t.btnActivas;
+  document.getElementById("btnCompleto").textContent=t.btnCompleto;
+  document.querySelector(".titulo-temporada").textContent =
+  (idiomaActual === "en" ? "SEASON " : "TEMPORADA ") + temporadaActual;
+  document.querySelectorAll(".tab-btn").forEach(btn=>{
+    if(btn.dataset.liga==="oro")btn.textContent=idiomaActual==="en"?"🏅 Gold League":"🏅 Liga de Oro";
+    if(btn.dataset.liga==="plata")btn.textContent=idiomaActual==="en"?"🥈 Silver League":"🥈 Liga de Plata";
+  });
+  llenarSelectorFechas(dataCompleta);
+  renderFiltrado();
+});
+
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active-oro","active-plata"));
+
+    const liga=btn.dataset.liga;
+    btn.classList.add(liga==="oro"?"active-oro":"active-plata");
+
+    ligaActual=liga;
+
+    cargarCronograma();
+    cargarParticipantesPanel();    /* ← ⭐ ACTUALIZA PANEL AL CAMBIO DE LIGA */
+  });
+});
+
+const temporadaSelect = document.getElementById("temporadaSelect");
+
+function actualizarColorTemporada(){
+  // SOLO verde si es una temporada válida (no disabled)
+  if(temporadaSelect.value === "1"){ 
+    temporadaSelect.classList.add("activo");
+  } else {
+    temporadaSelect.classList.remove("activo");
+  }
+}
+
+temporadaSelect.addEventListener("change",()=>{
+
+  temporadaActual = temporadaSelect.value;
+
+  document.querySelector(".titulo-temporada").textContent =
+    (idiomaActual === "en" ? "SEASON " : "TEMPORADA ") + temporadaActual;
+
+  // limpiar contenido anterior
+  document.querySelector("#cronograma tbody").innerHTML = "";
+  document.querySelector("#lista-participantes").innerHTML = "";
+
+  if(temporadaActual === "2"){
+    actualizarVideos();
+    actualizarColorTemporada();
+    return;
+  }
+
+  cargarCronograma();
+  cargarParticipantesPanel();
+  actualizarVideos();
+  actualizarColorTemporada();
+
+});
+
+
+
+// aplicar al cargar
+actualizarColorTemporada();
+</script>
+
+<script>
+async function cargarParticipantesPanel(){
+  const tbody=document.querySelector("#lista-participantes");
+  tbody.innerHTML="";
+
+  try{
+  const resp=await fetch(
+    urls[temporadaActual][
+      ligaActual === "oro" ? "leaderboard_oro" : "leaderboard_plata"
+    ]
+  );
+
+    const text=await resp.text();
+    const delim=text.includes(';')?';':',';
+    const rows=text.trim().split(/\r?\n/).map(l=>l.split(delim)).slice(1);
+
+    let normales = [];
+    let especiales = [];  // ← Yosielin y Arturesko van acá
+
+    rows.forEach((r)=>{
+      const celda=(r[0]||'').trim();
+      if(!celda) return;
+
+      let partes=celda.split(' ');
+      let pais=partes.pop().toLowerCase();
+      let nombre=partes.join(' ').trim();
+
+      // Si el texto no termina en código de país, se asume que no tiene bandera
+      if(!/^[a-z]{2}$/i.test(pais)){
+        nombre = celda;
+        pais = '';
+      }
+
+      // ----------- MANEJO ESPECIAL PARA LIGA PLATA -----------
+      if(ligaActual === "plata"){
+        const lower = nombre.toLowerCase();
+        if(lower === "yosielin"){
+          especiales.push({
+            nombre: "Yosielin → reemplazado por User",
+            pais,
+            rojo: true
+          });
+          return; // evitar agregar a la lista normal
+        }
+        if(lower === "arturesko"){
+          especiales.push({
+            nombre: "Arturesko → reemplazado por Ayax",
+            pais,
+            rojo: true
+          });
+          return;
+        }
+      }
+      // --------------------------------------------------------
+
+      normales.push({nombre,pais});
+    });
+
+    // Render normales
+    normales.forEach((obj,i)=>{
+      const bandera = obj.pais ? `<img class="flag" src="https://flagcdn.com/w20/${obj.pais}.png">` : '';
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td>${i+1}</td><td>${bandera}${obj.nombre}</td>`;
+      tbody.appendChild(tr);
+    });
+
+    // Render especiales (al final)
+    especiales.forEach((obj,idx)=>{
+      const numero = normales.length + idx + 1;
+      const tr=document.createElement("tr");
+      tr.innerHTML =
+        `<td style="color:#ff4444;font-weight:bold;">${numero}</td>
+         <td style="color:#ff4444;font-weight:bold;">${obj.nombre}</td>`;
+      tbody.appendChild(tr);
+    });
+
+  }catch(e){
+    console.error("Error al cargar participantes:",e);
+  }
+}
+
+
+
+document.addEventListener("DOMContentLoaded",()=>{
+  actualizarVideos();
+  const panel=document.querySelector("#panel-participantes");
+  const toggle=document.querySelector("#toggle-participantes");
+
+  toggle.addEventListener("click",()=>{
+    panel.classList.toggle("visible");
+  });
+
+  cargarCronograma();          // ← 🔥 clave
+  cargarParticipantesPanel();
+});
+
+// 🔥 PEGALO ACÁ
+  document.getElementById("toggle-videos").onclick = () => {
+    document.querySelector(".videos-fechas").classList.toggle("visible");
+  };
+
+
+function mostrarVideoFecha(img,id,seg){
+
+  const container = img.parentElement;
+  const frame = container.querySelector("iframe");
+
+  frame.src = `https://www.youtube.com/embed/${id}?start=${seg}&autoplay=1`;
+
+  frame.style.display="block";
+  img.style.display="none";
+
+}
+
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+
+menuToggle.addEventListener('click', () => {
+  sidebar.classList.toggle('active');
+  overlay.classList.toggle('active');
+});
+
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('active');
+  overlay.classList.remove('active');
+});
+
+</script>
+
+
+
+</body>
+</html>
