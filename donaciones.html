@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>💰 Donaciones – Liga COH</title>
+<link rel="icon" type="image/png" sizes="32x32" href="icono.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ocre: #ffcc55;
+  --bg-panel: rgba(15,15,15,0.95);
+  --text: #eee;
+}
+body {
+  margin: 0;
+  font-family: 'Roboto Condensed', sans-serif;
+  background: url("15b67b48-6267-46f7-b131-7426668e5e33.png") no-repeat center center fixed;
+  background-size: cover;
+  color: var(--text);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+}
+
+
+
+.logo-liga {
+    display: block;
+    width: 620px;
+    margin: 10px auto 20px;
+  }
+
+  .menu-btn { 
+    width: 90px; 
+    left: 14px; 
+    top: 14px; 
+  }
+
+.tab-btn{
+  padding:3px 8px;
+  font-size:10px;
+  border-radius:5px;
+}
+
+.tabs{
+  margin-top: -10px; /* 👈 los sube */
+}
+
+
+/* === Botón de menú metálico === */
+.menu-btn {
+  position: fixed;
+  top: 22px;
+  left: 22px;
+  width: 115px;
+  height: auto;
+  cursor: pointer;
+  z-index: 200;
+  transition: transform 0.25s ease, filter 0.25s ease;
+  border-radius: 6px;
+}
+.menu-btn:hover { transform: scale(1.05); filter: brightness(1.25); }
+.menu-btn:active { transform: scale(0.97); filter: brightness(0.9); }
+
+/* === Panel lateral (bajado 15px) === */
+.sidebar {
+  position: fixed;
+  top: 95px;
+  left: -100%;
+  width: 260px;
+
+  background: rgba(10,10,10,0.85); /* fallback */
+
+  box-shadow: 3px 3px 18px rgba(0,0,0,0.6);
+  transition: all 0.6s ease;
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+  overflow: hidden;
+  padding-top: 10px;
+}
+
+/* solo si el navegador soporta blur */
+@supports (backdrop-filter: blur(6px)) {
+  .sidebar {
+    backdrop-filter: blur(6px);
+    background: rgba(10,10,10,0.6);
+  }
+}
+
+
+.sidebar.active { left: 0; }
+
+.sidebar a:active {
+  transform: scale(0.96);
+  background: rgba(60,60,60,0.95);
+  box-shadow: 0 0 10px rgba(255,204,85,0.4);
+}
+
+/* === Botones metálicos === */
+.sidebar a {
+  position: relative;
+  display: flex;              /* 🔥 clave */
+  align-items: center;        /* centra vertical */
+  justify-content: center;    /* centra horizontal */
+
+  height: 48px;               /* 🔥 altura fija */
+  margin: 8px 12px;
+  padding: 0 12px;            /* reducimos padding lateral */
+
+  text-decoration: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;      /* un poco menos para que entre mejor */
+  font-size: 0.8rem;          /* leve ajuste */
+  text-align: center;
+  border-radius: 8px;
+
+  white-space: normal;        /* 🔥 evita salto de línea */
+  height: auto;
+  padding: 10px 8px;
+  line-height: 1.2;    /* opcional: ... si no entra */
+
+  background: rgba(20,20,20,0.75);
+  color: #ddd;
+  border: 1px solid rgba(255,255,255,0.08);
+
+  box-shadow: 0 0 8px rgba(0,0,0,0.6);
+  transition: all 0.25s ease;
+  cursor: pointer;
+
+  text-shadow: none;
+  animation: none;
+}
+
+.sidebar a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, rgba(255,255,255,0.6), rgba(255,255,255,0));
+  transform: skewX(-25deg);
+  transition: all 0.75s ease;
+}
+.sidebar a:hover::before { left: 130%; }
+
+.sidebar a:hover {
+  background: rgba(40,40,40,0.9);
+  border-color: rgba(255,204,85,0.4);
+  box-shadow: 0 0 12px rgba(255,204,85,0.25);
+  transform: translateX(5px);
+  box-shadow: 0 0 15px rgba(255,204,85,0.35);
+}
+
+.sidebar a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: transparent;
+  transition: 0.3s;
+}
+
+.sidebar a:hover::after {
+  background: #ffcc55;
+}
+
+
+.flag-icon {width:22px;height:16px;}
+
+/* === Selector de idioma === */
+.language-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 200;
+}
+.language-selector img.flag-icon {
+  width: 22px;
+  height: 16px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+.language-selector select {
+  background: #111;
+  color: #ddd;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: .9rem;
+  transition: .3s;
+}
+.language-selector select:hover {
+  background: #222;
+  border-color: #666;
+}
+
+.flag-icon {width:22px;height:16px;}
+
+
+
+
+.main-content {
+  max-width: 800px;
+  text-align: center;
+  background: rgba(0,0,0,0.5);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  z-index: 10;
+}
+.main-content h1 {
+  color: var(--ocre);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 6px #000;
+}
+.main-content p {
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.main-content h1,
+.main-content #descripcion{
+  text-align:center;
+  max-width:600px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.panels-wrapper{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:25px;
+  width:100%;
+  margin-top:20px;
+}
+
+.donation-panel{
+  background: rgba(0,0,0,0.55);
+  padding:25px;
+  border-radius:16px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+.panel-title{
+  color: var(--ocre);
+  text-transform: uppercase;
+  text-align:center;
+  margin-bottom:15px;
+  font-size:20px;
+}
+
+
+.donation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.mp-button {
+  display: inline-block;
+  background: linear-gradient(180deg, #00b2e3, #0077b6);
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+}
+.mp-button:hover {
+  background: linear-gradient(180deg, #33cfff, #0096c7);
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(0,191,255,0.7);
+}
+  
+}
+.progress-container {
+  width: 100%;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+  height: 24px;
+  box-shadow: inset 0 1px 6px rgba(0,0,0,0.7);
+}
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #ff3b00, #ff8c00);
+  text-align: center;
+  color: #111;
+  font-weight: 700;
+  line-height: 24px;
+  transition: width 1.2s ease;
+  box-shadow: 0 0 10px rgba(255, 80, 0, 0.6);
+}
+
+.progress-meta{
+  text-align:center;
+  font-weight:600;
+  margin-top:10px;
+}
+
+
+.donors {
+  margin-top: 2rem;
+  text-align: left;
+  color: #ffda84;
+}
+.donors ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+.donors li {
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.donation-panel:first-child .progress-bar{
+  background: linear-gradient(90deg, #00ff95, #00c46a);
+  box-shadow: 0 0 10px rgba(0,255,150,0.6);
+}
+
+
+footer {
+  margin-top: 2rem;
+  color: #ffda84;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1.5rem 0;
+  text-shadow: 0 0 4px #000;
+}
+.footer-legal {
+  margin-top: 1rem;
+  color: #ccc;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  opacity: 0.85;
+      text-shadow: 
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+
+}
+
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 140;
+}
+
+#overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+
+/* === Responsive === */
+
+/* === MOBILE === */
+@media (max-width: 700px){
+
+  .logo-liga {
+    width: 90%;
+    max-width: 320px;
+    margin-top: 80px;
+  }
+
+  .menu-btn { 
+    width: 90px; 
+    left: 14px; 
+    top: 14px; 
+  }
+
+  .tabs{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    margin-top:-10px;
+    width:auto !important;
+  }
+
+  .tab-btn{
+    flex:unset !important;
+    width:auto !important;
+    display:inline-block;
+    padding:3px 8px;
+    font-size:10px;
+    border-radius:5px;
+  }
+
+ .sidebar {
+    width: min(45%, 180px);
+    top: 75px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto; 
+  }
+
+.sidebar a {
+    font-size: 0.7rem;
+    white-space: normal;
+    height: auto;
+    padding: 10px 8px;
+    line-height: 1.2;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+
+
+/* === TABLET / MOBILE GRANDE === */
+@media (max-width: 900px){
+
+  .panels-wrapper{
+    grid-template-columns: 1fr;
+    gap:20px;
+  }
+
+  .main-content{
+    width: 95%;
+    padding:20px;
+  }
+
+  .donation-panel{
+    padding:20px;
+  }
+
+.donation-buttons img {
+  width: 150px !important;
+}
+
+
+
+</style>
+</head>
+<body>
+
+<!-- Botón volver -->
+
+<img src="1811d0cb-36e3-4b23-9d1f-5b4f66ce2d8c-removebg-preview.png" alt="Liga Latina de COH" class="logo-liga">
+
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+
+<!-- Panel sidebar-->
+<img src="boton-menu.png" alt="Menú" class="menu-btn" id="menuToggle">
+
+<nav class="sidebar" id="sidebar"> 
+  <a href="index.html">🏠 Menu Principal</a>
+  <a href="reglas.html">📏 Formato - Reglas</a>
+  <a href="cronograma.html">📅 Cronograma - Participantes</a>
+  <a href="resultados.html">📋 Resultados</a>
+  <a href="ranking.html">🏆 Ranking</a>
+  <a href="estadisticas.html">📊 Estadisticas</a>
+  <a href="premios.html">🎁 Premios</a>
+  <a href="donaciones.html">💰 Donaciones</a>
+  <a href="inscripciones.html">✍️ Inscripciones</a>
+</nav>
+
+<div id="overlay"></div>
+
+<!-- Selector de idioma -->
+<div class="language-selector" id="language-selector">
+  <img id="flagIcon" class="flag-icon" src="https://flagcdn.com/w20/es.png" alt="ES">
+  <select id="langSelect">
+    <option value="es" data-flag="https://flagcdn.com/w20/es.png">Español</option>
+    <option value="en" data-flag="https://flagcdn.com/w20/us.png">English</option>
+  </select>
+</div>
+
+
+<div class="main-content">
+  <h1 id="titulo">💰 Donaciones – Apoyá la Liga Latina de COH</h1>
+  <p id="descripcion">Gracias por apoyar la <strong>Liga Latina de Company of Heroes 1</strong>.<br>Tu contribución ayuda a mantener vivos los torneos, los premios, el streaming y la comunidad.</p>
+  <p id="importante", style="color: greenyellow;"> <strong>Muy importante: Avisarme de que has realizado o quieres realizar una donación para actualizar los montos e incluirte en la lista! </strong></p> 
+
+    <p id="importante", style="color: greenyellow;"> <strong>Tienes mi contacto personal en la  siguiente sección de #Inscripciones de esta web! </strong></p>
+
+  <div class="donation-buttons">
+  <form action="https://www.paypal.com/donate" method="post" target="_top">
+    <input type="hidden" name="campaign_id" value="VHSG6N2J74KE8" />
+    <input type="image"
+           src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"
+           border="0"
+           name="submit"
+           alt="Donate with PayPal button" />
+  </form>
+
+  <!-- ✅ BOTÓN MP REEMPLAZADO POR LOGO -->
+  <a href="https://link.mercadopago.com.ar/argentinosauruscoh" target="_blank">
+    <img src="mercadopago.4fc9fb0074a3.png"
+         alt="Donar con Mercado Pago"
+         style="width:180px; cursor:pointer; transition:transform .25s ease;">
+  </a>
+</div>
+
+  <div class="panels-wrapper">
+
+  <!-- 🟡 TEMPORADA 1 -->
+  <div class="donation-panel">
+
+    <div class="panel-title">Temporada 1°</div>
+
+    <div class="progress-container">
+      <div class="progress-bar" style="width:100%">100%</div>
+    </div>
+    <p class="progress-meta">
+  <strong>Meta:</strong> $75 USD &nbsp; | &nbsp;
+  <strong>Recaudado:</strong> $105 USD
+</p>
+
+    <div class="donors">
+      <h3>🧡 Agradecimientos especiales:</h3>
+
+      <ul style="list-style:none;padding:0;margin:0;">
+
+        <li style="margin-bottom:10px;display:flex;align-items:center;gap:10px;">
+          <span>●</span>
+          <img src="https://flagcdn.com/w20/us.png" style="width:20px;height:14px;">
+          <strong>Diamondback</strong>
+          <span style="margin-left:auto;background:#fff;color:#000;padding:4px 8px;border-radius:8px;">(50 USD)</span>
+        </li>
+
+        <li style="margin-bottom:10px;display:flex;align-items:center;gap:10px;">
+          <span>●</span>
+          <img src="https://flagcdn.com/w20/mx.png" style="width:20px;height:14px;">
+          <strong>Batazuma</strong>
+          <span style="margin-left:auto;background:#fff;color:#000;padding:4px 8px;border-radius:8px;">(35 USD)</span>
+        </li>
+
+        <li style="margin-bottom:10px;display:flex;align-items:center;gap:10px;">
+          <span>●</span>
+          <img src="https://flagcdn.com/w20/us.png" style="width:20px;height:14px;">
+          <strong>ShaolinFantastik</strong>
+          <span style="margin-left:auto;background:#fff;color:#000;padding:4px 8px;border-radius:8px;">(20 USD)</span>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- 🔵 TEMPORADA 2 -->
+  <div class="donation-panel">
+
+    <div class="panel-title">Temporada 2°</div>
+
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar">0%</div>
+    </div>
+
+    <p id="meta" class="progress-meta"></p>
+
+    <div class="donors">
+      <h3 id="donantesTitulo"></h3>
+      <ul id="listaDonantes"></ul>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <p id="footerMain">© Liga Latina de Company of Heroes</p>
+  <div class="footer-legal" id="footerLegal">
+    <p>Este es un sitio web no oficial creado por fans de Company of Heroes 1.</p>
+    <p><strong>Company of Heroes</strong> es una marca registrada de <strong>Relic Entertainment</strong>.</p>
+  </div>
+</footer>
+
+
+
+<script>
+const META_USD = 100;
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/1MqIv5sJbaZBga2F7unTakVI0DyOWmh4jS-gV-ZCPpIM/gviz/tq?tqx=out:json&gid=182147736";
+
+const textos = {
+  es: {
+    titulo: "💰 Donaciones – Apoyá la Liga Latina de COH",
+    descripcion: "Gracias por apoyar la próxima temporada de la <strong>Liga Latina de Company of Heroes 1</strong>.<br>Tu contribución ayuda a mantener vivos los torneos, los premios, el streaming y la comunidad.",
+    meta: (total) => `<strong>Meta:</strong> $${META_USD} USD &nbsp; | &nbsp; <strong>Recaudado:</strong> $${total.toFixed(2)} USD`,
+    donantesTitulo: "🧡 Agradecimientos a los futuros donantes de la 2° Temporada:",
+    footerMain: "© Liga Latina de Company of Heroes",
+    footerLegal: `<p>Este es un sitio web no oficial creado por fans de Company of Heroes 1.</p><p><strong>Company of Heroes</strong> es una marca registrada de <strong>Relic Entertainment</strong>.</p>`,
+    
+
+  },
+  en: {
+    
+
+  }
+};
+
+const ids = {
+  titulo: document.getElementById("titulo"),
+  descripcion: document.getElementById("descripcion"),
+  meta: document.getElementById("meta"),
+  donantesTitulo: document.getElementById("donantesTitulo"),
+  footerMain: document.getElementById("footerMain"),
+  footerLegal: document.getElementById("footerLegal"),
+  btnVolver: document.getElementById("btnVolver"),
+
+};
+
+
+const menuItems = document.querySelectorAll(".sidebar a");
+const langSelect = document.getElementById("langSelect");
+const flagIcon = document.getElementById("flagIcon");
+const progressBar = document.getElementById("progressBar");
+
+function actualizarIdioma(lang, total = 0) {
+  const t = textos[lang];
+  ids.titulo.innerHTML = t.titulo;
+  ids.descripcion.innerHTML = t.descripcion;
+  ids.meta.innerHTML = t.meta(total);
+  ids.donantesTitulo.innerHTML = t.donantesTitulo;
+  ids.footerMain.textContent = t.footerMain;
+  ids.footerLegal.innerHTML = t.footerLegal;
+  menuItems.forEach((el, i) => el.textContent = t.menu[i]);
+  flagIcon.src = langSelect.selectedOptions[0].dataset.flag;
+  localStorage.setItem("idioma", lang);
+  ids.btnVolver.textContent = t.volver;
+
+}
+
+async function actualizarDonaciones() {
+  try {
+    const res = await fetch(SHEET_URL);
+    const text = await res.text();
+    const json = JSON.parse(text.substr(47).slice(0, -2));
+    let total = 0;
+    json.table.rows.forEach(r => {
+      const val = parseFloat(r.c[1]?.v || 0);
+      if (!isNaN(val)) total += val;
+    });
+    const porcentaje = Math.min(100, Math.round((total / META_USD) * 100));
+    progressBar.style.width = porcentaje + "%";
+    progressBar.textContent = porcentaje + "%";
+    const lang = localStorage.getItem("idioma") || "es";
+    actualizarIdioma(lang, total);
+  } catch (e) { console.error("Error obteniendo datos:", e); }
+}
+
+langSelect.addEventListener("change", e => {
+  const idioma = e.target.value;
+  const total = parseFloat(progressBar.textContent.replace("%","")) * META_USD / 100 || 0;
+  actualizarIdioma(idioma, total);
+});
+
+const idiomaPrevio = localStorage.getItem("idioma") || "es";
+langSelect.value = idiomaPrevio;
+actualizarDonaciones();
+setInterval(actualizarDonaciones, 60000);
+</script>
+
+<script>
+const menuToggle = document.getElementById("menuToggle");
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+
+menuToggle.addEventListener("click", () => {
+  sidebar.classList.toggle("active");
+  overlay.classList.toggle("active");
+});
+
+overlay.addEventListener("click", () => {
+  sidebar.classList.remove("active");
+  overlay.classList.remove("active");
+});
+</script>
+
+
+</body>
+</html>
