@@ -605,7 +605,7 @@ footer {
 
 
 <script>
-const META_USD = 100;
+const META_USD = 150;
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/1MqIv5sJbaZBga2F7unTakVI0DyOWmh4jS-gV-ZCPpIM/gviz/tq?tqx=out:json&gid=182147736";
 
 const textos = {
@@ -613,7 +613,7 @@ const textos = {
     titulo: "💰 Donaciones – Apoyá la Liga Latina de COH",
     descripcion: "Gracias por apoyar la próxima temporada de la <strong>Liga Latina de Company of Heroes 1</strong>.<br>Tu contribución ayuda a mantener vivos los torneos, los premios, el streaming y la comunidad.",
     meta: (total) => `<strong>Meta:</strong> $${META_USD} USD &nbsp; | &nbsp; <strong>Recaudado:</strong> $${total.toFixed(2)} USD`,
-    donantesTitulo: "🧡 Agradecimientos a los futuros donantes de la 2° Temporada:",
+    donantesTitulo: "🧡 Donantes de la 2° temporada:",
     footerMain: "© Liga Latina de Company of Heroes",
     footerLegal: `<p>Este es un sitio web no oficial creado por fans de Company of Heroes 1.</p><p><strong>Company of Heroes</strong> es una marca registrada de <strong>Relic Entertainment</strong>.</p>`,
     
@@ -650,7 +650,9 @@ function actualizarIdioma(lang, total = 0) {
   ids.donantesTitulo.innerHTML = t.donantesTitulo;
   ids.footerMain.textContent = t.footerMain;
   ids.footerLegal.innerHTML = t.footerLegal;
+  if(t.menu){
   menuItems.forEach((el, i) => el.textContent = t.menu[i]);
+}
   flagIcon.src = langSelect.selectedOptions[0].dataset.flag;
   localStorage.setItem("idioma", lang);
   ids.btnVolver.textContent = t.volver;
@@ -663,10 +665,36 @@ async function actualizarDonaciones() {
     const text = await res.text();
     const json = JSON.parse(text.substr(47).slice(0, -2));
     let total = 0;
-    json.table.rows.forEach(r => {
-      const val = parseFloat(r.c[1]?.v || 0);
-      if (!isNaN(val)) total += val;
-    });
+   const lista = document.getElementById("listaDonantes");
+lista.innerHTML = "";
+
+json.table.rows.sort((a, b) => {
+  const aVal = parseFloat(a.c[1]?.v || 0);
+  const bVal = parseFloat(b.c[1]?.v || 0);
+  return bVal - aVal;
+});
+
+json.table.rows.forEach(r => {
+  const nombre = r.c[0]?.v || "Anonimo";
+  const monto = parseFloat(r.c[1]?.v || 0);
+  const pais = (r.c[2]?.v || "us").toLowerCase();
+
+  if (!isNaN(monto)) total += monto;
+
+  const li = document.createElement("li");
+  li.style = "margin-bottom:10px;display:flex;align-items:center;gap:10px;";
+
+  li.innerHTML = `
+    <span>●</span>
+    <img src="https://flagcdn.com/w20/${pais}.png" style="width:20px;height:14px;">
+    <strong>${nombre}</strong>
+    <span style="margin-left:auto;background:#fff;color:#000;padding:4px 8px;border-radius:8px;">
+      (${monto} USD)
+    </span>
+  `;
+
+  lista.appendChild(li);
+});
     const porcentaje = Math.min(100, Math.round((total / META_USD) * 100));
     progressBar.style.width = porcentaje + "%";
     progressBar.textContent = porcentaje + "%";
