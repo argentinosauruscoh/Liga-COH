@@ -397,6 +397,12 @@ button.submit-btn{
 .oro { background: #c9a400; color:#000; }
 .plata { background: #aaa; color:#000; }
 .bronce { background: #a05a2c; color:#fff; }
+.platino {
+  background: linear-gradient(145deg, #6ecbff, #2a6fa3);
+  color: #001a2b;
+  font-weight: 800;
+  text-shadow: 0 0 6px rgba(110,203,255,0.6);
+}
 
 .ranking {
   width: 100%;
@@ -544,13 +550,22 @@ button.submit-btn{
        1px -1px 0 #000,
       -1px  1px 0 #000,
        1px  1px 0 #000;">⚔️ Recuerda que los requisitos son: ⚔️</h2>
-       
+    
+    <p style="text-shadow: 
+      -1px -1px 0 #000,
+       1px -1px 0 #000,
+      -1px  1px 0 #000,
+       1px  1px 0 #000; color:skyblue;">
+      <strong>Liga Platino:</strong> <span style="color:#fff;">Nivel 14 a 20</span>
+    </p>
+
+
     <p style="text-shadow: 
       -1px -1px 0 #000,
        1px -1px 0 #000,
       -1px  1px 0 #000,
        1px  1px 0 #000; color:#ffd46a;">
-      <strong>Liga Oro:</strong> <span style="color:#fff;">Nivel 10 a 13</span>
+      <strong>Liga Oro:</strong> <span style="color:#fff;">Nivel 12 a 14</span>
     </p>
     
     <p style="text-shadow: 
@@ -558,7 +573,7 @@ button.submit-btn{
        1px -1px 0 #000,
       -1px  1px 0 #000,
        1px  1px 0 #000; color:#c0c0c0;">
-      <strong>Liga Plata:</strong> <span style="color:#fff;">Nivel 6 a 9</span>
+      <strong>Liga Plata:</strong> <span style="color:#fff;">Nivel 6 a 11</span>
     </p>
     
     <p style="text-shadow: 
@@ -566,7 +581,7 @@ button.submit-btn{
        1px -1px 0 #000,
       -1px  1px 0 #000,
        1px  1px 0 #000; color:#d6a67a;">
-      <strong>Liga Bronce:</strong> <span style="color:#fff;">Nivel 3 a 5</span>
+      <strong>Liga Bronce:</strong> <span style="color:#fff;">Nivel 1 a 5</span>
     </p>  
   </div>
 
@@ -669,6 +684,7 @@ button.submit-btn{
       <label>Categoría</label>
       <select id="liga">
         <option value="">Seleccionar...</option>
+        <option value="platino">Liga de Platino</option>
         <option value="oro">Liga de Oro</option>
         <option value="plata">Liga de Plata</option>
         <option value="bronce">Liga de Bronce</option>
@@ -690,28 +706,41 @@ const SHEET_INSCRIPCIONES = "https://docs.google.com/spreadsheets/d/1-gKEDW_8lcm
 // ------------------ PAISES ------------------
 const countries = [
   
+  
+  { code:"de", name:"Alemania" },
   { code:"ar", name:"Argentina" },
+  { code:"at", name:"Austria" },
   { code:"bo", name:"Bolivia" },
   { code:"br", name:"Brasil" },
   { code:"ca", name:"Canadá" },
   { code:"cl", name:"Chile" },
+  { code:"cn", name:"China" },
   { code:"co", name:"Colombia" },
+  { code:"kr", name:"Corea del Sur" },
   { code:"cr", name:"Costa Rica" },
+  { code:"hr", name:"Croacia" },
   { code:"cu", name:"Cuba" },
-  { code:"do", name:"República Dominicana" },
   { code:"ec", name:"Ecuador" },
   { code:"sv", name:"El Salvador" },
   { code:"es", name:"España" },
   { code:"us", name:"Estados Unidos" },
+  { code:"fr", name:"Francia" },
+  { code:"gb", name:"Reino Unido" },
   { code:"hn", name:"Honduras" },
   { code:"lb", name:"Líbano" },
   { code:"mx", name:"México" },
   { code:"ni", name:"Nicaragua" },
+  { code:"nz", name:"Nueva Zelanda" },
+  { code:"nl", name:"Países Bajos" },
+  { code:"pk", name:"Pakistán" },
   { code:"pa", name:"Panamá" },
   { code:"py", name:"Paraguay" },
   { code:"pe", name:"Perú" },
   { code:"pr", name:"Puerto Rico" },
+  { code:"do", name:"República Dominicana" },
+  { code:"ru", name:"Rusia" },
   { code:"sr", name:"Suriname" },
+  { code:"ch", name:"Suiza" },
   { code:"uy", name:"Uruguay" },
   { code:"ve", name:"Venezuela" }
 ];
