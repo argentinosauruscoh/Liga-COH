@@ -359,7 +359,7 @@ button.submit-btn{
 
 .ranking-item {
   display: grid;
-  grid-template-columns: 50px 1fr 120px;
+  grid-template-columns: 50px 1fr 120px 60px;
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -368,6 +368,11 @@ button.submit-btn{
 
 .ranking-item:hover {
   background: rgba(255,255,255,0.05);
+}
+
+.pago {
+  text-align: center;
+  font-size: 1.2rem;
 }
 
 .rank-pos {
@@ -792,20 +797,32 @@ async function cargarInscritos() {
     const nombre = r.c[1]?.v || "—";
     const pais = r.c[2]?.v || "xx";
     const liga = r.c[4]?.v || "-";
+    const pago = (r.c[7]?.v || "").toString().toUpperCase();
+
+let pagoIcon = "";
+
+if (pago === "SI") pagoIcon = "💰";
+
 
     const div = document.createElement("div");
     div.className = "ranking-item";
 
     div.innerHTML = `
-      <div class="rank-pos">#${index + 1}</div>
-      <div class="player">
-        <img src="https://flagcdn.com/w20/${pais}.png">
-        <span>${nombre}</span>
-      </div>
-      <div class="liga ${liga}">
-        ${liga.toUpperCase()}
-      </div>
-    `;
+  <div class="rank-pos">#${index + 1}</div>
+
+  <div class="player">
+    <img src="https://flagcdn.com/w20/${pais}.png">
+    <span>${nombre}</span>
+  </div>
+
+  <div class="liga ${liga}">
+    ${liga.toUpperCase()}
+  </div>
+
+  <div class="pago">
+    ${pagoIcon}
+  </div>
+`;
 
     contenedor.appendChild(div);
   });
