@@ -519,6 +519,49 @@ button.submit-btn{
   width: 150px !important;
 }
 
+/* === FIX MOBILE TABLA INSCRIPTOS === */
+@media (max-width: 700px){
+
+  .ranking-item{
+    grid-template-columns: 38px 1fr 78px 34px;
+    gap: 6px;
+    padding: 8px 6px;
+    font-size: 0.82rem;
+  }
+
+  .rank-pos{
+    font-size: 0.8rem;
+  }
+
+  .player{
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .player span{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+
+  .player img{
+    width: 18px;
+    height: 13px;
+    flex-shrink: 0;
+  }
+
+  .liga{
+    font-size: 0.72rem;
+    padding: 3px 4px;
+  }
+
+  .pago{
+    font-size: 1rem;
+    text-align: center;
+  }
+
+}
 
 </style>
 </head>
