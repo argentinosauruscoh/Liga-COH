@@ -4,522 +4,203 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Liga COH – Menú Principal</title>
-<link rel="icon" type="image/png" sizes="32x32" href="icono.png">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="/liga-coh/icono.png">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --ocre: #ffcc55;
-  --bg-panel: rgba(15,15,15,0.95);
-  --text: #eee;
+  --gold:       #ffcc55;
+  --gold-light: #ffe8a0;
+  --gold-dim:   #c9932a;
+  --blood:      #8b1a1a;
+  --ember:      #ff5900;
+  --smoke:      rgba(10,6,2,0.92);
+  --panel-bg:   rgba(8,5,2,0.88);
+  --text:       #f0e8d0;
+  --text-muted: #b09060;
 }
-
-/* === Fondo general === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 body {
-  margin: 0;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: 'Rajdhani', sans-serif;
   background: url("15b67b48-6267-46f7-b131-7426668e5e33.png") no-repeat center center fixed;
-  background-size: cover;  
+  background-size: cover;
   color: var(--text);
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
   min-height: 100vh;
-  padding-top: 80px;
+  overflow-x: hidden;
   position: relative;
-
-}
-
-/* Contorno negro fuerte global */
-body, body * {
-  text-shadow: 
-    -1px -1px 0 #000,
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000;
-}
-
-
-/* === Partículas flotantes (brasas) === */
-.particles {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
-.particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: radial-gradient(#ffb347, #ff5900);
-  border-radius: 50%;
-  opacity: 0.7;
-  animation: rise 6s linear infinite;
-}
-@keyframes rise {
-  0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 0.8; }
-  100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
-}
-
-/* === Logo === */
-.logo-liga {
-  display: block;
-  width: 600px;
-  max-width: 90%;
-  margin: 0 auto 1.5rem;
-  opacity: .97;
-  transition: transform .3s, opacity .3s;
-  z-index: 10;
-}
-.logo-liga:hover {
-  transform: scale(1.04);
-  opacity: 1;
-}
-
-/* === Botón de menú metálico === */
-.menu-btn {
-  position: fixed;
-  top: 22px;
-  left: 22px;
-  width: 115px;
-  height: auto;
-  cursor: pointer;
-  z-index: 200;
-  transition: transform 0.25s ease, filter 0.25s ease;
-  border-radius: 6px;
-}
-.menu-btn:hover { transform: scale(1.05); filter: brightness(1.25); }
-.menu-btn:active { transform: scale(0.97); filter: brightness(0.9); }
-
-/* === Panel lateral (bajado 15px) === */
-.sidebar {
-  position: fixed;
-  top: 95px;
-  left: -100%;
-  width: 260px;
-
-  background: rgba(10,10,10,0.85); /* fallback */
-
-  box-shadow: 3px 3px 18px rgba(0,0,0,0.6);
-  transition: all 0.6s ease;
-  z-index: 150;
   display: flex;
   flex-direction: column;
-
-  border-top-right-radius: 14px;
-  border-bottom-right-radius: 14px;
-  overflow: hidden;
-  padding-top: 10px;
-}
-
-/* solo si el navegador soporta blur */
-@supports (backdrop-filter: blur(6px)) {
-  .sidebar {
-    backdrop-filter: blur(6px);
-    background: rgba(10,10,10,0.6);
-  }
-}
-
-
-.sidebar.active { left: 0; }
-
-.sidebar a:active {
-  transform: scale(0.96);
-  background: rgba(60,60,60,0.95);
-  box-shadow: 0 0 10px rgba(255,204,85,0.4);
-}
-
-/* === Botones metálicos === */
-.sidebar a {
-  position: relative;
-  display: flex;              /* 🔥 clave */
-  align-items: center;        /* centra vertical */
-  justify-content: center;    /* centra horizontal */
-
-  height: 48px;               /* 🔥 altura fija */
-  margin: 8px 12px;
-  padding: 0 12px;            /* reducimos padding lateral */
-
-  text-decoration: none;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;      /* un poco menos para que entre mejor */
-  font-size: 0.8rem;          /* leve ajuste */
-  text-align: center;
-  border-radius: 8px;
-
-  white-space: normal;        /* 🔥 evita salto de línea */
-  height: auto;
-  padding: 10px 8px;
-  line-height: 1.2;    /* opcional: ... si no entra */
-
-  background: rgba(20,20,20,0.75);
-  color: #ddd;
-  border: 1px solid rgba(255,255,255,0.08);
-
-  box-shadow: 0 0 8px rgba(0,0,0,0.6);
-  transition: all 0.25s ease;
-  cursor: pointer;
-
-  text-shadow: none;
-  animation: none;
-}
-
-.sidebar a::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(120deg, rgba(255,255,255,0.6), rgba(255,255,255,0));
-  transform: skewX(-25deg);
-  transition: all 0.75s ease;
-}
-.sidebar a:hover::before { left: 130%; }
-
-.sidebar a:hover {
-  background: rgba(40,40,40,0.9);
-  border-color: rgba(255,204,85,0.4);
-  box-shadow: 0 0 12px rgba(255,204,85,0.25);
-  transform: translateX(5px);
-  box-shadow: 0 0 15px rgba(255,204,85,0.35);
-}
-
-.sidebar a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 3px;
-  background: transparent;
-  transition: 0.3s;
-}
-
-.sidebar a:hover::after {
-  background: #ffcc55;
-}
-
-
-/* === Selector de idioma === */
-.language-selector {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  display: flex;
   align-items: center;
-  gap: 8px;
-  z-index: 200;
 }
-.language-selector img.flag-icon {
-  width: 22px;
-  height: 16px;
-  object-fit: cover;
-  border-radius: 2px;
-}
-.language-selector select {
-  background: #111;
-  color: #ddd;
-  border: 1px solid #444;
-  border-radius: 6px;
-  padding: 4px 8px;
-  cursor: pointer;
-  font-family: inherit;
-  font-weight: 600;
-  font-size: .9rem;
-  transition: .3s;
-}
-.language-selector select:hover {
-  background: #222;
-  border-color: #666;
-}
-
-/* === Texto épico === */
-.intro-text {
-  max-width: 800px;
-  margin: 0 auto 2rem;
-  text-align: center;
-  color: #ffda84;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  text-shadow: 0 0 6px #000;
-  animation: fadeInUp 1.2s ease both;
-  z-index: 10;
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* === Banner === */
-.banner {
-  position: relative;
-  width: 100%;
-  max-width: 1000px;
-  aspect-ratio: 16/9;
-  height: auto;
-  border-radius: 16px;
-  overflow: hidden;
-  margin-bottom: 2rem;
-  z-index: 5;
-  box-shadow: 0 0 20px rgba(255, 200, 100, 0.25), inset 0 0 30px rgba(255, 200, 100, 0.05);
-  border: 1px solid rgba(255, 200, 100, 0.15);
-}
-.banner video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.85);
-  opacity: 0.01; /* en vez de 0 */
-  transform: scale(1.05);
-  animation: videoReveal 2.2s ease forwards;
-}
-@keyframes videoReveal {
-  0% { opacity: 0; transform: scale(1.05); }
-  100% { opacity: 1; transform: scale(1); }
-}
-.banner::after {
+body::before {
   content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.65) 10%, rgba(0,0,0,0.15) 80%);
-}
-
-/* === Footer === */
-footer {
-  position: relative;
-  margin-top: 2rem;
-  color: #ffda84;
-  font-size: 0.9rem;
-  text-align: center;
-  padding: 1.5rem 0;
-  text-shadow: 0 0 4px #000;
-}
-.footer-legal {
-  margin-top: 1rem;
-  color: #ccc;
-  font-size: 0.85rem;
-  line-height: 1.4;
-  opacity: 0.85;
-}
-
-/* === Contador === */
-.contador {
-  margin-top: 1rem;
-  background: rgba(0,0,0,0.5);
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: 600;
-  color: #ffda84;
-  box-shadow: 0 0 10px rgba(0,0,0,0.4);
-  text-align: center;
-  font-size: 1rem;
-}
-
-/* === PANEL NOVEDADES === */
-#panel-novedades {
-  width: 360px;
-  max-height: 0;
-  overflow: hidden;
-  margin-top: -5px;
-  background: rgba(0,0,0,0.75);
-  border-radius: 10px;
-  padding: 0 16px;
-  box-shadow: 0 0 18px rgba(0,0,0,0.45);
-  backdrop-filter: blur(4px);
-
-  opacity: 0;
-  transform: translateY(-15px);
-  transition: max-height 0.7s ease,
-              opacity 0.6s ease,
-              transform 0.6s ease;
-}
-
-#panel-novedades.visible {
-  max-height: 500px; /* tamaño desplegado */
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.novedad-item {
-  padding: 10px 0;
-  font-size: 1.05rem;
-  color: #e6e6e6;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
-}
-.novedad-item:last-child {
-  border-bottom: none;
-}
-
-.gif-click {
-  width: 60px;
-  height: auto;
-  opacity: 0.9;
-  animation: blink 1.2s infinite;
-  pointer-events: none; /* evita que moleste al click */
-}
-
-.gif-abajo {
-  width: 20px;
-  height: auto;
-  opacity: 0.5;
-  animation: blink 1.1s infinite;
-  pointer-events: none; /* evita que moleste al click */
-}
-
-
-@keyframes blink {
-  0%, 100% { opacity: 0.2; transform: scale(0.95); }
-  50% { opacity: 1; transform: scale(1.1); }
-}
-
-.phoenix-download{
-  display:flex;
-  justify-content:center;
-  padding:12px 0 6px 0;
-}
-
-.phoenix-download a{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  text-decoration:none;
-  background:rgba(0,0,0,0.6);
-  padding:8px 14px;
-  border-radius:10px;
-  border:1px solid rgba(255,204,85,0.25);
-  color:#ffcc55;
-  font-weight:700;
-  transition:.25s;
-}
-
-.phoenix-download a:hover{
-  background:rgba(255,204,85,0.12);
-  transform:scale(1.04);
-}
-
-.phoenix-download img{
-  width:28px;
-  height:28px;
-}
-
-/* === Responsive === */
-
-@media (max-width: 700px){
-
-  .logo-liga { width: 320px; }
-
-  .menu-btn { 
-    width: 90px; 
-    left: 14px; 
-    top: 14px; 
-  }
-
-  .language-selector { 
-    top: 12px; 
-    right: 12px; 
-  }
-
-  .intro-text{
-    font-size: 0.95rem;
-    padding: 0 1rem;
-  }
-
-  #panel-novedades{
-    width: min(360px, 92%);
-  }
-
-  .sidebar {
-  width: min(45%, 180px);
-  top: 75px;                          /* 🔼 sube el panel */
-  max-height: calc(100vh - 80px);     /* evita corte abajo */
-  overflow-y: auto; 
-  }
-
-  .sidebar a {
-    font-size: 0.7rem;
-    white-space: normal;
-    height: auto;
-    padding: 10px 8px;
-    line-height: 1.2;
-    align-items: center;        /* centra vertical */
-  justify-content: center;
-    
-  }
-
-   body {
-    background-attachment: fixed;
-  }
-
-
-} /* 👈 ESTE FALTABA */
-
-@media (hover: none) {
-  .sidebar a:hover {
-    transform: none;
-    box-shadow: none;
-  }
-}
-
-
-
-
-#overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
-  opacity: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139,26,26,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(0,0,0,0.72) 100%);
   pointer-events: none;
-  transition: 0.3s;
-  z-index: 140;
+  z-index: 1;
 }
-
-#overlay.active {
-  opacity: 1;
-  pointer-events: all;
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);
+  pointer-events: none;
+  z-index: 2;
 }
-
-/* === Logica de no scroll === */
-
-body.no-scroll {
-  overflow: hidden;
+.particles { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 3; }
+.particle { position: absolute; width: 3px; height: 3px; border-radius: 50%; animation: rise linear infinite; }
+.particle.ember { background: radial-gradient(circle, #fff9e0, #ff8800); box-shadow: 0 0 4px 2px rgba(255,136,0,0.5); }
+.particle.spark { width: 2px; height: 2px; background: #fff; box-shadow: 0 0 3px 1px rgba(255,220,100,0.8); }
+@keyframes rise {
+  0%   { transform: translateY(105vh) translateX(0) scale(0.4); opacity: 0; }
+  8%   { opacity: 1; }
+  50%  { transform: translateY(50vh) translateX(var(--drift)) scale(1); }
+  92%  { opacity: 0.6; }
+  100% { transform: translateY(-10vh) translateX(var(--drift)) scale(0.2); opacity: 0; }
 }
-
+.main-content { position: relative; z-index: 10; width: 100%; max-width: 1100px; padding: 110px 24px 60px; display: flex; flex-direction: column; align-items: center; }
+.ornamental-rule { width: 100%; max-width: 700px; display: flex; align-items: center; gap: 12px; margin-bottom: 28px; animation: fadeIn 1s ease both; }
+.ornamental-rule .line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dim) 30%, var(--gold) 50%, var(--gold-dim) 70%, transparent); }
+.ornamental-rule .diamond { width: 10px; height: 10px; background: var(--gold); transform: rotate(45deg); box-shadow: 0 0 8px var(--gold); flex-shrink: 0; }
+.ornamental-rule .diamond-sm { width: 6px; height: 6px; background: var(--gold-dim); transform: rotate(45deg); flex-shrink: 0; }
+.logo-liga { display: block; width: 580px; max-width: 90%; margin: 0 auto 10px; opacity: 0; filter: drop-shadow(0 0 30px rgba(255,180,50,0.4)); animation: logoReveal 1.6s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; transition: transform 0.4s ease, filter 0.4s ease; }
+.logo-liga:hover { transform: scale(1.03); filter: drop-shadow(0 0 50px rgba(255,200,80,0.7)); }
+@keyframes logoReveal { 0% { opacity: 0; transform: translateY(-30px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+.season-badge { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, rgba(139,26,26,0.7), rgba(80,10,10,0.7)); border: 1px solid rgba(255,100,50,0.4); border-radius: 2px; padding: 5px 18px; font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 4px; color: #ffaa55; text-transform: uppercase; margin-bottom: 30px; box-shadow: 0 0 20px rgba(139,26,26,0.3), inset 0 1px 0 rgba(255,150,80,0.15); animation: fadeIn 1s ease 0.8s both; }
+.season-badge::before, .season-badge::after { content: "✦"; font-size: 0.6rem; color: var(--ember); }
+.novedades-modulo { width: min(640px, 94vw); margin-bottom: 8px; animation: fadeIn 1s ease 0.9s both; }
+.novedades-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: linear-gradient(90deg, rgba(20,10,2,0.9) 0%, rgba(35,18,4,0.85) 100%); border: 1px solid rgba(255,200,80,0.28); border-radius: 4px 4px 0 0; padding: 12px 18px; user-select: none; transition: background 0.3s, border-color 0.3s; position: relative; overflow: hidden; }
+.novedades-header::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--gold), var(--ember)); box-shadow: 0 0 10px rgba(255,160,50,0.6); }
+.novedades-header:hover { background: linear-gradient(90deg, rgba(30,16,3,0.95), rgba(50,25,5,0.9)); border-color: rgba(255,200,80,0.5); }
+.novedades-header-left { display: flex; align-items: center; gap: 12px; }
+.novedades-icon { width: 28px; height: 28px; flex-shrink: 0; }
+.novedades-title { font-family: 'Cinzel', serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; }
+.novedades-subtitle { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-top: 1px; }
+.novedades-count { background: rgba(255,100,30,0.2); border: 1px solid rgba(255,100,30,0.4); color: #ff9955; font-family: 'Cinzel', serif; font-size: 0.7rem; font-weight: 700; padding: 3px 9px; border-radius: 2px; letter-spacing: 1px; flex-shrink: 0; }
+.novedades-chevron { width: 18px; height: 18px; flex-shrink: 0; transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); opacity: 0.6; }
+.novedades-header.open .novedades-chevron { transform: rotate(180deg); }
+#panel-novedades { width: 100%; max-height: 0; overflow: hidden; background: linear-gradient(180deg, rgba(12,7,2,0.97) 0%, rgba(8,5,2,0.95) 100%); border: 1px solid rgba(255,200,80,0.18); border-top: none; border-radius: 0 0 4px 4px; opacity: 0; transform: translateY(-8px); transition: max-height 0.65s cubic-bezier(0.4,0,0.2,1), opacity 0.45s ease, transform 0.45s ease; }
+#panel-novedades.visible { max-height: 700px; opacity: 1; transform: translateY(0); }
+.novedades-lista { padding: 6px 0 0; }
+.novedad-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 20px; border-bottom: 1px solid rgba(255,200,80,0.07); position: relative; transition: background 0.2s; }
+.novedad-item:last-of-type { border-bottom: none; }
+.novedad-item:hover { background: rgba(255,200,80,0.04); }
+.novedad-badge { flex-shrink: 0; margin-top: 2px; padding: 2px 8px; border-radius: 2px; font-family: 'Rajdhani', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+.novedad-badge.finalizado { background: rgba(80,80,80,0.3); border: 1px solid rgba(120,120,120,0.3); color: #888; }
+.novedad-badge.activo { background: rgba(255,180,30,0.15); border: 1px solid rgba(255,180,30,0.4); color: #ffb820; box-shadow: 0 0 8px rgba(255,180,30,0.15); animation: activePulse 2.5s ease-in-out infinite; }
+.novedad-badge.info { background: rgba(60,120,200,0.15); border: 1px solid rgba(60,120,200,0.35); color: #70aaff; }
+@keyframes activePulse { 0%, 100% { box-shadow: 0 0 6px rgba(255,180,30,0.15); } 50% { box-shadow: 0 0 14px rgba(255,180,30,0.4); } }
+.novedad-body { flex: 1; }
+.novedad-texto { font-family: 'Rajdhani', sans-serif; font-size: 1.0rem; font-weight: 600; line-height: 1.45; letter-spacing: 0.3px; }
+.novedad-texto.dim    { color: #666; }
+.novedad-texto.bright { color: #e8d890; }
+.novedad-texto.normal { color: #a09070; }
+.phoenix-download-wrap { padding: 16px 20px 20px; border-top: 1px solid rgba(255,200,80,0.1); }
+.phoenix-download-label { font-family: 'Rajdhani', sans-serif; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+.phoenix-btn { display: flex; align-items: center; gap: 14px; text-decoration: none; background: linear-gradient(135deg, rgba(20,10,2,0.95), rgba(40,20,5,0.9)); border: 1px solid rgba(255,200,80,0.3); border-radius: 4px; padding: 12px 20px; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,200,80,0.08); position: relative; overflow: hidden; }
+.phoenix-btn::before { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, transparent 40%, rgba(255,200,80,0.04)); pointer-events: none; }
+.phoenix-btn:hover { border-color: rgba(255,200,80,0.55); box-shadow: 0 6px 30px rgba(0,0,0,0.5), 0 0 20px rgba(255,180,50,0.15); transform: translateY(-2px); }
+.phoenix-btn:hover .phoenix-arrow { transform: translateX(4px); }
+.phoenix-icon-wrap { width: 40px; height: 40px; background: rgba(255,100,30,0.12); border: 1px solid rgba(255,100,30,0.3); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.phoenix-btn-text { flex: 1; }
+.phoenix-btn-title { font-family: 'Cinzel', serif; font-size: 0.88rem; font-weight: 700; letter-spacing: 2px; color: var(--gold); display: block; margin-bottom: 2px; }
+.phoenix-btn-sub { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; }
+.phoenix-arrow { color: var(--gold-dim); font-size: 1.1rem; transition: transform 0.25s ease; }
+.divider { width: 100%; max-width: 600px; margin: 32px 0; animation: fadeIn 1s ease 1s both; }
+.divider-inner { display: flex; align-items: center; gap: 0; }
+.divider-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,200,80,0.4)); }
+.divider-line.right { background: linear-gradient(90deg, rgba(255,200,80,0.4), transparent); }
+.divider-center { padding: 0 16px; display: flex; gap: 6px; }
+.divider-center span { display: block; width: 6px; height: 6px; background: var(--gold-dim); transform: rotate(45deg); }
+.divider-center span:nth-child(2) { width: 8px; height: 8px; background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+.intro-text { max-width: 820px; text-align: center; animation: fadeInUp 1.2s ease 1.1s both; padding: 0 16px; }
+.intro-panel { background: linear-gradient(135deg, rgba(6,4,1,0.82), rgba(14,8,2,0.78)); border: 1px solid rgba(255,200,80,0.12); border-radius: 6px; padding: 28px 36px; backdrop-filter: blur(6px); box-shadow: 0 8px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,200,80,0.06); position: relative; overflow: hidden; }
+.intro-panel::before { content: ""; position: absolute; top: 0; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,200,80,0.4), transparent); }
+.intro-text p { margin-bottom: 1rem; font-size: 1.08rem; font-weight: 500; line-height: 1.8; letter-spacing: 0.25px; color: #ddd3b8; text-shadow: 0 1px 0 rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.6); }
+.intro-text p:last-child { margin-bottom: 0; }
+.intro-text strong { color: #ffe190; font-weight: 700; text-shadow: 0 0 10px rgba(255,210,100,0.3), 0 1px 0 rgba(0,0,0,0.9); }
+.intro-text .highlight-green { color: #b4e870; font-weight: 600; font-style: italic; text-shadow: 0 0 10px rgba(150,230,60,0.2), 0 1px 0 rgba(0,0,0,0.9); }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.banner-section { width: 100%; max-width: 1000px; margin: 32px 0 20px; animation: fadeInUp 1.2s ease 1.3s both; position: relative; }
+.banner-section::before, .banner-section::after { content: ""; position: absolute; width: 40px; height: 40px; z-index: 2; pointer-events: none; }
+.banner-section::before { top: -4px; left: -4px; border-top: 2px solid var(--gold); border-left: 2px solid var(--gold); box-shadow: inset 0 0 0 0 transparent, -2px -2px 10px rgba(255,200,80,0.3); }
+.banner-section::after { bottom: -4px; right: -4px; border-bottom: 2px solid var(--gold); border-right: 2px solid var(--gold); box-shadow: 2px 2px 10px rgba(255,200,80,0.3); }
+.banner-corner-tr, .banner-corner-bl { position: absolute; width: 40px; height: 40px; z-index: 2; pointer-events: none; }
+.banner-corner-tr { top: -4px; right: -4px; border-top: 2px solid var(--gold); border-right: 2px solid var(--gold); box-shadow: 2px -2px 10px rgba(255,200,80,0.3); }
+.banner-corner-bl { bottom: -4px; left: -4px; border-bottom: 2px solid var(--gold); border-left: 2px solid var(--gold); box-shadow: -2px 2px 10px rgba(255,200,80,0.3); }
+.banner { position: relative; width: 100%; aspect-ratio: 16/8; border-radius: 4px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,200,80,0.15), 0 0 60px rgba(139,26,26,0.3), 0 20px 60px rgba(0,0,0,0.7); }
+.banner video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(0.78) saturate(1.1) contrast(1.05); opacity: 0; transform: scale(1.06); animation: videoReveal 2.4s ease 1.5s forwards; }
+@keyframes videoReveal { 0% { opacity: 0; transform: scale(1.06); } 100% { opacity: 1; transform: scale(1); } }
+.banner::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 22%), linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 35%), linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 25%), linear-gradient(to left, rgba(0,0,0,0.4) 0%, transparent 25%); z-index: 1; pointer-events: none; }
+.banner::after { content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--blood), var(--ember), var(--gold), var(--ember), var(--blood), transparent); z-index: 3; animation: glowPulse 3s ease-in-out infinite; }
+@keyframes glowPulse { 0%, 100% { opacity: 0.6; filter: blur(1px); } 50% { opacity: 1; filter: blur(0px); } }
+.banner-overlay { position: absolute; bottom: 0; left: 0; right: 0; z-index: 2; padding: 24px 30px 20px; display: flex; align-items: flex-end; justify-content: space-between; pointer-events: none; }
+.banner-tagline { font-family: 'Cinzel', serif; font-size: clamp(0.65rem, 1.5vw, 0.85rem); letter-spacing: 5px; text-transform: uppercase; color: rgba(255,220,120,0.85); text-shadow: 0 0 10px rgba(255,140,50,0.6), 0 2px 4px rgba(0,0,0,0.9); }
+.banner-live-badge { display: flex; align-items: center; gap: 7px; background: rgba(139,26,26,0.75); border: 1px solid rgba(255,80,50,0.4); border-radius: 3px; padding: 4px 12px; font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 3px; color: #ff8866; }
+.banner-live-dot { width: 6px; height: 6px; border-radius: 50%; background: #ff4422; box-shadow: 0 0 6px #ff4422; animation: blinkDot 1.2s ease infinite; }
+@keyframes blinkDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+.stats-row { display: flex; gap: 1px; width: 100%; max-width: 1000px; margin-bottom: 48px; animation: fadeInUp 1s ease 1.7s both; overflow: hidden; border-radius: 0 0 4px 4px; border: 1px solid rgba(255,200,80,0.1); border-top: none; }
+.stat-item { flex: 1; background: linear-gradient(135deg, rgba(12,8,3,0.9), rgba(20,12,4,0.88)); padding: 14px 10px; text-align: center; border-right: 1px solid rgba(255,200,80,0.08); transition: background 0.3s; }
+.stat-item:last-child { border-right: none; }
+.stat-item:hover { background: rgba(255,200,80,0.05); }
+.stat-num { font-family: 'Cinzel', serif; font-size: 1.6rem; font-weight: 700; color: var(--gold); display: block; text-shadow: 0 0 15px rgba(255,200,80,0.4); }
+.stat-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-muted); }
+.menu-btn { position: fixed; top: 22px; left: 22px; width: 110px; height: auto; cursor: pointer; z-index: 200; transition: transform 0.25s ease, filter 0.25s ease; border-radius: 6px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6)); }
+.menu-btn:hover { transform: scale(1.06); filter: brightness(1.3) drop-shadow(0 2px 10px rgba(255,200,80,0.3)); }
+.menu-btn:active { transform: scale(0.97); }
+.sidebar { position: fixed; top: 95px; left: -100%; width: 260px; background: rgba(8,5,2,0.92); backdrop-filter: blur(8px); box-shadow: 4px 0 30px rgba(0,0,0,0.7); transition: left 0.5s cubic-bezier(0.4,0,0.2,1); z-index: 150; display: flex; flex-direction: column; border-top-right-radius: 12px; border-bottom-right-radius: 12px; overflow: hidden; padding: 10px 0; border-right: 1px solid rgba(255,200,80,0.15); border-top: 1px solid rgba(255,200,80,0.1); }
+.sidebar.active { left: 0; }
+.sidebar a { position: relative; display: flex; align-items: center; justify-content: flex-start; gap: 8px; margin: 4px 10px; padding: 11px 14px; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.9rem; letter-spacing: 0.8px; text-transform: uppercase; color: #c0a870; border-radius: 4px; border: 1px solid transparent; background: transparent; transition: all 0.25s ease; overflow: hidden; text-shadow: none; }
+.sidebar a::before { content: ""; position: absolute; top: 0; left: -80%; width: 50%; height: 100%; background: linear-gradient(120deg, rgba(255,255,255,0.35), transparent); transform: skewX(-25deg); transition: left 0.6s ease; }
+.sidebar a:hover::before { left: 140%; }
+.sidebar a:hover { background: rgba(255,200,80,0.07); border-color: rgba(255,200,80,0.2); color: var(--gold-light); padding-left: 20px; box-shadow: inset 3px 0 0 var(--gold); }
+.language-selector { position: fixed; top: 20px; right: 20px; display: flex; align-items: center; gap: 8px; z-index: 200; }
+.language-selector img.flag-icon { width: 22px; height: 16px; object-fit: cover; border-radius: 2px; }
+.language-selector select { background: rgba(8,5,2,0.85); color: #c0a870; border: 1px solid rgba(255,200,80,0.25); border-radius: 4px; padding: 5px 10px; cursor: pointer; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.9rem; transition: 0.3s; backdrop-filter: blur(4px); }
+.language-selector select:hover { border-color: rgba(255,200,80,0.5); background: rgba(20,12,4,0.9); }
+#overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 140; backdrop-filter: blur(2px); }
+#overlay.active { opacity: 1; pointer-events: all; }
+body.no-scroll { overflow: hidden; }
+footer { position: relative; z-index: 10; width: 100%; margin-top: auto; color: #9a7a40; font-size: 0.9rem; text-align: center; padding: 2rem 1rem 1.5rem; border-top: 1px solid rgba(255,200,80,0.1); background: rgba(0,0,0,0.4); }
+footer p { color: var(--gold-dim); margin-bottom: 4px; }
+.footer-legal { margin-top: 0.8rem; color: #786040; font-size: 0.82rem; line-height: 1.5; }
+.footer-legal strong { color: #9a7a50; }
+@keyframes shimmerGold { 0%, 100% { background-position: -200% center; } 50% { background-position: 200% center; } }
+@media (max-width: 700px) {
+  .main-content { padding: 90px 16px 40px; }
+  .logo-liga { width: 300px; }
+  .menu-btn { width: 88px; left: 12px; top: 12px; }
+  .language-selector { top: 12px; right: 12px; }
+  .intro-text { font-size: 0.98rem; }
+  .stats-row { flex-wrap: wrap; }
+  .stat-item { flex: 1 1 40%; }
+  .sidebar { width: min(50%, 190px); top: 72px; max-height: calc(100vh - 76px); overflow-y: auto; }
+  .sidebar a { font-size: 0.78rem; padding: 9px 10px; }
+  .banner { aspect-ratio: 16/10; }
+  .banner-overlay { padding: 14px 16px 12px; }
+  .banner-tagline { font-size: 0.6rem; letter-spacing: 3px; }
+}
 </style>
 </head>
 <body>
-
-<!-- Partículas -->
-<div class="particles" id="particles"></div>
-
-<!-- Botón metálico -->
-<img src="boton-menu.png" alt="Menú" class="menu-btn" id="menuToggle">
-
-<!-- Panel lateral -->
-<nav class="sidebar" id="sidebar">
- 
-  <a href="index.html">🏠 Menu Principal</a>
-  <a href="reglas.html">📏 Formato - Reglas</a>
-  <a href="cronograma.html">📅 Cronograma - Participantes</a>
-  <a href="resultados.html">📋 Resultados</a>
-  <a href="ranking.html">🏆 Ranking</a>
-  <a href="estadisticas.html">📊 Estadisticas</a>
-  <a href="premios.html">🎁 Premios</a>
-  <a href="donaciones.html">💰 Donaciones</a>
-  <a href="inscripciones.html">✍️ Inscripciones</a>
-</nav>
-
 <div id="overlay"></div>
-
-<!-- Selector de idioma -->
+<div class="particles" id="particles"></div>
+<img src="boton-menu.png" alt="Menú" class="menu-btn" id="menuToggle">
+<nav class="sidebar" id="sidebar">
+  <a href="index.html" data-i18n="nav_home">🏠 Menu Principal</a>
+  <a href="reglas.html" data-i18n="nav_rules">📏 Formato - Reglas</a>
+  <a href="cronograma.html" data-i18n="nav_schedule">📅 Cronograma</a>
+  <a href="resultados.html" data-i18n="nav_results">📋 Resultados</a>
+  <a href="ranking.html" data-i18n="nav_ranking">🏆 Ranking</a>
+  <a href="estadisticas.html" data-i18n="nav_stats">📊 Estadisticas</a>
+  <a href="premios.html" data-i18n="nav_prizes">🎁 Premios</a>
+  <a href="donaciones.html" data-i18n="nav_donate">💰 Donaciones</a>
+  <a href="inscripciones.html" data-i18n="nav_signup">✍️ Inscripciones</a>
+</nav>
 <div class="language-selector" id="language-selector">
   <img id="flagIcon" class="flag-icon" src="https://flagcdn.com/w20/es.png" alt="ES">
   <select id="langSelect">
@@ -527,154 +208,240 @@ body.no-scroll {
     <option value="en" data-flag="https://flagcdn.com/w20/us.png">English</option>
   </select>
 </div>
-
-<!-- Logo -->
-<img src="1811d0cb-36e3-4b23-9d1f-5b4f66ce2d8c-removebg-preview.png" alt="Liga Latina de COH" class="logo-liga">
-
-<!-- NOVEDADES PANEL (DESPLEGABLE HACIA ABAJO) -->
-<div style="display:flex; align-items:center; justify-content:center; gap:10px;">
-  
-
-  <img src="flecha.gif" alt="Click aquí" class="gif-abajo">
-  <h2 id="toggle-novedades" style="
-      cursor:pointer;
-      font-size:1.6rem;
-      font-weight:700;
-      letter-spacing:1px;
-      margin:10px 0;
-      color:#ffcc55;
-        text-shadow:
-    -2px -2px 0 #000,
-     2px -2px 0 #000,
-    -2px  2px 0 #000,
-     2px  2px 0 #000,
-     0   2px 0 #000,
-     2px  0   0 #000,
-     0  -2px 0 #000,
-    -2px  0   0 #000;
-
-
-  ">
-    📰 Novedades
-  </h2>
-
-  <img src="anuncios.gif" alt="Click aquí" class="gif-click">
+<div class="main-content">
+  <div class="ornamental-rule">
+    <div class="line"></div>
+    <div class="diamond-sm"></div>
+    <div class="diamond"></div>
+    <div class="diamond-sm"></div>
+    <div class="line"></div>
+  </div>
+  <img src="1811d0cb-36e3-4b23-9d1f-5b4f66ce2d8c-removebg-preview.png" alt="Liga Latina de COH" class="logo-liga">
+  <div class="season-badge" data-i18n="season_badge">Vigésimo Aniversario · Temporada II · 2026</div>
+  <div class="novedades-modulo">
+    <div class="novedades-header" id="novedades-header">
+      <div class="novedades-header-left">
+        <svg class="novedades-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="4" width="22" height="20" rx="2" fill="rgba(255,180,50,0.12)" stroke="rgba(255,180,50,0.5)" stroke-width="1.2"/>
+          <line x1="7" y1="9" x2="21" y2="9" stroke="#ffcc55" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="7" y1="13" x2="18" y2="13" stroke="rgba(255,200,80,0.55)" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="7" y1="17" x2="15" y2="17" stroke="rgba(255,200,80,0.35)" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="22" cy="7" r="4" fill="#cc3300" stroke="rgba(0,0,0,0.4)" stroke-width="0.8"/>
+          <text x="22" y="10" text-anchor="middle" font-size="5.5" font-weight="700" fill="#fff" font-family="sans-serif">3</text>
+        </svg>
+        <div>
+          <div class="novedades-title" data-i18n="news_title">Novedades</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="novedades-count" data-i18n="news_count">3 Notificaciones</div>
+        <svg class="novedades-chevron" viewBox="0 0 18 18" fill="none">
+          <polyline points="3,6 9,12 15,6" stroke="#c9932a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+    <div id="panel-novedades">
+      <div class="novedades-lista">
+        <div class="novedad-item">
+          <div class="novedad-badge finalizado" data-i18n="badge_done">Concluido</div>
+          <div class="novedad-body">
+            <div class="novedad-texto dim" data-i18n="news_1">Temporada 1 de la Liga finalizada — 2025</div>
+          </div>
+        </div>
+        <div class="novedad-item">
+          <div class="novedad-badge info" data-i18n="badge_change">Cambio</div>
+          <div class="novedad-body">
+            <div class="novedad-texto normal" data-i18n="news_3">Nos mudamos al PhoenixMod para jugar COH</div>
+          </div>
+        </div>
+        <div class="novedad-item">
+          <div class="novedad-badge activo" data-i18n="badge_upcoming">Próximo</div>
+          <div class="novedad-body">
+            <div class="novedad-texto bright" data-i18n="news_upcoming_date">Temporada 2 arranca el 23 de Mayo de 2026</div>
+          </div>
+        </div>
+      </div>
+      <div class="phoenix-download-wrap">
+        <div class="phoenix-download-label" data-i18n="phoenix_label">— Versión oficial de juego —</div>
+        <a class="phoenix-btn" href="https://coh-phoenixmod.com/launcher/updates/PhoenixMod-Launcher-Setup-1.0.4.exe" target="_self" rel="follow noopener">
+          <div class="phoenix-icon-wrap">
+            <img src="data:image/png;base64,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" alt="PhoenixMod" style="width:36px;height:36px;object-fit:contain;image-rendering:auto;">
+          </div>
+          <div class="phoenix-btn-text">
+            <span class="phoenix-btn-title" data-i18n="phoenix_btn_title">Descargar PhoenixMod</span>
+            <span class="phoenix-btn-sub" data-i18n="phoenix_btn_sub">Launcher v1.0.4 · Windows</span>
+          </div>
+          <span class="phoenix-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="divider">
+    <div class="divider-inner">
+      <div class="divider-line"></div>
+      <div class="divider-center"><span></span><span></span><span></span></div>
+      <div class="divider-line right"></div>
+    </div>
+  </div>
+  <div class="intro-text">
+    <div class="intro-panel">
+      <p data-i18n="intro_p1">Bienvenido cohlega a la <strong>Liga Latina de Company of Heroes 1</strong>, un torneo competitivo de COH 1 que reúne a gran parte de la comunidad activa de este gran juego. La Liga Latina, previamente "Saurus League", nació durante la pandemia como un simple proyecto de entretenimiento. Más recientemente, a fines de 2025, finalmente adopta su formato definitivo en lo que fue la 1° temporada de esta competencia. La iniciativa fue liderada por la comunidad hispanohablante y los resultados superaron las expectativas — tanto para los participantes y espectadores como para su propio organizador, <strong>Argentinosaurus</strong>. Como consecuencia de ese éxito previo emerge entonces la 2° temporada y esta página web dedicada: un lugar centralizado donde encontrar toda la información del evento y accesible para cualquiera.</p>
+    </div>
+  </div>
+  <div class="banner-section">
+    <div class="banner-corner-tr"></div>
+    <div class="banner-corner-bl"></div>
+    <div class="banner">
+      <video autoplay muted loop playsinline preload="auto" poster="fallback.jpg">
+        <source src="banner1.mp4" type="video/mp4">
+      </video>
+      <div class="banner-overlay">
+        <div class="banner-tagline" data-i18n="banner_tagline">COH · 1 </div>
+        <div class="banner-live-badge">
+          <div class="banner-live-dot"></div>
+          .REC
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-<div id="panel-novedades">
-  <div class="novedad-item">🔥 <b style="color:grey;">Temporada 1 de la Liga finalizada (2025)</b></div>
-  <div class="novedad-item">🔥 <b style="color:white;">Temporada 2 prevista para arrancar Mayo de 2026</b></div>
-  <div class="novedad-item">🔥 <b style="color:grey;">Nos mudamos al PhoenixMod para jugar COH</b></div>  
-  <div class="phoenix-download">
-  <a href="https://coh-phoenixmod.com/launcher/updates/PhoenixMod-Launcher-Setup-1.0.4.exe" target="_self" rel="follow noopener">
-    <img src="phoenix.png">
-    <span>Descargar PhoenixMod</span>
-  </a>
-</div>
-</div>
-
-
-
-<!-- Texto épico -->
-<div class="intro-text">
-  <p>Bienvenido cohlega a la <strong>Liga Latina de Company of Heroes 1</strong>, el sitio donde los mejores jugadores de Latinoamérica se enfrentan en combates épicos llenos de estrategia, fuego y gloria!</p>
-
-  <p style="color: white">Ideada y concebida a fines de 2025, la liga se ha sentido como un gran éxito en su primer entrega, tanto entre los participantes y espectadores como para su propio host: <strong>Argentinosaurus</strong>. Este suceso ha motivado a diseñar esta página web, dedicada a atesorar toda la info pertinente al evento y facilitarle a cualquier persona el acceso a su contenido.</p>
-
-  <p style="color: greenyellow"> Mi humilde aporte para la comunidad hispanohablante y todos los amantes del COH 1 en este vigésimo aniversario de la franquicia!</p>
-</div>
-
-<!-- Banner -->
-<div class="banner">
-  <video autoplay muted loop playsinline preload="auto" poster="fallback.jpg">
-    <source src="banner1.mp4" type="video/mp4">
-  </video>
-</div>
-
-
-<!-- Footer -->
 <footer>
   <p>© Liga Latina de Company of Heroes</p>
   <div class="footer-legal">
-    <p>Este es un sitio web no oficial creado por fans de Company of Heroes 1.</p>
-    <p><strong>Company of Heroes</strong> es una marca registrada de <strong>Relic Entertainment</strong>.</p>
-    <p>Las imágenes y demás recursos de COH son propiedad de Relic Entertainment.</p>
+    <p data-i18n="footer_1"></p>
+    <p data-i18n="footer_2"></p>
+    <p data-i18n="footer_3"></p>
   </div>
 </footer>
-
 <script>
-
-/* === MENÚ === */
-
-
 const menuToggle = document.getElementById('menuToggle');
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-
-menuToggle.addEventListener('click', () => {
-  sidebar.classList.toggle('active');
-  overlay.classList.toggle('active');
-  document.body.classList.toggle('no-scroll'); // 👈 agregado
-});
-
-overlay.addEventListener('click', () => {
-  sidebar.classList.remove('active');
-  overlay.classList.remove('active');
-  document.body.classList.remove('no-scroll'); // 👈 agregado
-});
-
-/* === PANEL NOVEDADES === */
+const sidebar    = document.getElementById('sidebar');
+const overlay    = document.getElementById('overlay');
+menuToggle.addEventListener('click', () => { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); document.body.classList.toggle('no-scroll'); });
+overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.classList.remove('no-scroll'); });
 document.addEventListener("DOMContentLoaded", () => {
-  const toggle = document.getElementById("toggle-novedades");
-  const panel = document.getElementById("panel-novedades");
-
-  toggle.addEventListener("click", () => {
-    panel.classList.toggle("visible");
-  });
-
-  /* 🔥 FIX VIDEO FIREFOX */
+  const header = document.getElementById("novedades-header");
+  const panel  = document.getElementById("panel-novedades");
+  if (header && panel) { header.addEventListener("click", () => { panel.classList.toggle("visible"); header.classList.toggle("open"); }); }
   const video = document.querySelector(".banner video");
-  if (video) {
-    video.play().catch(() => {
-      console.log("Autoplay bloqueado por el navegador");
-    });
-  }
+  if (video) video.play().catch(() => {});
 });
-
-
-/* === IDIOMA === */
+const TRANSLATIONS = {
+  es: {
+    page_title:       "Liga COH – Menú Principal",
+    season_badge:     "Vigésimo Aniversario · Temporada II · 2026",
+    nav_home:         "🏠 Menu Principal",
+    nav_rules:        "📏 Formato - Reglas",
+    nav_schedule:     "📅 Cronograma",
+    nav_results:      "📋 Resultados",
+    nav_ranking:      "🏆 Ranking",
+    nav_stats:        "📊 Estadisticas",
+    nav_prizes:       "🎁 Premios",
+    nav_donate:       "💰 Donaciones",
+    nav_signup:       "✍️ Inscripciones",
+    news_title:       "Novedades",
+    news_subtitle:    "Boletín de la Liga · 2026",
+    news_count:       "3 Notificaciones",
+    badge_done:       "Concluido",
+    badge_upcoming:   "Próximo",
+    badge_change:     "Cambio",
+    news_1:           "Temporada 1 de la Liga finalizada — 2025",
+    news_2:           "Temporada 2 prevista para arrancar Mayo de 2026",
+    news_3:           "Nos mudamos al PhoenixMod para jugar COH",
+    news_upcoming_date: "Temporada 2 arranca el 23 de Mayo de 2026",
+    phoenix_label:    "— Plataforma oficial de juego —",
+    phoenix_btn_title:"Descargar PhoenixMod",
+    phoenix_btn_sub:  "Launcher v1.0.4 · Windows",
+    intro_p1: `Bienvenido cohlega a la <strong>Liga Latina de Company of Heroes 1</strong>, un torneo competitivo de COH 1 que reúne a gran parte de la comunidad activa de este gran juego. La Liga Latina, previamente "Saurus League", nació durante la pandemia como un simple proyecto de entretenimiento. Más recientemente, a fines de 2025, finalmente adopta su formato definitivo en lo que fue la 1° temporada de esta competencia. La iniciativa fue liderada por la comunidad hispanohablante y los resultados superaron las expectativas — tanto para los participantes y espectadores como para su propio organizador, <strong>Argentinosaurus</strong>. Como consecuencia de ese éxito previo emerge entonces la 2° temporada y esta página web dedicada: un lugar centralizado donde encontrar toda la información del evento y accesible para cualquiera.`,
+    intro_p2: ``,
+    intro_p3: "",
+    banner_tagline:   "COH · 1",
+    banner_live:      "EN VIVO",
+    stat_season:      "Temporada Actual",
+    stat_year:        "Año en Curso",
+    stat_anniv:       "Aniversario COH",
+    stat_region:      "Región",
+    footer_1:         "Este es un sitio web no oficial creado por fans de Company of Heroes 1.",
+    footer_2:         "<strong>Company of Heroes</strong> es una marca registrada de <strong>Relic Entertainment</strong>.",
+    footer_3:         "Las imágenes y demás recursos de COH son propiedad de Relic Entertainment.",
+  },
+  en: {
+    page_title:       "COH League – Home",
+    season_badge:     "20th Anniversary · Season II · 2026",
+    nav_home:         "🏠 Main Menu",
+    nav_rules:        "📏 Format & Rules",
+    nav_schedule:     "📅 Schedule",
+    nav_results:      "📋 Results",
+    nav_ranking:      "🏆 Ranking",
+    nav_stats:        "📊 Statistics",
+    nav_prizes:       "🎁 Prizes",
+    nav_donate:       "💰 Donations",
+    nav_signup:       "✍️ Sign Up",
+    news_title:       "News",
+    news_subtitle:    "League Bulletin · 2026",
+    news_count:       "3 Notifications",
+    badge_done:       "Concluded",
+    badge_upcoming:   "Upcoming",
+    badge_change:     "Change",
+    news_1:           "Season 1 of the League concluded — 2025",
+    news_2:           "Season 2 set to kick off in May 2026",
+    news_3:           "We moved to PhoenixMod to play COH",
+    news_upcoming_date: "Season 2 kicks off on May 23, 2026",
+    phoenix_label:    "— Official game platform —",
+    phoenix_btn_title:"Download PhoenixMod",
+    phoenix_btn_sub:  "Launcher v1.0.4 · Windows",
+    intro_p1: `Welcome, cohleague, to the <strong>Latin League of Company of Heroes 1</strong>, a competitive COH 1 tournament that brings together a large part of the active community of this great game. The Latin League, previously "Saurus League", was born during the pandemic as a simple entertainment project. More recently, at the end of 2025, it finally adopted its definitive format in what was the 1st season of this competition. The initiative was led by the Spanish-speaking community and the results exceeded expectations — both for the participants and spectators as well as for its own organizer, <strong>Argentinosaurus</strong>. As a result of that previous success, the 2nd season emerges along with this dedicated website: a centralized place to find all the event information, accessible to anyone.`,
+    intro_p2: ``,
+    intro_p3: "",
+    banner_tagline:   "COH · 1",
+    banner_live:      "LIVE",
+    stat_season:      "Current Season",
+    stat_year:        "Current Year",
+    stat_anniv:       "COH Anniversary",
+    stat_region:      "Region",
+    footer_1:         "This is an unofficial fan-made website for Company of Heroes 1.",
+    footer_2:         "<strong>Company of Heroes</strong> is a registered trademark of <strong>Relic Entertainment</strong>.",
+    footer_3:         "All COH images and assets are property of Relic Entertainment.",
+  }
+};
+function applyLang(lang) {
+  const t = TRANSLATIONS[lang] || TRANSLATIONS['es'];
+  document.title = t.page_title;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) { el.innerHTML = t[key]; }
+  });
+}
 const langSelect = document.getElementById('langSelect');
-const flagIcon = document.getElementById('flagIcon');
+const flagIcon   = document.getElementById('flagIcon');
 langSelect.addEventListener('change', e => {
   const opt = e.target.selectedOptions[0];
   flagIcon.src = opt.dataset.flag;
-  localStorage.setItem('idioma', e.target.value);
-  
+  const lang = e.target.value;
+  localStorage.setItem('idioma', lang);
+  applyLang(lang);
 });
-
-
 const idiomaPrevio = localStorage.getItem('idioma') || 'es';
 langSelect.value = idiomaPrevio;
 flagIcon.src = langSelect.selectedOptions[0].dataset.flag;
-
-
-
-/* === PARTÍCULAS === */
-const particlesContainer = document.getElementById('particles');
-const isMobile = window.matchMedia("(max-width: 700px)").matches;
-const cantidad = isMobile ? 18 : 35;
-
-for (let i = 0; i < cantidad; i++) {  
-  const p = document.createElement('div');
-  p.classList.add('particle');
-  p.style.left = Math.random() * 100 + '%';
-  p.style.top = (80 + Math.random() * 80) + 'vh';
-  p.style.animationDuration = 5 + Math.random() * 6 + 's';
-  p.style.animationDelay = Math.random() * 5 + 's';
-  p.style.opacity = Math.random() * 0.6 + 0.3;
-  particlesContainer.appendChild(p);
-}
+applyLang(idiomaPrevio);
+(function spawnParticles() {
+  const container = document.getElementById('particles');
+  const isMobile  = window.matchMedia("(max-width:700px)").matches;
+  const count      = isMobile ? 22 : 48;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    const isEmber = Math.random() > 0.35;
+    p.classList.add('particle', isEmber ? 'ember' : 'spark');
+    const drift = (Math.random() - 0.5) * 80;
+    p.style.setProperty('--drift', drift + 'px');
+    p.style.left    = Math.random() * 100 + '%';
+    p.style.top     = (85 + Math.random() * 30) + 'vh';
+    p.style.animationDuration  = (5 + Math.random() * 8) + 's';
+    p.style.animationDelay     = (Math.random() * 6) + 's';
+    container.appendChild(p);
+  }
+})();
 </script>
-
 </body>
 </html>

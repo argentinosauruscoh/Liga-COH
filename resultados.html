@@ -5,149 +5,158 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Resultados – Liga Latina COH</title>
 <link rel="icon" type="image/png" sizes="32x32" href="icono.png">
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Condensed:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
 <style>
+:root {
+  --gold:       #ffcc55;
+  --gold-light: #ffe8a0;
+  --gold-dim:   #c9932a;
+  --blood:      #8b1a1a;
+  --ember:      #ff5900;
+  --panel-bg:   rgba(8,5,2,0.88);
+  --text:       #f0e8d0;
+  --text-muted: #b09060;
+}
 
-  body {
-    font-family: 'Roboto Condensed', sans-serif;
-    background: url("15b67b48-6267-46f7-b131-7426668e5e33.png") no-repeat center center fixed;
-    background-size: cover;
-    color: #eee;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* === Botón de menú metálico === */
+body {
+  font-family: 'Roboto Condensed', sans-serif;
+  background: url("15b67b48-6267-46f7-b131-7426668e5e33.png") no-repeat center center fixed;
+  background-size: cover;
+  color: #eee;
+  min-height: 100vh;
+  padding-top: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* ── Overlay oscuro + scanlines ── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139,26,26,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(0,0,0,0.68) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.05) 2px,rgba(0,0,0,0.05) 4px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── LOGO ── */
+.logo-liga {
+  display: block;
+  width: 580px;
+  max-width: 90%;
+  margin: 0 auto 20px;
+  opacity: 0;
+  filter: drop-shadow(0 0 30px rgba(255,180,50,0.4));
+  animation: logoReveal 1.6s cubic-bezier(0.16,1,0.3,1) 0.2s forwards;
+  transition: transform 0.4s ease, filter 0.4s ease;
+  position: relative;
+  z-index: 10;
+}
+.logo-liga:hover {
+  transform: scale(1.03);
+  filter: drop-shadow(0 0 50px rgba(255,200,80,0.7));
+}
+@keyframes logoReveal {
+  0%  { opacity: 0; transform: translateY(-30px) scale(0.95); }
+  100%{ opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── BOTÓN MENÚ ── */
 .menu-btn {
   position: fixed;
   top: 22px;
   left: 22px;
-  width: 115px;
+  width: 110px;
   height: auto;
   cursor: pointer;
   z-index: 200;
   transition: transform 0.25s ease, filter 0.25s ease;
   border-radius: 6px;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
 }
-.menu-btn:hover { transform: scale(1.05); filter: brightness(1.25); }
-.menu-btn:active { transform: scale(0.97); filter: brightness(0.9); }
+.menu-btn:hover {
+  transform: scale(1.06);
+  filter: brightness(1.3) drop-shadow(0 2px 10px rgba(255,200,80,0.3));
+}
+.menu-btn:active { transform: scale(0.97); }
 
-/* === Panel lateral (bajado 15px) === */
+/* ── SIDEBAR ── */
 .sidebar {
   position: fixed;
   top: 95px;
   left: -100%;
   width: 260px;
-
-  background: rgba(10,10,10,0.85); /* fallback */
-
-  box-shadow: 3px 3px 18px rgba(0,0,0,0.6);
-  transition: all 0.6s ease;
+  background: rgba(8,5,2,0.92);
+  backdrop-filter: blur(8px);
+  box-shadow: 4px 0 30px rgba(0,0,0,0.7);
+  transition: left 0.5s cubic-bezier(0.4,0,0.2,1);
   z-index: 150;
   display: flex;
   flex-direction: column;
-
-  border-top-right-radius: 14px;
-  border-bottom-right-radius: 14px;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
   overflow: hidden;
-  padding-top: 10px;
+  padding: 10px 0;
+  border-right: 1px solid rgba(255,200,80,0.15);
+  border-top: 1px solid rgba(255,200,80,0.1);
 }
-
-/* solo si el navegador soporta blur */
-@supports (backdrop-filter: blur(6px)) {
-  .sidebar {
-    backdrop-filter: blur(6px);
-    background: rgba(10,10,10,0.6);
-  }
-}
-
-
 .sidebar.active { left: 0; }
 
-.sidebar a:active {
-  transform: scale(0.96);
-  background: rgba(60,60,60,0.95);
-  box-shadow: 0 0 10px rgba(255,204,85,0.4);
-}
-
-/* === Botones metálicos === */
 .sidebar a {
   position: relative;
-  display: flex;              /* 🔥 clave */
-  align-items: center;        /* centra vertical */
-  justify-content: center;    /* centra horizontal */
-
-  height: 48px;               /* 🔥 altura fija */
-  margin: 8px 12px;
-  padding: 0 12px;            /* reducimos padding lateral */
-
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 10px;
+  padding: 11px 14px;
   text-decoration: none;
-  font-weight: 700;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;      /* un poco menos para que entre mejor */
-  font-size: 0.8rem;          /* leve ajuste */
-  text-align: center;
-  border-radius: 8px;
-
-  white-space: normal;        /* 🔥 evita salto de línea */
-  height: auto;
-  padding: 10px 8px;
-  line-height: 1.2;    /* opcional: ... si no entra */
-
-  background: rgba(20,20,20,0.75);
-  color: #ddd;
-  border: 1px solid rgba(255,255,255,0.08);
-
-  box-shadow: 0 0 8px rgba(0,0,0,0.6);
+  color: #c0a870;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background: transparent;
   transition: all 0.25s ease;
-  cursor: pointer;
-
+  overflow: hidden;
   text-shadow: none;
-  animation: none;
 }
-
 .sidebar a::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(120deg, rgba(255,255,255,0.6), rgba(255,255,255,0));
+  top: 0; left: -80%;
+  width: 50%; height: 100%;
+  background: linear-gradient(120deg, rgba(255,255,255,0.35), transparent);
   transform: skewX(-25deg);
-  transition: all 0.75s ease;
+  transition: left 0.6s ease;
 }
-.sidebar a:hover::before { left: 130%; }
-
+.sidebar a:hover::before { left: 140%; }
 .sidebar a:hover {
-  background: rgba(40,40,40,0.9);
-  border-color: rgba(255,204,85,0.4);
-  box-shadow: 0 0 12px rgba(255,204,85,0.25);
-  transform: translateX(5px);
-  box-shadow: 0 0 15px rgba(255,204,85,0.35);
+  background: rgba(255,200,80,0.07);
+  border-color: rgba(255,200,80,0.2);
+  color: #ffe8a0;
+  padding-left: 20px;
+  box-shadow: inset 3px 0 0 var(--gold);
 }
 
-.sidebar a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 3px;
-  background: transparent;
-  transition: 0.3s;
-}
-
-.sidebar a:hover::after {
-  background: #ffcc55;
-}
-
-/* === Selector de idioma === */
+/* ── SELECTOR DE IDIOMA ── */
 .language-selector {
   position: fixed;
   top: 20px;
@@ -164,519 +173,452 @@
   border-radius: 2px;
 }
 .language-selector select {
-  background: #111;
-  color: #ddd;
-  border: 1px solid #444;
-  border-radius: 6px;
-  padding: 4px 8px;
+  background: rgba(8,5,2,0.85);
+  color: #c0a870;
+  border: 1px solid rgba(255,200,80,0.25);
+  border-radius: 4px;
+  padding: 5px 10px;
   cursor: pointer;
-  font-family: inherit;
+  font-family: 'Rajdhani', sans-serif;
   font-weight: 600;
-  font-size: .9rem;
-  transition: .3s;
+  font-size: 0.9rem;
+  transition: 0.3s;
+  backdrop-filter: blur(4px);
+  text-shadow: none;
 }
 .language-selector select:hover {
-  background: #222;
-  border-color: #666;
+  border-color: rgba(255,200,80,0.5);
+  background: rgba(20,12,4,0.9);
 }
 
+/* ── OVERLAY ── */
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+  z-index: 140;
+  backdrop-filter: blur(2px);
+}
+#overlay.active { opacity: 1; pointer-events: all; }
+body.no-scroll { overflow: hidden; }
 
-  /* === Footer === */
-footer {
+/* ── CONTENIDO PRINCIPAL ── */
+.main-content {
   position: relative;
-  margin-top: 2rem;
-  color: #ffda84;
-  font-size: 0.9rem;
-  text-align: center;
-  padding: 1.5rem 0;
-  text-shadow: 0 0 4px #000;
-}
-.footer-legal {
-  margin-top: 1rem;
-  color: #ccc;
-  font-size: 0.85rem;
-  line-height: 1.4;
-  opacity: 0.85;
-    text-shadow: 
-    -1px -1px 0 #000,
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000;
+  z-index: 10;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px 60px;
 }
 
-
-
-
-  .flag-icon { width: 22px; height: 16px; }
-
-  .logo-liga {
-    display: block;
-    width: 620px;
-    margin: 10px auto 20px;
-  }
-
-.tabs{
-  display:flex;
-  gap:10px;
-  margin:10px 10;
-  justify-content:center;
+/* ── TABS LIGA ── */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin: 4px 0 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
-
-.tab-btn{
+.tab-btn {
   font-family: 'Orbitron', sans-serif;
   background: rgba(20,20,20,0.7);
-  color:#ccc;
-  border:1px solid rgba(255,255,255,0.1);
-
-  padding:10px 18px;
-  border-radius:8px;
-
-  font-weight:700;
-  letter-spacing:1px;
-  font-size:0.95rem;
-
-  cursor:pointer;
+  color: #ccc;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-size: 0.95rem;
+  cursor: pointer;
   transition: all 0.25s ease;
-
   text-transform: uppercase;
+  text-shadow: none;
 }
-
-.tab-btn.active-oro,
-.tab-btn.active-plata{
-  transform: scale(1.08);
+.tab-btn:hover { transform: scale(1.05); }
+.tab-btn.active-platino {
+  color: #000;
+  background: linear-gradient(145deg,#66e0ff,#00bcd4);
+  box-shadow: 0 0 12px rgba(0,200,255,0.7);
 }
-
-/* 🟡 ORO */
-.tab-btn.active-oro{
-  color:#000;
+.tab-btn.active-oro {
+  color: #000;
   background: linear-gradient(145deg,#ffd700,#ffb700);
   box-shadow: 0 0 12px rgba(255,215,0,0.6);
-  border-color:#ffd700;
+  border-color: #ffd700;
 }
-
-/* ⚪ PLATA */
-.tab-btn.active-plata{
-  color:#000;
+.tab-btn.active-plata {
+  color: #000;
   background: linear-gradient(145deg,#d9d9d9,#a8a8a8);
   box-shadow: 0 0 12px rgba(200,200,200,0.6);
-  border-color:#ccc;
+  border-color: #ccc;
+}
+.tab-btn.active-bronce {
+  color: #000;
+  background: linear-gradient(145deg,#cd7f32,#a0522d);
+  box-shadow: 0 0 12px rgba(205,127,50,0.7);
+}
+.liga-icon {
+  width: 20px; height: 20px;
+  vertical-align: middle;
+  margin-right: 6px;
+  filter: drop-shadow(0 0 3px rgba(0,0,0,0.7));
 }
 
-/* hover */
-.tab-btn:hover{
-  transform: scale(1.05);
-}
-
-  .filter-bar {
-    display: flex; align-items: center; gap: .6rem;
-    background: rgba(0,0,0,0.5); padding: 10px 14px;
-    border-radius: 8px; margin-bottom: 1.2rem; flex-wrap: wrap;
-  }
-  select {
-    background: #111; color: #ddd; border: 1px solid #444;
-    border-radius: 6px; padding: 6px 10px; font-weight: 600;
-    font-family: inherit; font-size: .9rem; cursor: pointer; transition: .3s;
-  }
-  select:hover { background: #222; border-color: #666; }
-
-.titulo {
-  color: #ffffff;
-
-  text-shadow:
-    0 3px 6px rgba(0,0,0,1),
-    0 0 10px rgba(0,0,0,0.9),
-    0 0 16px rgba(255,255,255,0.35);
-}
-
-
+/* ── TÍTULO TEMPORADA ── */
 .titulo-temporada {
-  font-family: 'Orbitron', sans-serif;
+  font-family: 'Bebas Neue', sans-serif;
   font-size: 2rem;
-  color: #ffcc55;
-  -webkit-text-stroke: 1.2px #000;
-  text-shadow: 0 0 8px rgba(255,200,80,0.6);
+  color: var(--gold);
+  letter-spacing: 5px;
+  text-shadow:
+    0 0 12px rgba(255,204,85,0.9),
+    0 0 28px rgba(255,204,85,0.5),
+    -1px -1px 0 #000, 1px -1px 0 #000,
+    -1px  1px 0 #000, 1px  1px 0 #000;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   text-align: center;
+  animation: titleBreath 3.5s ease-in-out infinite;
+}
+@keyframes titleBreath {
+  0%,100%{ text-shadow: -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000, 0 0 10px rgba(255,204,85,0.8), 0 0 24px rgba(255,204,85,0.45); }
+  50%{ text-shadow: -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000, 0 0 16px rgba(255,215,80,1), 0 0 36px rgba(255,204,85,0.7); }
 }
 
+/* ── SELECTOR TEMPORADA / FECHA ── */
 .selector-temporada {
-  display:flex;
-  align-items:center;
-  gap:.5rem;
-  margin-bottom:.7rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: .7rem;
+}
+.selector-temporada label,
+.filter-bar label {
+  color: #c0a870;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  text-shadow: -1px -1px 0 #000, 1px 1px 0 #000;
 }
 
-#temporadaSelect.activo{
-  border-color:#3bff77;
-  box-shadow:0 0 12px #3bff77aa;
-  background:#111;
-  color:#ddd;
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  background: rgba(0,0,0,0.5);
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  border: 1px solid rgba(255,200,80,0.1);
 }
 
-  .column-titles {
-    display: grid;
-    grid-template-columns: 1fr 0.5fr 1fr 0.5fr;
-    max-width: 1000px;
-    width: 100%;
-    text-align: center;
-    font-weight: 700;
-    color: #ffdd88;
-    text-shadow: 0 0 4px #000;
-    margin-bottom: 6px;
-    letter-spacing: 1px;
+select {
+  background: rgba(8,5,2,0.85);
+  color: #c0a870;
+  border: 1px solid rgba(255,200,80,0.25);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: .9rem;
+  cursor: pointer;
+  transition: .3s;
+  text-shadow: none;
+}
+select:hover {
+  background: rgba(20,12,4,0.9);
+  border-color: rgba(255,200,80,0.5);
+  color: #ffe8a0;
+}
+
+#temporadaSelect.activo {
+  border-color: rgba(59,255,119,0.4);
+  box-shadow: 0 0 12px rgba(59,255,119,0.2);
+}
+#fechaSelect.activo {
+  border-color: rgba(59,160,255,0.4);
+  box-shadow: 0 0 12px rgba(59,160,255,0.2);
+}
+
+/* ── TÍTULO RESULTADOS ── */
+.titulo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 3px;
+  color: #ffffff;
+  text-shadow:
+    0 0 10px rgba(255,255,255,0.3),
+    -1px -1px 0 #000, 1px -1px 0 #000,
+    -1px  1px 0 #000, 1px  1px 0 #000;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* ── CABECERA COLUMNAS ── */
+.column-titles {
+  display: grid;
+  grid-template-columns: 1fr 0.5fr 1fr 0.5fr;
+  max-width: 1000px;
+  width: 100%;
+  text-align: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-shadow: 0 0 8px rgba(255,204,85,0.4), 0 1px 0 #000;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+
+/* ── CONTENEDOR RESULTADOS ── */
+.resultados-container {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── TARJETA PARTIDA (desktop) ── */
+.partida {
+  display: grid;
+  grid-template-columns: 1fr 0.5fr 1fr 0.5fr;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(12,8,3,0.88), rgba(20,12,4,0.82));
+  border: 1px solid rgba(255,200,80,0.12);
+  border-radius: 6px;
+  padding: 10px 0;
+  transition: transform .2s ease, background .2s, border-color .2s;
+  position: relative;
+  overflow: hidden;
+}
+.partida::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,200,80,0.25), transparent);
+}
+.partida:hover {
+  transform: scale(1.015);
+  background: linear-gradient(135deg, rgba(20,14,4,0.92), rgba(30,18,5,0.88));
+  border-color: rgba(255,200,80,0.3);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 16px rgba(255,180,50,0.08);
+}
+
+/* En desktop los wrappers intermedios (.partida > div) no deben verse */
+.partida-fila-main {
+  display: contents; /* los hijos participan directamente en el grid padre */
+}
+.partida-label { display: none; } /* labels solo en mobile */
+
+.jugador {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #e8d8b0;
+  text-shadow: -1px -1px 0 #000, 1px 1px 0 #000;
+}
+
+.jugador img.flag, .resultado-box img {
+  width: 22px;
+  height: 15px;
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.6);
+}
+
+.resultado-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.resultado-box img {
+  width: 24px; height: 24px;
+  object-fit: contain;
+}
+
+.resultado-num {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--gold);
+  text-shadow: 0 0 10px rgba(255,204,85,0.5), -1px -1px 0 #000;
+  letter-spacing: 2px;
+}
+
+.mapa {
+  text-align: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: .88rem;
+  font-weight: 500;
+  color: #a09070;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-shadow: -1px -1px 0 #000;
+}
+.mapa button {
+  background: rgba(255,200,80,0.08);
+  color: var(--gold);
+  border: 1px solid rgba(255,200,80,0.25);
+  border-radius: 4px;
+  padding: 4px 9px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-shadow: none;
+}
+.mapa button:hover {
+  background: rgba(255,200,80,0.2);
+  border-color: rgba(255,200,80,0.5);
+  box-shadow: 0 0 8px rgba(255,200,80,0.2);
+}
+
+/* ── FOOTER ── */
+footer {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  margin-top: auto;
+  color: var(--gold-dim);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 2rem 1rem 1.5rem;
+  border-top: 1px solid rgba(255,200,80,0.1);
+  background: rgba(0,0,0,0.4);
+}
+.footer-legal {
+  margin-top: 0.8rem;
+  color: #786040;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+.footer-legal strong { color: #9a7a50; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .logo-liga { width: 300px; }
+  .menu-btn { width: 88px; left: 12px; top: 12px; }
+  .language-selector { top: 12px; right: 12px; }
+
+  .tab-btn { padding: 3px 8px; font-size: 10px; border-radius: 5px; }
+
+  .sidebar {
+    width: min(50%, 190px);
+    top: 72px;
+    max-height: calc(100vh - 76px);
+    overflow-y: auto;
   }
+  .sidebar a { font-size: 0.75rem; padding: 9px 8px; line-height: 1.2; }
 
-  .resultados-container {
-    width: 100%;
-    max-width: 1000px;
+  .column-titles { display: none; }
+
+  /* ── Tarjeta mobile: flex columna ── */
+  .partida {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    padding: 8px 10px 10px;
+    gap: 0;
   }
 
-  .partida {
+  /* Fila principal: local · score · visitante */
+  .partida-fila-main {
     display: grid;
-    grid-template-columns: 1fr 0.5fr 1fr 0.5fr;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    text-align: center;
-    background: rgba(0,0,0,0.55);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    padding: 10px 0;
-    transition: transform .2s, background .2s;
+    gap: 4px;
+    width: 100%;
   }
-  .partida:hover { transform: scale(1.02); background: rgba(255,215,100,0.08); }
+
+  /* Labels LOCAL / VISITA encima de cada jugador */
+  .partida-label {
+    display: block;
+    font-size: 0.55rem;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #666;
+    text-align: center;
+    margin-bottom: 2px;
+    text-shadow: none;
+  }
 
   .jugador {
-    font-weight: 600;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    font-size: 0.8rem;
+    gap: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
   }
-
-  .jugador img.flag, .resultado-box img {
-    width: 22px;
-    height: 15px;
-    border-radius: 2px;
-    object-fit: cover;
+  /* Jugador local: bandera + nombre alineados a la derecha */
+  .jugador.local {
+    justify-content: flex-end;
+    flex-direction: row;
+  }
+  /* Jugador visitante: alineado a la izquierda */
+  .jugador.visitante {
+    justify-content: flex-start;
+    flex-direction: row;
   }
 
   .resultado-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
+    gap: 5px;
+    flex-shrink: 0;
+    padding: 0 4px;
   }
+  .resultado-box img { width: 16px; height: 16px; }
+  .resultado-num { font-size: 1rem; letter-spacing: 1px; }
 
-  .resultado-num {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #ffe17d;
-  }
+  img.flag { width: 14px; height: 10px; flex-shrink: 0; }
 
+  /* Fila mapa debajo */
   .mapa {
-    text-align: center;
-    font-size: .9rem;
-    color: #ccc;
-    display: flex;
-    align-items: center;
+    font-size: 0.72rem;
+    margin-top: 8px;
+    padding-top: 7px;
+    border-top: 1px solid rgba(255,200,80,0.08);
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
   }
+  .mapa button { padding: 3px 8px; font-size: 0.72rem; }
 
-  .mapa button {
-    background: #222;
-    color: #ffcc55;
-    border: 1px solid #555;
-    border-radius: 5px;
-    padding: 4px 8px;
-    cursor: pointer;
-    transition: 0.2s;
-    font-weight: 600;
-  }
-  .mapa button:hover { background: #ffcc55; color: #111; }
-
-
-
-
-#overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  opacity: 0;
-  pointer-events: none;
-  transition: 0.3s;
-  z-index: 140;
+  .selector-temporada, .filter-bar { justify-content: center; width: 100%; }
 }
-
-#overlay.active {
-  opacity: 1;
-  pointer-events: all;
-}
-
-
-/* === Responsive === */
-
-@media (max-width: 700px){
-
-
-
-.logo-liga {
-  width: 90%;
-  max-width: 320px;  /* 👈 límite real para mobile */
-  margin-top: 80px;
-}
-
-  .menu-btn { 
-    width: 90px; 
-    left: 14px; 
-    top: 14px; 
-  }
-
-.tab-btn{
-  padding:3px 8px;
-  font-size:10px;
-  border-radius:5px;
-}
-
-.tabs{
-  margin-top: -10px; /* 👈 los sube */
-}
-
-  .language-selector { 
-    top: 12px; 
-    right: 12px; 
-  }
-
-  .sidebar {
-    width: min(45%, 180px);
-    top: 75px;
-    max-height: calc(100vh - 80px);
-    overflow-y: auto; 
-  }
-
-  .sidebar a {
-    font-size: 0.7rem;
-    white-space: normal;
-    height: auto;
-    padding: 10px 8px;
-    line-height: 1.2;
-    align-items: center;
-    justify-content: center;
-  }
-
-body{
-  align-items:center;
-}
-
-
-.column-titles{
-  display:none;
-}
-
-
-/* CONTENEDOR */
-.partida{
-  display:grid;
-  grid-template-columns: 1fr auto 1fr;
-  grid-template-rows: auto auto auto;
-  align-items:center;
-
-  gap:4px 6px;
-  padding:10px;
-
-  background: rgba(0,0,0,0.55);
-  border-radius:6px;
-}
-
-/* 🔥 HEADERS (LOCAL / VISITA ARRIBA) */
-.partida::before,
-.partida::after{
-  font-size:0.6rem;
-  color:#aaa;
-  text-align:center;
-}
-
-.partida::before{
-  content:"LOCAL";
-  grid-column:1;
-  grid-row:1;
-}
-
-.partida::after{
-  content:"VISITA";
-  grid-column:3;
-  grid-row:1;
-}
-
-/* JUGADORES */
-.jugador{
-  display:flex;
-  align-items:center;
-  gap:4px;
-
-  font-size:0.78rem;
-  min-width:0;
-
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-/* 🔥 CENTRADO PERFECTO */
-.partida .jugador:first-child,
-.partida .jugador:nth-child(3){
-  grid-row:2;
-  justify-content:center;
-  text-align:center;
-}
-
-/* mantener orden lógico (bandera + nombre) */
-.partida .jugador:nth-child(3){
-  flex-direction: row;
-}
-
-/* RESULTADO */
-.resultado-box{
-  grid-column:2;
-  grid-row:2;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:5px;
-
-  font-size:1rem;
-  font-weight:700;
-  color:#ffe17d;
-
-  white-space:nowrap;
-}
-
-/* ICONOS */
-.resultado-box img{
-  width:12px;
-  height:12px;
-}
-
-/* BANDERAS */
-img.flag{
-  width:11px;
-  height:8px;
-  flex-shrink:0;
-}
-
-/* MAPA ABAJO */
-.mapa{
-  grid-column: 1 / -1;
-  grid-row:3;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:6px;
-
-  font-size:0.7rem;
-  color:#ccc;
-
-  margin-top:4px;
-}
-
-/* BOTON */
-.mapa button{
-  padding:4px 7px;
-  font-size:0.7rem;
-}
-
-
-.selector-temporada,
-.filter-bar,
-.tabs{
-  margin-left:0;
-  align-self:center;
-  justify-content:center;
-  width:100%;
-  text-align:center;
-}
-
-.selector-temporada{
-  display:flex;
-  justify-content:center;
-}
-
-.filter-bar{
-  display:flex;
-  justify-content:center;
-  flex-wrap:wrap;
-}
-
-.tabs{
-  display:flex;
-  justify-content:center;
-}
-.mapa button{
-  padding:6px 10px;
-  font-size:0.9rem;
-}
-
-.botones-fechas{
-  width:100%;
-  display:flex;
-  justify-content:center;
-  flex-wrap:wrap;
-}
-
-.botones-fechas button{
-  margin:4px;
-}
-
-.botones-superiores{
-  width:100%;
-  display:flex;
-  justify-content:center;
-  flex-wrap:wrap;
-}
-
-
-
-@media (hover: none) {
-  .sidebar a:hover {
-    transform: none;
-    box-shadow: none;
-  }
-}
-
-#overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  opacity: 0;
-  pointer-events: none;
-  transition: 0.3s;
-  z-index: 140;
-}
-
-#overlay.active {
-  opacity: 1;
-  pointer-events: all;
-}
-
-
-
 </style>
 </head>
 <body>
 
+<!-- Overlay -->
+<div id="overlay"></div>
 
-<!-- Panel sidebar-->
+<!-- Botón menú -->
 <img src="boton-menu.png" alt="Menú" class="menu-btn" id="menuToggle">
-<nav class="sidebar" id="sidebar"> 
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
   <a href="index.html">🏠 Menu Principal</a>
   <a href="reglas.html">📏 Formato - Reglas</a>
-  <a href="cronograma.html">📅 Cronograma - Participantes</a>
+  <a href="cronograma.html">📅 Cronograma</a>
   <a href="resultados.html">📋 Resultados</a>
   <a href="ranking.html">🏆 Ranking</a>
   <a href="estadisticas.html">📊 Estadisticas</a>
@@ -685,10 +627,7 @@ img.flag{
   <a href="inscripciones.html">✍️ Inscripciones</a>
 </nav>
 
-<div id="overlay"></div>
-
-
-<!-- Idioma -->
+<!-- Selector idioma -->
 <div class="language-selector">
   <img id="current-flag" class="flag-icon" src="https://flagcdn.com/w20/es.png" alt="ES">
   <select id="lang-select">
@@ -697,38 +636,35 @@ img.flag{
   </select>
 </div>
 
-<img src="1811d0cb-36e3-4b23-9d1f-5b4f66ce2d8c-removebg-preview.png" alt="Liga Latina de COH" class="logo-liga">
+<!-- Contenido principal -->
+<div class="main-content">
 
-<div class="tabs">
-  <button class="tab-btn active-oro" data-liga="oro">🏅 Liga de Oro</button>
-  <button class="tab-btn" data-liga="plata">🥈 Liga de Plata</button>
+  <img src="1811d0cb-36e3-4b23-9d1f-5b4f66ce2d8c-removebg-preview.png" alt="Liga Latina de COH" class="logo-liga">
+
+  <div class="tabs"></div>
+
+  <h2 class="titulo-temporada">TEMPORADA 1</h2>
+
+  <div class="selector-temporada">
+    <label>📜 Temporada:</label>
+    <select id="temporadaSelect">
+      <option value="1">Temporada 1</option>
+      <option value="2" selected>Temporada 2</option>
+    </select>
+  </div>
+
+  <div class="filter-bar">
+    <label id="label-fecha">📅 Fecha:</label>
+    <select id="fechaSelect"></select>
+  </div>
+
+  <h2 class="titulo" id="titulo">Resultados – Fecha #1</h2>
+
+  <div class="column-titles" id="columnTitles"></div>
+
+  <div class="resultados-container" id="resultados"></div>
+
 </div>
-
-<h2 class="titulo-temporada">TEMPORADA 1</h2>
-
-<div class="selector-temporada">
-  <label>📜 Temporada:</label>
-  <select id="temporadaSelect">
-    <option value="1" selected>Temporada 1</option>
-    <option value="2" disabled>Temporada 2 (Próximamente)</option>
-  </select>
-</div>
-
-<div class="filter-bar">
-  <label id="label-fecha">📅 Fecha:</label>
-  <select id="fechaSelect"></select>
-</div>
-
-<h2 class="titulo" id="titulo">Resultados – Fecha #1</h2>
-
-<div class="column-titles">
-  <div>LOCAL</div>
-  <div>RESULTADO</div>
-  <div>VISITANTE</div>
-  <div>MAPA</div>
-</div>
-
-<div class="resultados-container" id="resultados"></div>
 
 <!-- Footer -->
 <footer>
@@ -740,26 +676,24 @@ img.flag{
   </div>
 </footer>
 
-
 <script>
-
-
-let idiomaActual = "es";
-let temporadaActual = "1"; 
+let idiomaActual = localStorage.getItem("idioma") || "es";
+let temporadaActual = "2";
 
 const urls = {
   "1": {
-    oro: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDy3ZFnj4_YThlDsu8ZnzHec7GqwHH_0SePTjw2IMos-HhK8-Z7YAUcKHy1nXD7PY9aLSNr0UAKC9Z/pub?gid=203880403&single=true&output=csv",
+    oro:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDy3ZFnj4_YThlDsu8ZnzHec7GqwHH_0SePTjw2IMos-HhK8-Z7YAUcKHy1nXD7PY9aLSNr0UAKC9Z/pub?gid=203880403&single=true&output=csv",
     plata: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDy3ZFnj4_YThlDsu8ZnzHec7GqwHH_0SePTjw2IMos-HhK8-Z7YAUcKHy1nXD7PY9aLSNr0UAKC9Z/pub?gid=1976553980&single=true&output=csv"
   },
-
   "2": {
-    oro: "",   // 🔜 acá vas a poner los nuevos links
-    plata: ""
+    platino: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSFj0PTRCVJO5qEByb2OFIvu85emTXl3kBpo8iBtFrsdP5ohyqbhaVZ9z7luW78Me50vBN-T8bSZPCR/pub?gid=863822460&single=true&output=csv",
+    oro:     "https://docs.google.com/spreadsheets/d/e/2PACX-1vSFj0PTRCVJO5qEByb2OFIvu85emTXl3kBpo8iBtFrsdP5ohyqbhaVZ9z7luW78Me50vBN-T8bSZPCR/pub?gid=203880403&single=true&output=csv",
+    plata:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSFj0PTRCVJO5qEByb2OFIvu85emTXl3kBpo8iBtFrsdP5ohyqbhaVZ9z7luW78Me50vBN-T8bSZPCR/pub?gid=1976553980&single=true&output=csv",
+    bronce:  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSFj0PTRCVJO5qEByb2OFIvu85emTXl3kBpo8iBtFrsdP5ohyqbhaVZ9z7luW78Me50vBN-T8bSZPCR/pub?gid=1778618438&single=true&output=csv"
   }
 };
 
-let ligaActual = "oro", data = [];
+let ligaActual = Object.keys(urls[temporadaActual])[0];
 
 const facciones = {
   US: '<img src="armies/us.png" alt="US">',
@@ -768,80 +702,123 @@ const facciones = {
   CW: '<img src="armies/cw.png" alt="CW">'
 };
 
+const iconosLiga = {
+  platino: '<img class="liga-icon" src="platinum.png">',
+  oro:     '<img class="liga-icon" src="gold.png">',
+  plata:   '<img class="liga-icon" src="silver.png">',
+  bronce:  '<img class="liga-icon" src="bronze.png">'
+};
+
+let data = [];
+
+/* ── CARGAR RESULTADOS ── */
 async function cargarResultados() {
   const url = urls[temporadaActual]?.[ligaActual];
-
   if (!url) {
     document.getElementById("resultados").innerHTML =
-      "<p style='text-align:center;color:#aaa;'>Sin datos disponibles.</p>";
+      "<p style='text-align:center;color:#888;padding:20px;'>Sin datos disponibles.</p>";
     return;
   }
-
   const resp = await fetch(url);
   const text = await resp.text();
   const rows = text.trim().split(/\r?\n/).map(r => r.split(","));
-
   data = rows.slice(1);
-
   llenarSelectorFechas(data);
-
+  traducirColumnas();
   const select = document.getElementById("fechaSelect");
+  if (select.options.length > 0) renderResultados(select.options[0].value);
+}
 
-  if (select.options.length > 0) {
-    renderResultados(select.options[0].value);
-  }
-} // 🔥 ← ESTA LLAVE FALTABA
+/* ── GENERAR TABS ── */
+function generarTabs() {
+  const contenedor = document.querySelector(".tabs");
+  contenedor.innerHTML = "";
+  const ligas = urls[temporadaActual];
+  if (!ligas[ligaActual]) ligaActual = Object.keys(ligas)[0];
 
+  const nombres = {
+    platino: { es: "Liga de Platino", en: "Platinum League" },
+    oro:     { es: "Liga de Oro",     en: "Gold League" },
+    plata:   { es: "Liga de Plata",   en: "Silver League" },
+    bronce:  { es: "Liga de Bronce",  en: "Bronze League" }
+  };
 
+  Object.keys(ligas).forEach(liga => {
+    const btn = document.createElement("button");
+    btn.className = "tab-btn";
+    btn.dataset.liga = liga;
+    btn.innerHTML = `${iconosLiga[liga] || ""} ${nombres[liga]?.[idiomaActual] || liga}`;
+    if (liga === ligaActual) btn.classList.add(`active-${liga}`);
+    btn.onclick = () => {
+      document.querySelectorAll(".tab-btn").forEach(b =>
+        b.classList.remove("active-oro","active-plata","active-platino","active-bronce"));
+      btn.classList.add(`active-${liga}`);
+      ligaActual = liga;
+      cargarResultados();
+    };
+    contenedor.appendChild(btn);
+  });
+}
+
+/* ── SELECTOR FECHAS ── */
 function llenarSelectorFechas(rows) {
   const select = document.getElementById("fechaSelect");
   const fechas = [...new Set(rows.map(r => r[1]))];
-
   select.innerHTML = "";
-
   fechas.forEach((f, index) => {
     const opt = document.createElement("option");
     opt.value = f;
-    opt.textContent = f;
-
-    if (index === 0) opt.selected = true; // 🔥 clave
-
+    const numero = f.replace(/\D/g, "");
+    opt.textContent = idiomaActual === "en" ? `Round ${numero}` : f;
+    if (index === 0) opt.selected = true;
     select.appendChild(opt);
   });
-
+  select.selectedIndex = 0;
   select.onchange = () => renderResultados(select.value);
+  select.classList.add("activo");
 }
 
-
-
+/* ── RENDER RESULTADOS ── */
 function renderResultados(fecha) {
   const cont = document.getElementById("resultados");
   cont.innerHTML = "";
-  document.getElementById("titulo").textContent = `Resultados – ${fecha}`;
+  const t = traducciones[idiomaActual];
+  document.getElementById("titulo").textContent =
+    t.resultadosFecha.replace("#", fecha.replace(/\D/g, ""));
+
   const filtrado = data.filter(r => r[1] === fecha);
   filtrado.forEach(row => {
     const [id, fechaRaw, local, facLocal, resultado, facVisit, visitante, mapa, replay] = row;
     const banderaLocal = crearBandera(local);
     const banderaVisit = crearBandera(visitante);
-    const nombreLocal = limpiarNombre(local);
-    const nombreVisit = limpiarNombre(visitante);
-    const facIzq = facciones[facLocal] || "";
+    const nombreLocal  = limpiarNombre(local);
+    const nombreVisit  = limpiarNombre(visitante);
+    const facIzq = facciones[facLocal]  || "";
     const facDer = facciones[facVisit] || "";
 
+    const localLabel   = idiomaActual === "en" ? "HOME"  : "LOCAL";
+    const visitaLabel  = idiomaActual === "en" ? "AWAY"  : "VISITA";
     const html = `
       <div class="partida">
-        <div class="jugador">${banderaLocal} ${nombreLocal}</div>
-        <div class="resultado-box">${facIzq}<span class="resultado-num">${resultado}</span>${facDer}</div>
-        <div class="jugador">${nombreVisit} ${banderaVisit}</div>
+        <div class="partida-fila-main">
+          <div>
+            <span class="partida-label">${localLabel}</span>
+            <div class="jugador local">${banderaLocal} ${nombreLocal}</div>
+          </div>
+          <div class="resultado-box">${facIzq}<span class="resultado-num">${resultado}</span>${facDer}</div>
+          <div>
+            <span class="partida-label">${visitaLabel}</span>
+            <div class="jugador visitante">${nombreVisit} ${banderaVisit}</div>
+          </div>
+        </div>
         <div class="mapa">🗺️ ${mapa} <button onclick="window.open('${replay}','_blank')">📥</button></div>
       </div>`;
     cont.insertAdjacentHTML("beforeend", html);
   });
 }
 
-function crearBandera(nombre){
+function crearBandera(nombre) {
   const trimmed = nombre.trim();
-  // intenta último token separado por espacios; si no es código de 2 letras, busca 2 letras al final
   let code = trimmed.split(/\s+/).pop();
   if (!/^[A-Za-z]{2}$/.test(code)) {
     const m = trimmed.match(/([A-Za-z]{2})$/);
@@ -852,124 +829,151 @@ function crearBandera(nombre){
     : "";
 }
 
-function limpiarNombre(nombre){
-  const trimmed = nombre.trim();
-  return trimmed.replace(/\s+[A-Za-z]{2}$/i, "");
+function limpiarNombre(nombre) {
+  return nombre.trim().replace(/\s+[A-Za-z]{2}$/i, "");
 }
 
-
-
-window.addEventListener("DOMContentLoaded", () => {
-
-  const temporadaSelect = document.getElementById("temporadaSelect");
-
-  temporadaSelect.addEventListener("change", (e) => {
-
-    if (e.target.value === "2") {
-      alert("🔒 Temporada 2 aún no disponible.");
-      e.target.value = "1";
-      return;
-    }
-
-    temporadaActual = e.target.value;
-
-    document.querySelector(".titulo-temporada").textContent =
-      (idiomaActual === "en" ? "SEASON " : "TEMPORADA ") + temporadaActual;
-
-    actualizarColorTemporada();
-    cargarResultados();
-  });
-
-  actualizarColorTemporada();
-  cargarResultados();
-});
-
-function actualizarColorTemporada(){
-  const temporadaSelect = document.getElementById("temporadaSelect");
-
-  if(temporadaSelect.value === "1"){
-    temporadaSelect.classList.add("activo");
-  } else {
-    temporadaSelect.classList.remove("activo");
-  }
-}
-
-
-
+/* ── TRADUCCIONES ── */
 const traducciones = {
-  es:{
-    fechaLabel:"📅 Fecha:",
-    temporada:"TEMPORADA ",
-    oro:"🏅 Liga de Oro",
-    plata:"🥈 Liga de Plata"
+  es: {
+    fechaLabel:       "📅 Fecha:",
+    temporada:        "TEMPORADA",
+    menuPrincipal:    "🏠 Menu Principal",
+    reglas:           "📏 Formato - Reglas",
+    cronograma:       "📅 Cronograma",
+    resultados:       "📋 Resultados",
+    ranking:          "🏆 Ranking",
+    estadisticas:     "📊 Estadisticas",
+    premios:          "🎁 Premios",
+    donaciones:       "💰 Donaciones",
+    inscripciones:    "✍️ Inscripciones",
+    temporadaLabel:   "📜 Temporada:",
+    resultadosFecha:  "Resultados – Fecha #",
+    footer1:          "Este es un sitio web no oficial creado por fans de Company of Heroes 1.",
+    footer3:          "Las imágenes y recursos son propiedad de Relic Entertainment."
   },
-  en:{
-    fechaLabel:"📅 Date:",
-    temporada:"SEASON ",
-    oro:"🏅 Gold League",
-    plata:"🥈 Silver League"
+  en: {
+    fechaLabel:       "📅 Date:",
+    temporada:        "SEASON",
+    menuPrincipal:    "🏠 Main Menu",
+    reglas:           "📏 Format - Rules",
+    cronograma:       "📅 Schedule",
+    resultados:       "📋 Results",
+    ranking:          "🏆 Ranking",
+    estadisticas:     "📊 Statistics",
+    premios:          "🎁 Prizes",
+    donaciones:       "💰 Donations",
+    inscripciones:    "✍️ Sign Up",
+    temporadaLabel:   "📜 Season:",
+    resultadosFecha:  "Results – Round #",
+    footer1:          "This is an unofficial fan-made website for Company of Heroes 1.",
+    footer3:          "All assets belong to Relic Entertainment."
   }
 };
 
-// idioma
-document.getElementById("lang-select").addEventListener("change",e=>{
-  idiomaActual=e.target.value;
-  const sel=e.target.selectedOptions[0];
-  document.getElementById("current-flag").src=sel.dataset.flag;
+function traducirColumnas() {
+  const t = idiomaActual === "en"
+    ? ["HOME","RESULT","AWAY","MAP"]
+    : ["LOCAL","RESULTADO","VISITANTE","MAPA"];
+  document.getElementById("columnTitles").innerHTML = `
+    <div>${t[0]}</div><div>${t[1]}</div><div>${t[2]}</div><div>${t[3]}</div>`;
+}
 
-  const t=traducciones[idiomaActual];
+function traducirHTMLFijo() {
+  const t = traducciones[idiomaActual];
 
-  document.getElementById("label-fecha").textContent=t.fechaLabel;
+  // Label fecha
+  document.getElementById("label-fecha").textContent = t.fechaLabel;
 
+  // Título temporada
   document.querySelector(".titulo-temporada").textContent =
-    t.temporada + temporadaActual;
+    t.temporada + " " + temporadaActual;
 
-  document.querySelectorAll(".tab-btn").forEach(btn=>{
-    if(btn.dataset.liga==="oro") btn.textContent=t.oro;
-    if(btn.dataset.liga==="plata") btn.textContent=t.plata;
+  // Options selector temporada
+  document.getElementById("temporadaSelect").querySelectorAll("option").forEach(opt => {
+    opt.textContent = idiomaActual === "en"
+      ? `Season ${opt.value}` : `Temporada ${opt.value}`;
   });
-});
 
-
-document.querySelectorAll(".tab-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-
-    // actualizar liga
-    ligaActual = btn.dataset.liga;
-
-    // resetear estilos activos
-    document.querySelectorAll(".tab-btn").forEach(b => {
-      b.classList.remove("active-oro", "active-plata");
-    });
-
-    // aplicar estilo según liga
-    if (ligaActual === "oro") {
-      btn.classList.add("active-oro");
-    } else {
-      btn.classList.add("active-plata");
-    }
-
-    // recargar datos
-    cargarResultados();
+  // Sidebar
+  document.querySelectorAll(".sidebar a").forEach(a => {
+    const txt = a.textContent;
+    if (txt.includes("Menu Principal") || txt.includes("Main Menu")) a.textContent = t.menuPrincipal;
+    else if (txt.includes("Formato") || txt.includes("Format"))     a.textContent = t.reglas;
+    else if (txt.includes("Cronograma") || txt.includes("Schedule"))a.textContent = t.cronograma;
+    else if (txt.includes("Resultados") || txt.includes("Results")) a.textContent = t.resultados;
+    else if (txt.includes("Ranking"))                                a.textContent = t.ranking;
+    else if (txt.includes("Estad"))                                  a.textContent = t.estadisticas;
+    else if (txt.includes("Premios") || txt.includes("Prizes"))     a.textContent = t.premios;
+    else if (txt.includes("Donaciones") || txt.includes("Donations"))a.textContent = t.donaciones;
+    else if (txt.includes("Inscripciones") || txt.includes("Sign")) a.textContent = t.inscripciones;
   });
+
+  // Footer
+  const fp = document.querySelectorAll(".footer-legal p");
+  if (fp[0]) fp[0].textContent = t.footer1;
+  if (fp[1]) fp[1].innerHTML =
+    `<strong>Company of Heroes</strong> ${idiomaActual === "en" ? "is a registered trademark of" : "es una marca registrada de"} <strong>Relic Entertainment</strong>.`;
+  if (fp[2]) fp[2].textContent = t.footer3;
+
+  // Selector temporada label
+  const lTemp = document.querySelector(".selector-temporada label");
+  if (lTemp) lTemp.textContent = t.temporadaLabel;
+}
+
+/* ── CAMBIO DE IDIOMA ── */
+document.getElementById("lang-select").addEventListener("change", e => {
+  idiomaActual = e.target.value;
+  localStorage.setItem("idioma", idiomaActual);
+  const sel = e.target.selectedOptions[0];
+  document.getElementById("current-flag").src = sel.dataset.flag;
+  traducirHTMLFijo();
+  traducirColumnas();
+  generarTabs();
+  cargarResultados();
 });
 
-const menuToggle = document.getElementById('menuToggle');
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-
-menuToggle.addEventListener('click', () => {
-  sidebar.classList.toggle('active');
-  overlay.classList.toggle('active');
+/* ── CAMBIO TEMPORADA ── */
+document.getElementById("temporadaSelect").addEventListener("change", e => {
+  temporadaActual = e.target.value;
+  ligaActual = Object.keys(urls[temporadaActual])[0];
+  document.querySelector(".titulo-temporada").textContent =
+    traducciones[idiomaActual].temporada + " " + temporadaActual;
+  generarTabs();
+  cargarResultados();
+  document.getElementById("temporadaSelect").classList.add("activo");
 });
 
-overlay.addEventListener('click', () => {
-  sidebar.classList.remove('active');
-  overlay.classList.remove('active');
+/* ── SIDEBAR / OVERLAY ── */
+const menuToggle = document.getElementById("menuToggle");
+const sidebar    = document.getElementById("sidebar");
+const overlay    = document.getElementById("overlay");
+
+menuToggle.addEventListener("click", () => {
+  sidebar.classList.toggle("active");
+  overlay.classList.toggle("active");
+  document.body.classList.toggle("no-scroll");
+});
+overlay.addEventListener("click", () => {
+  sidebar.classList.remove("active");
+  overlay.classList.remove("active");
+  document.body.classList.remove("no-scroll");
 });
 
+/* ── INIT ── */
+window.addEventListener("DOMContentLoaded", () => {
+  const sel = document.getElementById("lang-select");
+  sel.value = idiomaActual;
+  document.getElementById("current-flag").src = sel.selectedOptions[0]?.dataset.flag || "";
 
+  document.getElementById("temporadaSelect").value = temporadaActual;
+  document.getElementById("temporadaSelect").classList.add("activo");
 
+  traducirHTMLFijo();
+  traducirColumnas();
+  generarTabs();
+  cargarResultados();
+});
 </script>
 </body>
 </html>
