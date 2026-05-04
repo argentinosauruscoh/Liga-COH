@@ -462,7 +462,7 @@ img.flag{width:24px;height:16px;vertical-align:middle;margin-right:6px;border-ra
 }
 
 .videos-fechas{
-  display:flex;
+  display:none; /* 👈 antes estaba flex */
   flex-direction:column;
   gap:14px;
   width:420px;
@@ -487,6 +487,11 @@ img.flag{width:24px;height:16px;vertical-align:middle;margin-right:6px;border-ra
   text-align:center;margin-bottom:6px;
   letter-spacing:.5px;text-transform:uppercase;line-height:1.1;
 }
+
+#toggle-videos{
+  display:none;
+}
+
 
 /* ── Footer ── */
 footer {
@@ -1217,12 +1222,14 @@ function actualizarVideos(){
   const videosFechas = document.querySelector(".videos-fechas");
 
   if(lista.length===0){
-    videosFechas.style.display = "none";
-    btnVideos.style.display    = "none";
-  } else {
-    if(window.innerWidth > 700) videosFechas.style.display = "flex";
-    btnVideos.style.display = window.innerWidth<=700 ? "inline-block" : "none";
+  videosFechas.style.display = "none";
+  btnVideos.style.display    = "none";
+} else {
+  if(window.innerWidth > 700){
+    videosFechas.style.display = "flex"; // 👈 lo vuelve a mostrar
   }
+  btnVideos.style.display = window.innerWidth<=700 ? "inline-block" : "none";
+}
 
   // Mobile — videos inline
   if(window.innerWidth<=700){
