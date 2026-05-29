@@ -36,7 +36,6 @@ body{
      1px  1px 0 #000;
 }
 
-/* ── Logo con animación igual que index ── */
 .logo-liga{
   display:block;
   width:600px;
@@ -57,7 +56,6 @@ body{
   100%{ opacity:1; transform:translateY(0) scale(1); }
 }
 
-/* ── Botón menú ── */
 .menu-btn {
   position: fixed;
   top: 22px;
@@ -73,7 +71,6 @@ body{
 .menu-btn:hover { transform: scale(1.06); filter: brightness(1.3) drop-shadow(0 2px 10px rgba(255,200,80,0.3)); }
 .menu-btn:active { transform: scale(0.97); }
 
-/* ── Sidebar unificado ── */
 .sidebar {
   position: fixed;
   top: 95px;
@@ -134,7 +131,6 @@ body{
   box-shadow: inset 3px 0 0 var(--ocre);
 }
 
-/* ── Selector de idioma unificado ── */
 .language-selector {
   position: fixed;
   top: 20px;
@@ -168,7 +164,6 @@ body{
   background: rgba(20,12,4,0.9);
 }
 
-/* ── Overlay ── */
 #overlay {
   position: fixed;
   inset: 0;
@@ -182,7 +177,6 @@ body{
 #overlay.active { opacity: 1; pointer-events: all; }
 body.no-scroll { overflow: hidden; }
 
-/* ── Filter bar ── */
 .filter-bar{
   display:flex;
   align-items:center;
@@ -225,7 +219,6 @@ button.filter-btn:hover, select:hover{
   box-shadow: 0 0 12px rgba(59,255,119,0.2);
 }
 
-/* ── Título temporada ── */
 .titulo-temporada {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 2rem;
@@ -256,7 +249,6 @@ button.filter-btn:hover, select:hover{
   text-shadow: none;
 }
 
-/* ── Tabs liga ── */
 .tabs{
   display:flex;
   gap:10px;
@@ -309,7 +301,6 @@ button.filter-btn:hover, select:hover{
   filter: drop-shadow(0 0 3px rgba(0,0,0,0.7));
 }
 
-/* ── Tabla cronograma ── */
 .cronograma-wrap{width:100%;max-width:1000px;margin-top:.3rem;}
 table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:8px;overflow:visible;text-align:center;table-layout:fixed;}
 col.col-local{width:35%;} col.col-versus{width:10%;} col.col-visit{width:35%;} col.col-estado{width:20%;}
@@ -354,8 +345,9 @@ img.flag{width:24px;height:16px;vertical-align:middle;margin-right:6px;border-ra
 .jugado{color:#e2b46a;font-style:italic;font-weight:400;}
 .pendiente{color:var(--granate-pendiente);font-style:italic;font-weight:600;}
 .enjuego{color:var(--verde-enjuego);font-weight:700;text-shadow:0 0 10px var(--verde-enjuego);}
+.postergado{color:#4a9eff;font-style:italic;font-weight:600;}
+.casteado{color:#39ff14;font-weight:700;text-shadow:0 0 10px #00cfff;}
 
-/* ── Panel participantes ── */
 #panel-participantes {
   position: fixed !important;
   top: 550px;
@@ -452,7 +444,6 @@ img.flag{width:24px;height:16px;vertical-align:middle;margin-right:6px;border-ra
   border-radius: 2px;
 }
 
-/* ── Layout cronograma + videos ── */
 .cronograma-layout{
   display:flex;
   align-items:stretch;
@@ -462,7 +453,7 @@ img.flag{width:24px;height:16px;vertical-align:middle;margin-right:6px;border-ra
 }
 
 .videos-fechas{
-  display:none; /* 👈 antes estaba flex */
+  display:none;
   flex-direction:column;
   gap:14px;
   width:420px;
@@ -492,8 +483,6 @@ img.flag{width:24px;height:16px;vertical-align:middle;margin-right:6px;border-ra
   display:none;
 }
 
-
-/* ── Footer ── */
 footer {
   position: relative;
   z-index: 10;
@@ -515,7 +504,6 @@ footer p { color: var(--ocre-dim); margin-bottom: 4px; }
 }
 .footer-legal strong { color: #9a7a50; }
 
-/* ── Video inline (mobile) ── */
 .video-inline{ display:none; }
 .video-inline.visible{ display:table-row; }
 .video-inline td{ padding:6px; background:transparent; }
@@ -523,7 +511,6 @@ footer p { color: var(--ocre-dim); margin-bottom: 4px; }
 .video-inline img{ width:100%;height:150px;object-fit:cover;border-radius:6px; }
 .video-inline iframe{ width:100%;height:150px;border:none;border-radius:6px;display:none; }
 
-/* ── Responsive ── */
 @media (max-width:700px){
   .logo-liga{ width:320px; }
   .menu-btn{ width:90px; left:14px; top:14px; }
@@ -889,6 +876,8 @@ const traducciones = {
     jugado:"Jugado",
     pendiente:"Pendiente",
     enjuego:"En juego",
+    postergado:"Postergado",
+    casteado:"Casteado",
     jugador:"Jugador",
     menuPrincipal:"🏠 Menu Principal",
     reglas:"📏 Formato - Reglas",
@@ -919,6 +908,8 @@ const traducciones = {
     jugado:"Played",
     pendiente:"Pending",
     enjuego:"Now playing",
+    postergado:"Postponed",
+    casteado:"Casted",
     jugador:"Player",
     menuPrincipal:"🏠 Main Menu",
     reglas:"📏 Format - Rules",
@@ -944,24 +935,19 @@ let idiomaActual = "es",
     dataCompleta = [],
     temporadaActual = "2";
 
-/* ─── Traducciones HTML estático ─── */
 function traducirHTMLFijo(){
   const t = traducciones[idiomaActual];
 
-  // Label temporada
   const lTemp = document.getElementById("label-temporada");
   if(lTemp) lTemp.textContent = t.temporadaLabel;
 
-  // Th jugador
   const thJ = document.getElementById("th-jugador");
   if(thJ) thJ.textContent = t.jugador;
 
-  // Options del selector de temporada
   document.getElementById("temporadaSelect").querySelectorAll("option").forEach(opt=>{
     opt.textContent = idiomaActual === "en" ? `Season ${opt.value}` : `Temporada ${opt.value}`;
   });
 
-  // Sidebar
   document.querySelectorAll(".sidebar a").forEach(a => {
     const txt = a.textContent;
     if(txt.includes("Menu Principal") || txt.includes("Main Menu"))   a.textContent = t.menuPrincipal;
@@ -975,39 +961,32 @@ function traducirHTMLFijo(){
     else if(txt.includes("Inscripciones") || txt.includes("Sign"))    a.textContent = t.inscripciones;
   });
 
-  // Botones
   document.getElementById("btnActivas").textContent  = t.btnActivas;
   document.getElementById("btnCompleto").textContent = t.btnCompleto;
   const bv = document.getElementById("toggle-videos");
   if(bv) bv.textContent = t.btnVideos;
 
-  // Toggle participantes
   const tp = document.getElementById("toggle-participantes");
   if(tp) tp.textContent = t.participantes;
 
-  // Label fecha
   const lf = document.getElementById("label-fecha");
   if(lf) lf.textContent = t.fechaLabel;
 
-  // Título temporada
   document.querySelector(".titulo-temporada").textContent =
     t.temporada + " " + temporadaActual;
 
-  // Tabs
   const ligas = urls[temporadaActual].ligas;
   document.querySelectorAll(".tab-btn").forEach(btn => {
     const liga = btn.dataset.liga;
     if(ligas[liga]) btn.innerHTML = ligas[liga].nombre[idiomaActual];
   });
 
-  // Footer
   document.getElementById("footer-p1").textContent = t.footer1;
   document.getElementById("footer-p2").innerHTML =
     `<strong>Company of Heroes</strong>${t.footer2_mid}<strong>Relic Entertainment</strong>${t.footer2_suf}`;
   document.getElementById("footer-p3").textContent = t.footer3;
 }
 
-/* ─── Helpers ─── */
 function normalizarFecha(texto){
   return (texto||"").toLowerCase().replace(/\s+/g,"").replace(/[^a-z0-9]/g,"");
 }
@@ -1040,7 +1019,6 @@ function formatearNombreConBandera(n){
   return n;
 }
 
-/* ─── Tabs ─── */
 function generarTabs(){
   const contenedor = document.querySelector(".tabs");
   contenedor.innerHTML = "";
@@ -1066,7 +1044,6 @@ function generarTabs(){
   });
 }
 
-/* ─── Selector fechas ─── */
 function llenarSelectorFechas(rows){
   const select = document.getElementById("fechaSelect");
   const t = traducciones[idiomaActual];
@@ -1080,7 +1057,6 @@ function llenarSelectorFechas(rows){
   });
 }
 
-/* ─── Render tabla ─── */
 function renderFiltrado(filtro=""){
   const tbody = document.querySelector("#cronograma tbody");
   tbody.innerHTML = "";
@@ -1128,6 +1104,10 @@ function renderFiltrado(filtro=""){
       { clase="pendiente"; texto=t.pendiente; }
     else if(estadoLower.includes("juego")||estadoLower.includes("playing"))
       { clase="enjuego"; texto=t.enjuego; }
+    else if(estadoLower.includes("postergado")||estadoLower.includes("postponed"))
+      { clase="postergado"; texto=t.postergado; }
+    else if(estadoLower.includes("casteado")||estadoLower.includes("casted"))
+      { clase="casteado"; texto=t.casteado; }
 
     const tr = document.createElement("tr");
     tr.innerHTML = `<td>${local}</td><td class="versus">${t.versus}</td><td>${visitante}</td><td class="${clase}">${texto}</td>`;
@@ -1137,7 +1117,6 @@ function renderFiltrado(filtro=""){
   actualizarVideos();
 }
 
-/* ─── Cargar cronograma ─── */
 async function cargarCronograma(){
   clearStatus();
   document.querySelector("#cronograma tbody").innerHTML = "";
@@ -1162,7 +1141,6 @@ async function cargarCronograma(){
   }
 }
 
-/* ─── Participantes ─── */
 function cargarParticipantesPanel(){
   const tbody = document.querySelector("#lista-participantes");
   tbody.innerHTML = "";
@@ -1215,23 +1193,21 @@ function cargarParticipantesPanel(){
   } catch(e){ console.error("Error participantes:", e); }
 }
 
-/* ─── Videos ─── */
 function actualizarVideos(){
   const lista    = videosPorTemporada[temporadaActual] || [];
   const btnVideos = document.getElementById("toggle-videos");
   const videosFechas = document.querySelector(".videos-fechas");
 
   if(lista.length===0){
-  videosFechas.style.display = "none";
-  btnVideos.style.display    = "none";
-} else {
-  if(window.innerWidth > 700){
-    videosFechas.style.display = "flex"; // 👈 lo vuelve a mostrar
+    videosFechas.style.display = "none";
+    btnVideos.style.display    = "none";
+  } else {
+    if(window.innerWidth > 700){
+      videosFechas.style.display = "flex";
+    }
+    btnVideos.style.display = window.innerWidth<=700 ? "inline-block" : "none";
   }
-  btnVideos.style.display = window.innerWidth<=700 ? "inline-block" : "none";
-}
 
-  // Mobile — videos inline
   if(window.innerWidth<=700){
     document.querySelectorAll(".video-inline").forEach(v=>v.remove());
     const filas = [...document.querySelectorAll("#cronograma tbody tr")];
@@ -1270,7 +1246,6 @@ function actualizarVideos(){
     return;
   }
 
-  // Desktop — thumbnails
   document.querySelectorAll(".video-fecha").forEach(v => {
     const img    = v.querySelector("img");
     const iframe = v.querySelector("iframe");
@@ -1285,12 +1260,10 @@ function actualizarVideos(){
   });
 }
 
-/* ─── Color temporada activa ─── */
 function actualizarColorTemporada(){
   document.getElementById("temporadaSelect").classList.add("activo");
 }
 
-/* ─── Event listeners ─── */
 document.getElementById("btnActivas").onclick = ()=>{
   modo="activas";
   document.getElementById("btnActivas").classList.add("active");
@@ -1342,7 +1315,6 @@ document.getElementById("toggle-videos").onclick = ()=>{
   document.querySelectorAll(".video-inline").forEach(v=>v.classList.toggle("visible"));
 };
 
-/* ─── Sidebar / overlay ─── */
 const menuToggle = document.getElementById("menuToggle");
 const sidebar    = document.getElementById("sidebar");
 const overlay    = document.getElementById("overlay");
@@ -1358,12 +1330,10 @@ overlay.addEventListener("click", ()=>{
   document.body.classList.remove("no-scroll");
 });
 
-/* ─── Panel participantes toggle ─── */
 document.getElementById("toggle-participantes").addEventListener("click", ()=>{
   document.getElementById("panel-participantes").classList.toggle("visible");
 });
 
-/* ─── Init ─── */
 document.addEventListener("DOMContentLoaded", ()=>{
   const idiomaGuardado = localStorage.getItem("idioma");
   if(idiomaGuardado){
