@@ -746,7 +746,12 @@ const mapasThumbs = {
   "Ruins of Rouen":        "ruins_of_rouen.jpg",
   "Blood Harvest":         "blood_harvest.jpg",
   "Bois du Chatelet":      "bois_du_chatelet.jpg",
-  "Strasbourg":            "strasbourg.jpg"
+  "Strasbourg":            "strasbourg.jpg",
+  "Flooded Plains":        "flooded_plains.jpg",
+  "Duclair":               "duclair.jpg",
+  "Carpiquet":             "carpiquet.jpg"
+
+
 };
 
 let ligaActual = Object.keys(urls[temporadaActual])[0];
@@ -841,6 +846,8 @@ function renderResultados(fecha) {
   const filtrado = data.filter(r => r[1] === fecha);
   filtrado.forEach(row => {
     const [id, fechaRaw, local, facLocal, resultado, facVisit, visitante, mapa, replay] = row;
+    const mapaKey = mapa.replace(/\s+/g, ' ').trim();
+    console.log("mapaKey:", JSON.stringify(mapaKey), "thumb:", mapasThumbs[mapaKey]);
     const banderaLocal = crearBandera(local);
     const banderaVisit = crearBandera(visitante);
     const nombreLocal  = limpiarNombre(local);
@@ -866,7 +873,7 @@ function renderResultados(fecha) {
           </div>
         </div>
         <div class="mapa">
-          ${(replay && replay.trim().startsWith("http") && mapasThumbs[mapa.trim()]) ? `<img src="${mapasThumbs[mapa.trim()]}" alt="${mapa.trim()}" style="width:48px;height:36px;object-fit:cover;border-radius:3px;border:1px solid rgba(255,200,80,0.2);box-shadow:0 1px 4px rgba(0,0,0,0.6);flex-shrink:0;">` : ""} ${mapa.trim()}
+          ${(replay && replay.trim().startsWith("http") && mapasThumbs[mapaKey]) ? `<img src="${mapasThumbs[mapaKey]}" alt="${mapaKey}" style="width:48px;height:36px;object-fit:cover;border-radius:3px;border:1px solid rgba(255,200,80,0.2);box-shadow:0 1px 4px rgba(0,0,0,0.6);flex-shrink:0;">` : ""} ${mapaKey}
           ${replay && replay.trim().startsWith("http")
             ? `<button class="replay-btn" onclick="window.open('${replay.trim()}','_blank')">
                 <span class="replay-icon">⚡</span>
