@@ -34,7 +34,6 @@ body {
   overflow-x: hidden;
 }
 
-/* ── Overlay oscuro + scanlines ── */
 body::before {
   content: "";
   position: fixed;
@@ -54,7 +53,6 @@ body::after {
   z-index: 0;
 }
 
-/* ── LOGO ── */
 .logo-liga {
   display: block;
   width: 580px;
@@ -76,7 +74,6 @@ body::after {
   100%{ opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ── BOTÓN MENÚ ── */
 .menu-btn {
   position: fixed;
   top: 22px;
@@ -95,7 +92,6 @@ body::after {
 }
 .menu-btn:active { transform: scale(0.97); }
 
-/* ── SIDEBAR ── */
 .sidebar {
   position: fixed;
   top: 95px;
@@ -156,7 +152,6 @@ body::after {
   box-shadow: inset 3px 0 0 var(--gold);
 }
 
-/* ── SELECTOR DE IDIOMA ── */
 .language-selector {
   position: fixed;
   top: 20px;
@@ -191,7 +186,6 @@ body::after {
   background: rgba(20,12,4,0.9);
 }
 
-/* ── OVERLAY ── */
 #overlay {
   position: fixed;
   inset: 0;
@@ -205,7 +199,6 @@ body::after {
 #overlay.active { opacity: 1; pointer-events: all; }
 body.no-scroll { overflow: hidden; }
 
-/* ── CONTENIDO PRINCIPAL ── */
 .main-content {
   position: relative;
   z-index: 10;
@@ -216,7 +209,6 @@ body.no-scroll { overflow: hidden; }
   padding: 0 16px 60px;
 }
 
-/* ── TABS LIGA ── */
 .tabs {
   display: flex;
   gap: 10px;
@@ -269,7 +261,6 @@ body.no-scroll { overflow: hidden; }
   filter: drop-shadow(0 0 3px rgba(0,0,0,0.7));
 }
 
-/* ── TÍTULO TEMPORADA ── */
 .titulo-temporada {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 2rem;
@@ -290,7 +281,6 @@ body.no-scroll { overflow: hidden; }
   50%{ text-shadow: -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000, 0 0 16px rgba(255,215,80,1), 0 0 36px rgba(255,204,85,0.7); }
 }
 
-/* ── SELECTOR TEMPORADA / FECHA ── */
 .selector-temporada {
   display: flex;
   align-items: center;
@@ -346,7 +336,6 @@ select:hover {
   box-shadow: 0 0 12px rgba(59,160,255,0.2);
 }
 
-/* ── TÍTULO RESULTADOS ── */
 .titulo {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 1.6rem;
@@ -360,10 +349,9 @@ select:hover {
   text-align: center;
 }
 
-/* ── CABECERA COLUMNAS ── */
 .column-titles {
   display: grid;
-  grid-template-columns: 1fr 0.5fr 1fr 0.5fr;
+  grid-template-columns: 1fr 0.5fr 1fr 1fr;
   max-width: 1000px;
   width: 100%;
   text-align: center;
@@ -378,7 +366,6 @@ select:hover {
   padding: 0 4px;
 }
 
-/* ── CONTENEDOR RESULTADOS ── */
 .resultados-container {
   width: 100%;
   max-width: 1000px;
@@ -387,10 +374,9 @@ select:hover {
   gap: 8px;
 }
 
-/* ── TARJETA PARTIDA (desktop) ── */
 .partida {
   display: grid;
-  grid-template-columns: 1fr 0.5fr 1fr 0.5fr;
+  grid-template-columns: 1fr 0.5fr 1fr 1fr;
   align-items: center;
   text-align: center;
   background: linear-gradient(135deg, rgba(12,8,3,0.88), rgba(20,12,4,0.82));
@@ -401,6 +387,11 @@ select:hover {
   position: relative;
   overflow: hidden;
 }
+
+.partida-fila-main {
+  display: contents;
+}
+
 .partida::before {
   content: "";
   position: absolute;
@@ -415,11 +406,10 @@ select:hover {
   box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 16px rgba(255,180,50,0.08);
 }
 
-/* En desktop los wrappers intermedios (.partida > div) no deben verse */
 .partida-fila-main {
-  display: contents; /* los hijos participan directamente en el grid padre */
+  display: contents;
 }
-.partida-label { display: none; } /* labels solo en mobile */
+.partida-label { display: none; }
 
 .jugador {
   font-family: 'Rajdhani', sans-serif;
@@ -474,25 +464,90 @@ select:hover {
   gap: 8px;
   text-shadow: -1px -1px 0 #000;
 }
-.mapa button {
-  background: rgba(255,200,80,0.08);
-  color: var(--gold);
-  border: 1px solid rgba(255,200,80,0.25);
+
+/* ── BOTÓN REPLAY NEON ── */
+.replay-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  color: #00ffcc;
+  border: 1px solid #00ffcc;
   border-radius: 4px;
-  padding: 4px 9px;
+  padding: 4px 10px;
   cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 700;
-  font-size: 0.85rem;
-  text-shadow: none;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px #00ffcc, 0 0 18px #00ffcc;
+  box-shadow:
+    0 0 6px rgba(0,255,200,0.35),
+    inset 0 0 6px rgba(0,255,200,0.08);
+  animation: neonPulse 1.4s ease-in-out infinite;
+  transition: background 0.2s, box-shadow 0.2s;
+  overflow: hidden;
 }
-.mapa button:hover {
-  background: rgba(255,200,80,0.2);
-  border-color: rgba(255,200,80,0.5);
-  box-shadow: 0 0 8px rgba(255,200,80,0.2);
+.replay-btn::before {
+  content: "";
+  position: absolute;
+  top: -1px; left: -60%;
+  width: 40%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(0,255,200,0.25), transparent);
+  transform: skewX(-20deg);
+  animation: replaySweep 2.2s ease-in-out infinite;
+}
+.replay-btn:hover {
+  background: rgba(0,255,200,0.1);
+  box-shadow:
+    0 0 14px rgba(0,255,200,0.7),
+    inset 0 0 12px rgba(0,255,200,0.15);
+  animation: none;
+  text-shadow: 0 0 12px #00ffcc, 0 0 28px #00ffcc;
+}
+.replay-btn:active { transform: scale(0.95); }
+
+.replay-btn.replay-disabled {
+  color: #556;
+  border-color: rgba(100,100,120,0.4);
+  text-shadow: none;
+  box-shadow: none;
+  animation: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.replay-btn.replay-disabled::before { display: none; }
+.replay-btn.replay-disabled .replay-icon { animation: none; }
+
+.replay-icon {
+  font-size: 0.85rem;
+  animation: iconSpin 2.2s linear infinite;
+  display: inline-block;
+}
+.replay-btn:hover .replay-icon { animation-play-state: paused; }
+
+@keyframes neonPulse {
+  0%,100% {
+    box-shadow: 0 0 5px rgba(0,255,200,0.3), inset 0 0 5px rgba(0,255,200,0.06);
+    border-color: rgba(0,255,200,0.6);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(0,255,200,0.7), inset 0 0 10px rgba(0,255,200,0.15);
+    border-color: #00ffcc;
+  }
+}
+@keyframes replaySweep {
+  0%   { left: -60%; }
+  60%,100% { left: 120%; }
+}
+@keyframes iconSpin {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
 }
 
-/* ── FOOTER ── */
 footer {
   position: relative;
   z-index: 10;
@@ -513,7 +568,6 @@ footer {
 }
 .footer-legal strong { color: #9a7a50; }
 
-/* ── RESPONSIVE ── */
 @media (max-width: 700px) {
   .logo-liga { width: 300px; }
   .menu-btn { width: 88px; left: 12px; top: 12px; }
@@ -531,7 +585,6 @@ footer {
 
   .column-titles { display: none; }
 
-  /* ── Tarjeta mobile: flex columna ── */
   .partida {
     display: flex;
     flex-direction: column;
@@ -539,7 +592,6 @@ footer {
     gap: 0;
   }
 
-  /* Fila principal: local · score · visitante */
   .partida-fila-main {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -548,7 +600,6 @@ footer {
     width: 100%;
   }
 
-  /* Labels LOCAL / VISITA encima de cada jugador */
   .partida-label {
     display: block;
     font-size: 0.55rem;
@@ -570,12 +621,10 @@ footer {
     text-overflow: ellipsis;
     min-width: 0;
   }
-  /* Jugador local: bandera + nombre alineados a la derecha */
   .jugador.local {
     justify-content: flex-end;
     flex-direction: row;
   }
-  /* Jugador visitante: alineado a la izquierda */
   .jugador.visitante {
     justify-content: flex-start;
     flex-direction: row;
@@ -591,7 +640,6 @@ footer {
 
   img.flag { width: 14px; height: 10px; flex-shrink: 0; }
 
-  /* Fila mapa debajo */
   .mapa {
     font-size: 0.72rem;
     margin-top: 8px;
@@ -600,21 +648,16 @@ footer {
     justify-content: center;
     gap: 6px;
   }
-  .mapa button { padding: 3px 8px; font-size: 0.72rem; }
-
-  .selector-temporada, .filter-bar { justify-content: center; width: 100%; }
+  .replay-btn { font-size: 0.6rem; padding: 3px 8px; letter-spacing: 1px; }
 }
 </style>
 </head>
 <body>
 
-<!-- Overlay -->
 <div id="overlay"></div>
 
-<!-- Botón menú -->
 <img src="boton-menu.png" alt="Menú" class="menu-btn" id="menuToggle">
 
-<!-- Sidebar -->
 <nav class="sidebar" id="sidebar">
   <a href="index.html">🏠 Menu Principal</a>
   <a href="reglas.html">📏 Formato - Reglas</a>
@@ -627,7 +670,6 @@ footer {
   <a href="inscripciones.html">✍️ Inscripciones</a>
 </nav>
 
-<!-- Selector idioma -->
 <div class="language-selector">
   <img id="current-flag" class="flag-icon" src="https://flagcdn.com/w20/es.png" alt="ES">
   <select id="lang-select">
@@ -636,7 +678,6 @@ footer {
   </select>
 </div>
 
-<!-- Contenido principal -->
 <div class="main-content">
 
   <img src="1811d0cb-36e3-4b23-9d1f-5b4f66ce2d8c-removebg-preview.png" alt="Liga Latina de COH" class="logo-liga">
@@ -666,7 +707,6 @@ footer {
 
 </div>
 
-<!-- Footer -->
 <footer>
   <p>© Liga Latina de Company of Heroes</p>
   <div class="footer-legal">
@@ -693,6 +733,22 @@ const urls = {
   }
 };
 
+const mapasThumbs = {
+  "Angoville":             "angoville.jpg",
+  "Semois":                "semois.jpg",
+  "Langres":               "langres.jpg",
+  "Sturzdorf":             "sturzdorf.jpg",
+  "Wrecked Train":         "wrecked_train.jpg",
+  "Lowlands":              "beaux_lowlands.jpg",
+  "Beaux Lowlands":        "beaux_lowlands.jpg",
+  "Argentan Crossroads":   "argentan_crossroads.jpg",
+  "Ruinas de Rouen":       "ruins_of_rouen.jpg",
+  "Ruins of Rouen":        "ruins_of_rouen.jpg",
+  "Blood Harvest":         "blood_harvest.jpg",
+  "Bois du Chatelet":      "bois_du_chatelet.jpg",
+  "Strasbourg":            "strasbourg.jpg"
+};
+
 let ligaActual = Object.keys(urls[temporadaActual])[0];
 
 const facciones = {
@@ -711,7 +767,6 @@ const iconosLiga = {
 
 let data = [];
 
-/* ── CARGAR RESULTADOS ── */
 async function cargarResultados() {
   const url = urls[temporadaActual]?.[ligaActual];
   if (!url) {
@@ -729,7 +784,6 @@ async function cargarResultados() {
   if (select.options.length > 0) renderResultados(select.options[0].value);
 }
 
-/* ── GENERAR TABS ── */
 function generarTabs() {
   const contenedor = document.querySelector(".tabs");
   contenedor.innerHTML = "";
@@ -760,7 +814,6 @@ function generarTabs() {
   });
 }
 
-/* ── SELECTOR FECHAS ── */
 function llenarSelectorFechas(rows) {
   const select = document.getElementById("fechaSelect");
   const fechas = [...new Set(rows.map(r => r[1]))];
@@ -778,7 +831,6 @@ function llenarSelectorFechas(rows) {
   select.classList.add("activo");
 }
 
-/* ── RENDER RESULTADOS ── */
 function renderResultados(fecha) {
   const cont = document.getElementById("resultados");
   cont.innerHTML = "";
@@ -796,8 +848,10 @@ function renderResultados(fecha) {
     const facIzq = facciones[facLocal]  || "";
     const facDer = facciones[facVisit] || "";
 
-    const localLabel   = idiomaActual === "en" ? "HOME"  : "LOCAL";
-    const visitaLabel  = idiomaActual === "en" ? "AWAY"  : "VISITA";
+    const localLabel  = idiomaActual === "en" ? "HOME"  : "LOCAL";
+    const visitaLabel = idiomaActual === "en" ? "AWAY"  : "VISITA";
+    const replayLabel = idiomaActual === "en" ? "REPLAY" : "REPLAY";
+
     const html = `
       <div class="partida">
         <div class="partida-fila-main">
@@ -811,7 +865,19 @@ function renderResultados(fecha) {
             <div class="jugador visitante">${nombreVisit} ${banderaVisit}</div>
           </div>
         </div>
-        <div class="mapa">🗺️ ${mapa} <button onclick="window.open('${replay}','_blank')">📥</button></div>
+        <div class="mapa">
+          ${(replay && replay.trim().startsWith("http") && mapasThumbs[mapa.trim()]) ? `<img src="${mapasThumbs[mapa.trim()]}" alt="${mapa.trim()}" style="width:48px;height:36px;object-fit:cover;border-radius:3px;border:1px solid rgba(255,200,80,0.2);box-shadow:0 1px 4px rgba(0,0,0,0.6);flex-shrink:0;">` : ""} ${mapa.trim()}
+          ${replay && replay.trim().startsWith("http")
+            ? `<button class="replay-btn" onclick="window.open('${replay.trim()}','_blank')">
+                <span class="replay-icon">⚡</span>
+                <span class="replay-text">${replayLabel}</span>
+               </button>`
+            : `<button class="replay-btn replay-disabled" disabled>
+                <span class="replay-icon">⏳</span>
+                <span class="replay-text">${idiomaActual === "en" ? "PENDING" : "PENDIENTE"}</span>
+               </button>`
+          }
+        </div>
       </div>`;
     cont.insertAdjacentHTML("beforeend", html);
   });
@@ -833,7 +899,6 @@ function limpiarNombre(nombre) {
   return nombre.trim().replace(/\s+[A-Za-z]{2}$/i, "");
 }
 
-/* ── TRADUCCIONES ── */
 const traducciones = {
   es: {
     fechaLabel:       "📅 Fecha:",
@@ -882,20 +947,16 @@ function traducirColumnas() {
 function traducirHTMLFijo() {
   const t = traducciones[idiomaActual];
 
-  // Label fecha
   document.getElementById("label-fecha").textContent = t.fechaLabel;
 
-  // Título temporada
   document.querySelector(".titulo-temporada").textContent =
     t.temporada + " " + temporadaActual;
 
-  // Options selector temporada
   document.getElementById("temporadaSelect").querySelectorAll("option").forEach(opt => {
     opt.textContent = idiomaActual === "en"
       ? `Season ${opt.value}` : `Temporada ${opt.value}`;
   });
 
-  // Sidebar
   document.querySelectorAll(".sidebar a").forEach(a => {
     const txt = a.textContent;
     if (txt.includes("Menu Principal") || txt.includes("Main Menu")) a.textContent = t.menuPrincipal;
@@ -909,19 +970,16 @@ function traducirHTMLFijo() {
     else if (txt.includes("Inscripciones") || txt.includes("Sign")) a.textContent = t.inscripciones;
   });
 
-  // Footer
   const fp = document.querySelectorAll(".footer-legal p");
   if (fp[0]) fp[0].textContent = t.footer1;
   if (fp[1]) fp[1].innerHTML =
     `<strong>Company of Heroes</strong> ${idiomaActual === "en" ? "is a registered trademark of" : "es una marca registrada de"} <strong>Relic Entertainment</strong>.`;
   if (fp[2]) fp[2].textContent = t.footer3;
 
-  // Selector temporada label
   const lTemp = document.querySelector(".selector-temporada label");
   if (lTemp) lTemp.textContent = t.temporadaLabel;
 }
 
-/* ── CAMBIO DE IDIOMA ── */
 document.getElementById("lang-select").addEventListener("change", e => {
   idiomaActual = e.target.value;
   localStorage.setItem("idioma", idiomaActual);
@@ -933,7 +991,6 @@ document.getElementById("lang-select").addEventListener("change", e => {
   cargarResultados();
 });
 
-/* ── CAMBIO TEMPORADA ── */
 document.getElementById("temporadaSelect").addEventListener("change", e => {
   temporadaActual = e.target.value;
   ligaActual = Object.keys(urls[temporadaActual])[0];
@@ -944,7 +1001,6 @@ document.getElementById("temporadaSelect").addEventListener("change", e => {
   document.getElementById("temporadaSelect").classList.add("activo");
 });
 
-/* ── SIDEBAR / OVERLAY ── */
 const menuToggle = document.getElementById("menuToggle");
 const sidebar    = document.getElementById("sidebar");
 const overlay    = document.getElementById("overlay");
@@ -960,7 +1016,6 @@ overlay.addEventListener("click", () => {
   document.body.classList.remove("no-scroll");
 });
 
-/* ── INIT ── */
 window.addEventListener("DOMContentLoaded", () => {
   const sel = document.getElementById("lang-select");
   sel.value = idiomaActual;
