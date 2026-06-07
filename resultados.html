@@ -278,7 +278,7 @@ body.no-scroll { overflow: hidden; }
 }
 @keyframes titleBreath {
   0%,100%{ text-shadow: -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000, 0 0 10px rgba(255,204,85,0.8), 0 0 24px rgba(255,204,85,0.45); }
-  50%{ text-shadow: -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000, 0 0 16px rgba(255,215,80,1), 0 0 36px rgba(255,204,85,0.7); }
+  50%    { text-shadow: -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000, 0 0 16px rgba(255,215,80,1),   0 0 36px rgba(255,204,85,0.7); }
 }
 
 .selector-temporada {
@@ -351,7 +351,7 @@ select:hover {
 
 .column-titles {
   display: grid;
-  grid-template-columns: 1fr 0.5fr 1fr 1fr;
+  grid-template-columns: 1fr 0.5fr 1fr 1.4fr;
   max-width: 1000px;
   width: 100%;
   text-align: center;
@@ -374,9 +374,10 @@ select:hover {
   gap: 8px;
 }
 
+/* ── PARTIDA ROW ── */
 .partida {
   display: grid;
-  grid-template-columns: 1fr 0.5fr 1fr 1fr;
+  grid-template-columns: 1fr 0.5fr 1fr 1.4fr;
   align-items: center;
   text-align: center;
   background: linear-gradient(135deg, rgba(12,8,3,0.88), rgba(20,12,4,0.82));
@@ -386,12 +387,8 @@ select:hover {
   transition: transform .2s ease, background .2s, border-color .2s;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
-
-.partida-fila-main {
-  display: contents;
-}
-
 .partida::before {
   content: "";
   position: absolute;
@@ -411,6 +408,7 @@ select:hover {
 }
 .partida-label { display: none; }
 
+/* ── JUGADOR ── */
 .jugador {
   font-family: 'Rajdhani', sans-serif;
   font-weight: 600;
@@ -423,8 +421,7 @@ select:hover {
   color: #e8d8b0;
   text-shadow: -1px -1px 0 #000, 1px 1px 0 #000;
 }
-
-.jugador img.flag, .resultado-box img {
+.jugador img.flag {
   width: 22px;
   height: 15px;
   border-radius: 2px;
@@ -432,17 +429,27 @@ select:hover {
   box-shadow: 0 1px 4px rgba(0,0,0,0.6);
 }
 
-.resultado-box {
+/* ── RESULTADO BOX ── */
+.resultado-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
+}
+.resultado-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
 }
 .resultado-box img {
-  width: 24px; height: 24px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
 }
 
+/* ── SPOILER ── */
 .resultado-num {
   font-family: 'Orbitron', sans-serif;
   font-size: 1.2rem;
@@ -450,19 +457,62 @@ select:hover {
   color: var(--gold);
   text-shadow: 0 0 10px rgba(255,204,85,0.5), -1px -1px 0 #000;
   letter-spacing: 2px;
+  /* blur by default */
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  user-select: none;
+}
+.partida.revelado .resultado-num {
+  filter: none;
 }
 
-.mapa {
-  text-align: center;
+.spoiler-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   font-family: 'Rajdhani', sans-serif;
-  font-size: .88rem;
-  font-weight: 500;
-  color: #a09070;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: rgba(255,200,80,0.75);
+  text-transform: uppercase;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+  text-shadow: 0 0 6px rgba(0,0,0,0.8);
+}
+.partida.revelado .spoiler-hint {
+  opacity: 0;
+}
+
+/* ── MAPA ── */
+.mapa {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  font-family: 'Rajdhani', sans-serif;
+  padding-right: 12px;
+  font-size: .82rem;
+  font-weight: 500;
+  color: #a09070;
   text-shadow: -1px -1px 0 #000;
+  white-space: nowrap;
+}
+.mapa img.mapa-thumb {
+  width: 40px;
+  height: 27px;
+  object-fit: cover;
+  border-radius: 3px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  flex-shrink: 0;
+}
+.mapa-nombre {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 110px;
 }
 
 /* ── BOTÓN REPLAY NEON ── */
@@ -482,6 +532,7 @@ select:hover {
   font-weight: 600;
   letter-spacing: 1.5px;
   text-transform: uppercase;
+  text-decoration: none;
   text-shadow: 0 0 8px #00ffcc, 0 0 18px #00ffcc;
   box-shadow:
     0 0 6px rgba(0,255,200,0.35),
@@ -489,6 +540,7 @@ select:hover {
   animation: neonPulse 1.4s ease-in-out infinite;
   transition: background 0.2s, box-shadow 0.2s;
   overflow: hidden;
+  flex-shrink: 0;
 }
 .replay-btn::before {
   content: "";
@@ -510,13 +562,13 @@ select:hover {
 .replay-btn:active { transform: scale(0.95); }
 
 .replay-btn.replay-disabled {
-  color: #556;
-  border-color: rgba(100,100,120,0.4);
+  color: #445;
+  border-color: rgba(100,100,120,0.35);
   text-shadow: none;
   box-shadow: none;
   animation: none;
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.4;
 }
 .replay-btn.replay-disabled::before { display: none; }
 .replay-btn.replay-disabled .replay-icon { animation: none; }
@@ -539,7 +591,7 @@ select:hover {
   }
 }
 @keyframes replaySweep {
-  0%   { left: -60%; }
+  0%       { left: -60%; }
   60%,100% { left: 120%; }
 }
 @keyframes iconSpin {
@@ -548,6 +600,7 @@ select:hover {
   100% { transform: rotate(360deg) scale(1); }
 }
 
+/* ── FOOTER ── */
 footer {
   position: relative;
   z-index: 10;
@@ -568,11 +621,11 @@ footer {
 }
 .footer-legal strong { color: #9a7a50; }
 
+/* ── MOBILE ── */
 @media (max-width: 700px) {
   .logo-liga { width: 300px; }
   .menu-btn { width: 88px; left: 12px; top: 12px; }
   .language-selector { top: 12px; right: 12px; }
-
   .tab-btn { padding: 3px 8px; font-size: 10px; border-radius: 5px; }
 
   .sidebar {
@@ -621,33 +674,24 @@ footer {
     text-overflow: ellipsis;
     min-width: 0;
   }
-  .jugador.local {
-    justify-content: flex-end;
-    flex-direction: row;
-  }
-  .jugador.visitante {
-    justify-content: flex-start;
-    flex-direction: row;
-  }
+  .jugador.local    { justify-content: flex-end;  flex-direction: row; }
+  .jugador.visitante{ justify-content: flex-start; flex-direction: row; }
 
-  .resultado-box {
-    gap: 5px;
-    flex-shrink: 0;
-    padding: 0 4px;
-  }
-  .resultado-box img { width: 16px; height: 16px; }
+  .resultado-wrapper { gap: 4px; }
   .resultado-num { font-size: 1rem; letter-spacing: 1px; }
-
   img.flag { width: 14px; height: 10px; flex-shrink: 0; }
 
   .mapa {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     margin-top: 8px;
     padding-top: 7px;
     border-top: 1px solid rgba(255,200,80,0.08);
     justify-content: center;
-    gap: 6px;
+    padding-right: 0;
+    gap: 5px;
   }
+  .mapa img.mapa-thumb { width: 30px; height: 20px; }
+  .mapa-nombre { max-width: 80px; }
   .replay-btn { font-size: 0.6rem; padding: 3px 8px; letter-spacing: 1px; }
 }
 </style>
@@ -717,8 +761,12 @@ footer {
 </footer>
 
 <script>
-let idiomaActual = localStorage.getItem("idioma") || "es";
-let temporadaActual = "2";
+/* ═══════════════════════════════════════════
+   GLOBALS
+═══════════════════════════════════════════ */
+let idiomaActual    = localStorage.getItem("idioma") || "es";
+let temporadaActual =
+  localStorage.getItem("resultados_temporada") || "2";
 
 const urls = {
   "1": {
@@ -734,33 +782,37 @@ const urls = {
 };
 
 const mapasThumbs = {
-  "Angoville":             "angoville.jpg",
-  "Semois":                "semois.jpg",
-  "Langres":               "langres.jpg",
-  "Sturzdorf":             "sturzdorf.jpg",
-  "Wrecked Train":         "wrecked_train.jpg",
-  "Lowlands":              "beaux_lowlands.jpg",
-  "Beaux Lowlands":        "beaux_lowlands.jpg",
-  "Argentan Crossroads":   "argentan_crossroads.jpg",
-  "Ruinas de Rouen":       "ruins_of_rouen.jpg",
-  "Ruins of Rouen":        "ruins_of_rouen.jpg",
-  "Blood Harvest":         "blood_harvest.jpg",
-  "Bois du Chatelet":      "bois_du_chatelet.jpg",
-  "Strasbourg":            "strasbourg.jpg",
-  "Flooded Plains":        "flooded_plains.jpg",
-  "Duclair":               "duclair.jpg",
-  "Carpiquet":             "carpiquet.jpg"
-
-
+  "Angoville":           "angoville.jpg",
+  "Semois":              "semois.jpg",
+  "Langres":             "langres.jpg",
+  "Sturzdorf":           "sturzdorf.jpg",
+  "Wrecked Train":       "wrecked_train.jpg",
+  "Lowlands":            "beaux_lowlands.jpg",
+  "Beaux Lowlands":      "beaux_lowlands.jpg",
+  "Argentan Crossroads": "argentan_crossroads.jpg",
+  "Ruinas de Rouen":     "ruins_of_rouen.jpg",
+  "Ruins of Rouen":      "ruins_of_rouen.jpg",
+  "Blood Harvest":       "blood_harvest.jpg",
+  "Bois du Chatelet":    "bois_du_chatelet.jpg",
+  "Strasbourg":          "strasbourg.jpg",
+  "Flooded Plains":      "flooded_plains.jpg",
+  "Duclair":             "duclair.jpg",
+  "Carpiquet":           "carpiquet.jpg"
 };
 
-let ligaActual = Object.keys(urls[temporadaActual])[0];
+let ligaActual =
+  localStorage.getItem("resultados_liga") ||
+  Object.keys(urls[temporadaActual])[0];
+
+  if (!urls[temporadaActual][ligaActual]) {
+  ligaActual = Object.keys(urls[temporadaActual])[0];
+}
 
 const facciones = {
-  US: '<img src="armies/us.png" alt="US">',
-  WM: '<img src="armies/wm.png" alt="WM">',
-  PE: '<img src="armies/pe.png" alt="PE">',
-  CW: '<img src="armies/cw.png" alt="CW">'
+  US: '<img src="armies/us.png" alt="US" style="width:24px;height:24px;object-fit:contain;">',
+  WM: '<img src="armies/wm.png" alt="WM" style="width:24px;height:24px;object-fit:contain;">',
+  PE: '<img src="armies/pe.png" alt="PE" style="width:24px;height:24px;object-fit:contain;">',
+  CW: '<img src="armies/cw.png" alt="CW" style="width:24px;height:24px;object-fit:contain;">'
 };
 
 const iconosLiga = {
@@ -770,8 +822,85 @@ const iconosLiga = {
   bronce:  '<img class="liga-icon" src="bronze.png">'
 };
 
+const traducciones = {
+  es: {
+    fechaLabel:      "📅 Fecha:",
+    temporada:       "TEMPORADA",
+    menuPrincipal:   "🏠 Menu Principal",
+    reglas:          "📏 Formato - Reglas",
+    cronograma:      "📅 Cronograma",
+    resultados:      "📋 Resultados",
+    ranking:         "🏆 Ranking",
+    estadisticas:    "📊 Estadisticas",
+    premios:         "🎁 Premios",
+    donaciones:      "💰 Donaciones",
+    inscripciones:   "✍️ Inscripciones",
+    temporadaLabel:  "📜 Temporada:",
+    resultadosFecha: "Resultados – Fecha #",
+    spoilerHint:     "👁 VER",
+    localLabel:      "LOCAL",
+    visitaLabel:     "VISITA",
+    replayNA:        "N/A",
+    footer1:         "Este es un sitio web no oficial creado por fans de Company of Heroes 1.",
+    footer3:         "Las imágenes y recursos son propiedad de Relic Entertainment."
+  },
+  en: {
+    fechaLabel:      "📅 Date:",
+    temporada:       "SEASON",
+    menuPrincipal:   "🏠 Main Menu",
+    reglas:          "📏 Format - Rules",
+    cronograma:      "📅 Schedule",
+    resultados:      "📋 Results",
+    ranking:         "🏆 Ranking",
+    estadisticas:    "📊 Statistics",
+    premios:         "🎁 Prizes",
+    donaciones:      "💰 Donations",
+    inscripciones:   "✍️ Sign Up",
+    temporadaLabel:  "📜 Season:",
+    resultadosFecha: "Results – Round #",
+    spoilerHint:     "👁 SHOW",
+    localLabel:      "HOME",
+    visitaLabel:     "AWAY",
+    replayNA:        "N/A",
+    footer1:         "This is an unofficial fan-made website for Company of Heroes 1.",
+    footer3:         "All assets belong to Relic Entertainment."
+  }
+};
+
 let data = [];
 
+function guardarEstadoResultados() {
+  localStorage.setItem("resultados_temporada", temporadaActual);
+  localStorage.setItem("resultados_liga", ligaActual);
+
+  const fechaSelect = document.getElementById("fechaSelect");
+  if (fechaSelect) {
+    localStorage.setItem("resultados_fecha", fechaSelect.value);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════ */
+function crearBandera(nombre) {
+  const trimmed = nombre.trim();
+  let code = trimmed.split(/\s+/).pop();
+  if (!/^[A-Za-z]{2}$/.test(code)) {
+    const m = trimmed.match(/([A-Za-z]{2})$/);
+    code = m ? m[1] : "";
+  }
+  return code
+    ? `<img class="flag" src="https://flagcdn.com/w20/${code.toLowerCase()}.png" alt="${code.toUpperCase()}">`
+    : "";
+}
+
+function limpiarNombre(nombre) {
+  return nombre.trim().replace(/\s+[A-Za-z]{2}$/i, "");
+}
+
+/* ═══════════════════════════════════════════
+   CARGA DE DATOS
+═══════════════════════════════════════════ */
 async function cargarResultados() {
   const url = urls[temporadaActual]?.[ligaActual];
   if (!url) {
@@ -782,13 +911,153 @@ async function cargarResultados() {
   const resp = await fetch(url);
   const text = await resp.text();
   const rows = text.trim().split(/\r?\n/).map(r => r.split(","));
-  data = rows.slice(1);
+  data = rows.slice(1); // skip header
   llenarSelectorFechas(data);
   traducirColumnas();
   const select = document.getElementById("fechaSelect");
-  if (select.options.length > 0) renderResultados(select.options[0].value);
+  if (select.options.length > 0) {
+
+  const fechaGuardada =
+    localStorage.getItem("resultados_fecha");
+
+  const existeFecha =
+    [...select.options].some(o => o.value === fechaGuardada);
+
+  if (existeFecha) {
+    select.value = fechaGuardada;
+    renderResultados(fechaGuardada);
+  } else {
+    renderResultados(select.options[0].value);
+  }
+}
 }
 
+/* ═══════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════ */
+function renderResultados(fecha) {
+  const cont = document.getElementById("resultados");
+  cont.innerHTML = "";
+  const t = traducciones[idiomaActual];
+
+  document.getElementById("titulo").textContent =
+    t.resultadosFecha.replace("#", fecha.replace(/\D/g, ""));
+
+  const filtrado = data.filter(r => r[1] === fecha);
+
+  filtrado.forEach(row => {
+
+       // Columns: id | fecha | local | facLocal | resultado | facVisit | visitante | mapa | replay
+    const id        = (row[0] || "").trim();
+    const fechaRaw  = (row[1] || "").trim();
+    const local     = (row[2] || "").trim();
+    const facLocal  = (row[3] || "").trim();
+    const resultado = (row[4] || "").trim();
+    const facVisit  = (row[5] || "").trim();
+    const visitante = (row[6] || "").trim();
+    const mapa      = (row[7] || "").replace(/\s+/g, ' ').trim(); // ← normalize espacios internos
+    const replay    = (row[8] || "").trim();
+
+    // Map thumbnail
+    const thumb     = mapasThumbs[mapa] || "";
+    const thumbHTML = thumb
+  ? `<img src="${thumb}" alt="${mapa}"
+         style="width:36px;height:24px;object-fit:cover;border-radius:3px;
+                box-shadow:0 1px 4px rgba(0,0,0,0.6);flex-shrink:0;">`
+  : "";
+
+    // Players
+    const banderaLocal = crearBandera(local);
+    const banderaVisit = crearBandera(visitante);
+    const nombreLocal  = limpiarNombre(local);
+    const nombreVisit  = limpiarNombre(visitante);
+
+    // Factions — render outside the score box
+    const facIzq = facciones[facLocal]  || "";
+    const facDer = facciones[facVisit]  || "";
+
+    // Replay button
+    const replayURL = (replay && replay.startsWith("http")) ? replay : null;
+    const replayBtn = replayURL
+      ? `<a href="${replayURL}" target="_blank" class="replay-btn" onclick="event.stopPropagation()">
+           <span class="replay-icon">⟳</span> REPLAY
+         </a>`
+      : `<button class="replay-btn replay-disabled" disabled>
+           <span class="replay-icon">⟳</span> ${t.replayNA}
+         </button>`;
+
+    const html = `
+      <div class="partida">
+        <div class="partida-fila-main">
+
+          <!-- LOCAL -->
+          <div>
+            <span class="partida-label">${t.localLabel}</span>
+            <div class="jugador local">${banderaLocal} ${nombreLocal}</div>
+          </div>
+
+          <!-- SCORE: facciones afuera, número+hint adentro del box -->
+          <div class="resultado-wrapper">
+            ${facIzq}
+            <div class="resultado-box">
+              <span class="resultado-num">${resultado}</span>
+              <span class="spoiler-hint">${t.spoilerHint}</span>
+            </div>
+            ${facDer}
+          </div>
+
+          <!-- VISITANTE -->
+          <div>
+            <span class="partida-label">${t.visitaLabel}</span>
+            <div class="jugador visitante">${nombreVisit} ${banderaVisit}</div>
+          </div>
+
+        </div>
+
+        <!-- MAPA -->
+        <div class="mapa">
+          ${thumbHTML}
+          ${mapa || "—"}
+          ${replayBtn}
+       </div>
+        </div>`;
+
+    cont.insertAdjacentHTML("beforeend", html);
+
+    // Click anywhere on the row (except replay btn) reveals/hides the score
+    cont.lastElementChild.addEventListener("click", function(e) {
+      if (e.target.closest(".replay-btn")) return;
+      this.classList.toggle("revelado");
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════
+   SELECTOR DE FECHAS
+═══════════════════════════════════════════ */
+function llenarSelectorFechas(rows) {
+  const select = document.getElementById("fechaSelect");
+  const fechas = [...new Set(rows.map(r => r[1]))];
+  select.innerHTML = "";
+  fechas.forEach((f, index) => {
+    const opt = document.createElement("option");
+    opt.value = f;
+    const numero = f.replace(/\D/g, "");
+    opt.textContent = idiomaActual === "en" ? `Round ${numero}` : f;
+    if (index === 0) opt.selected = true;
+    select.appendChild(opt);
+  });
+  select.selectedIndex = 0;
+  select.onchange = () => {
+  guardarEstadoResultados();
+  renderResultados(select.value);
+};
+  select.classList.add("activo");
+}
+
+/* ═══════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════ */
 function generarTabs() {
   const contenedor = document.querySelector(".tabs");
   contenedor.innerHTML = "";
@@ -813,149 +1082,28 @@ function generarTabs() {
         b.classList.remove("active-oro","active-plata","active-platino","active-bronce"));
       btn.classList.add(`active-${liga}`);
       ligaActual = liga;
-      cargarResultados();
+guardarEstadoResultados();
+cargarResultados();
     };
     contenedor.appendChild(btn);
   });
 }
 
-function llenarSelectorFechas(rows) {
-  const select = document.getElementById("fechaSelect");
-  const fechas = [...new Set(rows.map(r => r[1]))];
-  select.innerHTML = "";
-  fechas.forEach((f, index) => {
-    const opt = document.createElement("option");
-    opt.value = f;
-    const numero = f.replace(/\D/g, "");
-    opt.textContent = idiomaActual === "en" ? `Round ${numero}` : f;
-    if (index === 0) opt.selected = true;
-    select.appendChild(opt);
-  });
-  select.selectedIndex = 0;
-  select.onchange = () => renderResultados(select.value);
-  select.classList.add("activo");
-}
-
-function renderResultados(fecha) {
-  const cont = document.getElementById("resultados");
-  cont.innerHTML = "";
-  const t = traducciones[idiomaActual];
-  document.getElementById("titulo").textContent =
-    t.resultadosFecha.replace("#", fecha.replace(/\D/g, ""));
-
-  const filtrado = data.filter(r => r[1] === fecha);
-  filtrado.forEach(row => {
-    const [id, fechaRaw, local, facLocal, resultado, facVisit, visitante, mapa, replay] = row;
-    const mapaKey = mapa.replace(/\s+/g, ' ').trim();
-    console.log("mapaKey:", JSON.stringify(mapaKey), "thumb:", mapasThumbs[mapaKey]);
-    const banderaLocal = crearBandera(local);
-    const banderaVisit = crearBandera(visitante);
-    const nombreLocal  = limpiarNombre(local);
-    const nombreVisit  = limpiarNombre(visitante);
-    const facIzq = facciones[facLocal]  || "";
-    const facDer = facciones[facVisit] || "";
-
-    const localLabel  = idiomaActual === "en" ? "HOME"  : "LOCAL";
-    const visitaLabel = idiomaActual === "en" ? "AWAY"  : "VISITA";
-    const replayLabel = idiomaActual === "en" ? "REPLAY" : "REPLAY";
-
-    const html = `
-      <div class="partida">
-        <div class="partida-fila-main">
-          <div>
-            <span class="partida-label">${localLabel}</span>
-            <div class="jugador local">${banderaLocal} ${nombreLocal}</div>
-          </div>
-          <div class="resultado-box">${facIzq}<span class="resultado-num">${resultado}</span>${facDer}</div>
-          <div>
-            <span class="partida-label">${visitaLabel}</span>
-            <div class="jugador visitante">${nombreVisit} ${banderaVisit}</div>
-          </div>
-        </div>
-        <div class="mapa">
-          ${(replay && replay.trim().startsWith("http") && mapasThumbs[mapaKey]) ? `<img src="${mapasThumbs[mapaKey]}" alt="${mapaKey}" style="width:48px;height:36px;object-fit:cover;border-radius:3px;border:1px solid rgba(255,200,80,0.2);box-shadow:0 1px 4px rgba(0,0,0,0.6);flex-shrink:0;">` : ""} ${mapaKey}
-          ${replay && replay.trim().startsWith("http")
-            ? `<button class="replay-btn" onclick="window.open('${replay.trim()}','_blank')">
-                <span class="replay-icon">⚡</span>
-                <span class="replay-text">${replayLabel}</span>
-               </button>`
-            : `<button class="replay-btn replay-disabled" disabled>
-                <span class="replay-icon">⏳</span>
-                <span class="replay-text">${idiomaActual === "en" ? "PENDING" : "PENDIENTE"}</span>
-               </button>`
-          }
-        </div>
-      </div>`;
-    cont.insertAdjacentHTML("beforeend", html);
-  });
-}
-
-function crearBandera(nombre) {
-  const trimmed = nombre.trim();
-  let code = trimmed.split(/\s+/).pop();
-  if (!/^[A-Za-z]{2}$/.test(code)) {
-    const m = trimmed.match(/([A-Za-z]{2})$/);
-    code = m ? m[1] : "";
-  }
-  return code
-    ? `<img class="flag" src="https://flagcdn.com/w20/${code.toLowerCase()}.png" alt="${code.toUpperCase()}">`
-    : "";
-}
-
-function limpiarNombre(nombre) {
-  return nombre.trim().replace(/\s+[A-Za-z]{2}$/i, "");
-}
-
-const traducciones = {
-  es: {
-    fechaLabel:       "📅 Fecha:",
-    temporada:        "TEMPORADA",
-    menuPrincipal:    "🏠 Menu Principal",
-    reglas:           "📏 Formato - Reglas",
-    cronograma:       "📅 Cronograma",
-    resultados:       "📋 Resultados",
-    ranking:          "🏆 Ranking",
-    estadisticas:     "📊 Estadisticas",
-    premios:          "🎁 Premios",
-    donaciones:       "💰 Donaciones",
-    inscripciones:    "✍️ Inscripciones",
-    temporadaLabel:   "📜 Temporada:",
-    resultadosFecha:  "Resultados – Fecha #",
-    footer1:          "Este es un sitio web no oficial creado por fans de Company of Heroes 1.",
-    footer3:          "Las imágenes y recursos son propiedad de Relic Entertainment."
-  },
-  en: {
-    fechaLabel:       "📅 Date:",
-    temporada:        "SEASON",
-    menuPrincipal:    "🏠 Main Menu",
-    reglas:           "📏 Format - Rules",
-    cronograma:       "📅 Schedule",
-    resultados:       "📋 Results",
-    ranking:          "🏆 Ranking",
-    estadisticas:     "📊 Statistics",
-    premios:          "🎁 Prizes",
-    donaciones:       "💰 Donations",
-    inscripciones:    "✍️ Sign Up",
-    temporadaLabel:   "📜 Season:",
-    resultadosFecha:  "Results – Round #",
-    footer1:          "This is an unofficial fan-made website for Company of Heroes 1.",
-    footer3:          "All assets belong to Relic Entertainment."
-  }
-};
-
+/* ═══════════════════════════════════════════
+   TRADUCCIONES
+═══════════════════════════════════════════ */
 function traducirColumnas() {
   const t = idiomaActual === "en"
-    ? ["HOME","RESULT","AWAY","MAP"]
-    : ["LOCAL","RESULTADO","VISITANTE","MAPA"];
-  document.getElementById("columnTitles").innerHTML = `
-    <div>${t[0]}</div><div>${t[1]}</div><div>${t[2]}</div><div>${t[3]}</div>`;
+    ? ["HOME", "RESULT", "AWAY", "MAP"]
+    : ["LOCAL", "RESULTADO", "VISITANTE", "MAPA"];
+  document.getElementById("columnTitles").innerHTML =
+    `<div>${t[0]}</div><div>${t[1]}</div><div>${t[2]}</div><div>${t[3]}</div>`;
 }
 
 function traducirHTMLFijo() {
   const t = traducciones[idiomaActual];
 
   document.getElementById("label-fecha").textContent = t.fechaLabel;
-
   document.querySelector(".titulo-temporada").textContent =
     t.temporada + " " + temporadaActual;
 
@@ -966,27 +1114,32 @@ function traducirHTMLFijo() {
 
   document.querySelectorAll(".sidebar a").forEach(a => {
     const txt = a.textContent;
-    if (txt.includes("Menu Principal") || txt.includes("Main Menu")) a.textContent = t.menuPrincipal;
-    else if (txt.includes("Formato") || txt.includes("Format"))     a.textContent = t.reglas;
-    else if (txt.includes("Cronograma") || txt.includes("Schedule"))a.textContent = t.cronograma;
-    else if (txt.includes("Resultados") || txt.includes("Results")) a.textContent = t.resultados;
-    else if (txt.includes("Ranking"))                                a.textContent = t.ranking;
-    else if (txt.includes("Estad"))                                  a.textContent = t.estadisticas;
-    else if (txt.includes("Premios") || txt.includes("Prizes"))     a.textContent = t.premios;
-    else if (txt.includes("Donaciones") || txt.includes("Donations"))a.textContent = t.donaciones;
-    else if (txt.includes("Inscripciones") || txt.includes("Sign")) a.textContent = t.inscripciones;
+    if      (txt.includes("Menu") || txt.includes("Main"))         a.textContent = t.menuPrincipal;
+    else if (txt.includes("Formato") || txt.includes("Format"))    a.textContent = t.reglas;
+    else if (txt.includes("Cronograma") || txt.includes("Sched"))  a.textContent = t.cronograma;
+    else if (txt.includes("Resultados") || txt.includes("Result")) a.textContent = t.resultados;
+    else if (txt.includes("Ranking"))                               a.textContent = t.ranking;
+    else if (txt.includes("Estad"))                                 a.textContent = t.estadisticas;
+    else if (txt.includes("Premios") || txt.includes("Prize"))     a.textContent = t.premios;
+    else if (txt.includes("Donac") || txt.includes("Donat"))       a.textContent = t.donaciones;
+    else if (txt.includes("Inscr") || txt.includes("Sign"))        a.textContent = t.inscripciones;
   });
 
   const fp = document.querySelectorAll(".footer-legal p");
   if (fp[0]) fp[0].textContent = t.footer1;
   if (fp[1]) fp[1].innerHTML =
-    `<strong>Company of Heroes</strong> ${idiomaActual === "en" ? "is a registered trademark of" : "es una marca registrada de"} <strong>Relic Entertainment</strong>.`;
+    `<strong>Company of Heroes</strong> ${
+      idiomaActual === "en" ? "is a registered trademark of" : "es una marca registrada de"
+    } <strong>Relic Entertainment</strong>.`;
   if (fp[2]) fp[2].textContent = t.footer3;
 
   const lTemp = document.querySelector(".selector-temporada label");
   if (lTemp) lTemp.textContent = t.temporadaLabel;
 }
 
+/* ═══════════════════════════════════════════
+   EVENTOS
+═══════════════════════════════════════════ */
 document.getElementById("lang-select").addEventListener("change", e => {
   idiomaActual = e.target.value;
   localStorage.setItem("idioma", idiomaActual);
@@ -995,6 +1148,7 @@ document.getElementById("lang-select").addEventListener("change", e => {
   traducirHTMLFijo();
   traducirColumnas();
   generarTabs();
+  guardarEstadoResultados();
   cargarResultados();
 });
 
@@ -1027,10 +1181,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const sel = document.getElementById("lang-select");
   sel.value = idiomaActual;
   document.getElementById("current-flag").src = sel.selectedOptions[0]?.dataset.flag || "";
-
   document.getElementById("temporadaSelect").value = temporadaActual;
   document.getElementById("temporadaSelect").classList.add("activo");
-
   traducirHTMLFijo();
   traducirColumnas();
   generarTabs();
