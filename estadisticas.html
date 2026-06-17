@@ -1,762 +1,604 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Estadísticas – Liga Latina COH</title>
 <link rel="icon" type="image/png" sizes="32x32" href="icono.png">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ocre:#ffcc55;
-  --panel:rgba(20,20,20,0.92);
-  --head:rgba(15,15,15,0.95);
+  --ocre:#ffcc55; --ocre-dim:#c9932a;
+  --panel:rgba(12,10,8,0.94); --head:rgba(8,6,4,0.97);
+  --verde:#3bff7a; --rojo:#ff4d4d;
+  --border-ocre: rgba(255,200,80,0.18);
 }
-
-body {
-    font-family: 'Roboto Condensed', sans-serif;
-    background: url("15b67b48-6267-46f7-b131-7426668e5e33.png") no-repeat center center fixed;
-    background-size: cover;
-    color: #eee;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-.logo-liga {
-    display: block;
-    width: 620px;
-    margin: 10px auto 20px;
-  }
-
-  .menu-btn { 
-    width: 90px; 
-    left: 14px; 
-    top: 14px; 
-  }
-
-.tab-btn{
-  padding:3px 8px;
-  font-size:10px;
-  border-radius:5px;
-}
-
-.tabs{
-  margin-top: -10px; /* 👈 los sube */
-}
-
-.titulo-temporada {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 2rem;
-  color: #ffcc55;
-  -webkit-text-stroke: 1.2px #000;
-  text-shadow: 0 0 8px rgba(255,200,80,0.6);
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  text-align: center;
-}
-
-.selector-temporada {
-  display:flex;
-  align-items:center;
-  gap:.5rem;
-  margin-bottom:.7rem;
-}
-
-
-#temporadaSelect {
-  background: #111;
-  color: #ddd;
-  border: 1px solid #444;
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-weight: 600;
-  font-family: inherit;
-  font-size: .9rem;
-  cursor: pointer;
-  transition: .3s;
-}
-
-#temporadaSelect:hover {
-  background: #222;
-  border-color: #666;
-}
-
-#temporadaSelect.activo{
-  border-color:#3bff77;
-  box-shadow:0 0 12px #3bff77aa;
-}
-
-
-/* === Botón de menú metálico === */
-.menu-btn {
-  position: fixed;
-  top: 22px;
-  left: 22px;
-  width: 115px;
-  height: auto;
-  cursor: pointer;
-  z-index: 200;
-  transition: transform 0.25s ease, filter 0.25s ease;
-  border-radius: 6px;
-}
-.menu-btn:hover { transform: scale(1.05); filter: brightness(1.25); }
-.menu-btn:active { transform: scale(0.97); filter: brightness(0.9); }
-
-/* === Panel lateral (bajado 15px) === */
-.sidebar {
-  position: fixed;
-  top: 95px;
-  left: -100%;
-  width: 260px;
-
-  background: rgba(10,10,10,0.85); /* fallback */
-
-  box-shadow: 3px 3px 18px rgba(0,0,0,0.6);
-  transition: all 0.6s ease;
-  z-index: 150;
-  display: flex;
-  flex-direction: column;
-
-  border-top-right-radius: 14px;
-  border-bottom-right-radius: 14px;
-  overflow: hidden;
-  padding-top: 10px;
-}
-
-/* solo si el navegador soporta blur */
-@supports (backdrop-filter: blur(6px)) {
-  .sidebar {
-    backdrop-filter: blur(6px);
-    background: rgba(10,10,10,0.6);
-  }
-}
-
-
-.sidebar.active { left: 0; }
-
-.sidebar a:active {
-  transform: scale(0.96);
-  background: rgba(60,60,60,0.95);
-  box-shadow: 0 0 10px rgba(255,204,85,0.4);
-}
-
-/* === Botones metálicos === */
-.sidebar a {
-  position: relative;
-  display: flex;              /* 🔥 clave */
-  align-items: center;        /* centra vertical */
-  justify-content: center;    /* centra horizontal */
-
-  height: 48px;               /* 🔥 altura fija */
-  margin: 8px 12px;
-  padding: 0 12px;            /* reducimos padding lateral */
-
-  text-decoration: none;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;      /* un poco menos para que entre mejor */
-  font-size: 0.8rem;          /* leve ajuste */
-  text-align: center;
-  border-radius: 8px;
-
-  white-space: normal;        /* 🔥 evita salto de línea */
-  height: auto;
-  padding: 10px 8px;
-  line-height: 1.2;    /* opcional: ... si no entra */
-
-  background: rgba(20,20,20,0.75);
-  color: #ddd;
-  border: 1px solid rgba(255,255,255,0.08);
-
-  box-shadow: 0 0 8px rgba(0,0,0,0.6);
-  transition: all 0.25s ease;
-  cursor: pointer;
-
-  text-shadow: none;
-  animation: none;
-}
-
-.sidebar a::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(120deg, rgba(255,255,255,0.6), rgba(255,255,255,0));
-  transform: skewX(-25deg);
-  transition: all 0.75s ease;
-}
-.sidebar a:hover::before { left: 130%; }
-
-.sidebar a:hover {
-  background: rgba(40,40,40,0.9);
-  border-color: rgba(255,204,85,0.4);
-  box-shadow: 0 0 12px rgba(255,204,85,0.25);
-  transform: translateX(5px);
-  box-shadow: 0 0 15px rgba(255,204,85,0.35);
-}
-
-.sidebar a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 3px;
-  background: transparent;
-  transition: 0.3s;
-}
-
-.sidebar a:hover::after {
-  background: #ffcc55;
-}
-
-/* === Selector de idioma === */
-.language-selector {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  z-index: 200;
-}
-.language-selector img.flag-icon {
-  width: 22px;
-  height: 16px;
-  object-fit: cover;
-  border-radius: 2px;
-}
-.language-selector select {
-  background: #111;
-  color: #ddd;
-  border: 1px solid #444;
-  border-radius: 6px;
-  padding: 4px 8px;
-  cursor: pointer;
-  font-family: inherit;
-  font-weight: 600;
-  font-size: .9rem;
-  transition: .3s;
-}
-.language-selector select:hover {
-  background: #222;
-  border-color: #666;
-}
-
-
-  /* === Footer === */
-footer {
-  position: relative;
-  margin-top: 2rem;
-  color: #ffda84;
-  font-size: 0.9rem;
-  text-align: center;
-  padding: 1.5rem 0;
-  text-shadow: 0 0 4px #000;
-}
-.footer-legal {
-  margin-top: 1rem;
-  color: #ccc;
-  font-size: 0.85rem;
-  line-height: 1.4;
-  opacity: 0.85;
-    text-shadow: 
-    -1px -1px 0 #000,
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000;
-}
-
-.tabs{
-  display:flex;
-  gap:10px;
-  margin:10px 0;
-  justify-content:center;
-}
-
-.tab-btn{
-  font-family: 'Orbitron', sans-serif;
-  background: rgba(20,20,20,0.7);
-  color:#ccc;
-  border:1px solid rgba(255,255,255,0.1);
-
-  padding:10px 18px;
-  border-radius:8px;
-
-  font-weight:700;
-  letter-spacing:1px;
-  font-size:0.95rem;
-
-  cursor:pointer;
-  transition: all 0.25s ease;
-
-  text-transform: uppercase;
-}
-
-.tab-btn.active-oro,
-.tab-btn.active-plata{
-  transform: scale(1.08);
-}
-
-.tab-btn.active-oro{
-  color:#000;
-  background: linear-gradient(145deg,#ffd700,#ffb700);
-  box-shadow: 0 0 12px rgba(255,215,0,0.6);
-  border-color:#ffd700;
-}
-
-.tab-btn.active-plata{
-  color:#000;
-  background: linear-gradient(145deg,#d9d9d9,#a8a8a8);
-  box-shadow: 0 0 12px rgba(200,200,200,0.6);
-  border-color:#ccc;
-}
-
-.tab-btn:hover{
-  transform: scale(1.05);
-}
-
-
-
-
-.selectors{display:flex; gap:10px; align-items:center; margin-left:auto;}
-select, button.selector-btn{background:rgba(0,0,0,0.55); color:#eee; border:1px solid rgba(255,255,255,0.06); padding:6px 10px; border-radius:8px; font-weight:700; cursor:pointer;}
-
-.controls-bottom{display:flex; gap:12px; align-items:center; margin-top:6px;}
-.filter-row{display:flex; gap:10px; align-items:center;}
-
-/* main panels */
-.main-wrap{width:100%;max-width:1200px;margin:14px;padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(0,0,0,0.25),rgba(0,0,0,0.12));box-shadow:0 12px 40px rgba(0,0,0,0.6);}
-.layout{
-  display:grid;
-  grid-template-columns: minmax(260px, 28%) 1fr;
-  gap:18px;
-}
-
-.left{background:var(--panel);padding:12px;border-radius:10px;}
-.right{background:var(--panel);padding:12px;border-radius:10px;transition:opacity 0.3s ease;}
-.right.hidden{opacity:0;pointer-events:none;visibility:hidden;}
-
-/* resumen */
-.resumen{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
-.stat-card{background:rgba(0,0,0,0.45);padding:10px 12px;border-radius:8px;min-width:120px;text-align:center;font-weight:700;color:#ffdca8;}
-.stat-card .num{display:block;margin-top:6px;font-size:1.6rem;color:var(--ocre);}
-
-/* charts */
-.pie-small{display:flex;flex-direction:column;align-items:center;padding:8px;background:rgba(0,0,0,0.06);border-radius:8px;}
-.pie-small canvas{width:220px!important;height:160px!important;}
-.chart-block{margin-bottom:12px;}
-/* asegurar altura del canvas */
-#mapBar { width:100%; height:340px; display:block; }
-/* ocultar animado la torta cuando se filtra por facción */
-.pie-small[style*="none"] {
-  opacity: 0;
-  height: 0;
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-  transition: opacity .25s ease, height .25s ease, padding .25s ease, margin .25s ease;
-}
-
-
-/* historial table */
-.historial{overflow:auto;max-height:520px;margin-top:8px;}
-.table{width:100%;border-collapse:collapse;}
-.table th,.table td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.9rem;text-align:center;vertical-align:middle;}
-.table th{background:var(--head);color:#d0d0d0;font-weight:800;font-size:0.78rem;text-transform:uppercase;}
-.faction-icon{width:26px;height:18px;vertical-align:middle;margin-right:6px;}
-.country-flag{width:16px;height:12px;vertical-align:middle;margin-left:6px;}
-.result-v.ok{color:#7ee37e;font-weight:800;}
-.result-v.ko{color:#ff7b7b;font-weight:800;}
-.download-btn{cursor:pointer;font-size:1.1rem;color:#ffd46a;text-decoration:none;}
-.download-btn:hover{text-decoration:underline;color:#fff;}
-.duration{font-weight:700;color:#ffdca8;}
-
-.stats-panel {
-  background: rgba(0,0,0,0.45);
-  border: 1px solid rgba(255,255,255,0.12);
-  padding: 14px;
-  border-radius: 10px;
-  margin-bottom: 18px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.35);
-}
-
-.stats-panel h3 {
-  color: #ffcc55;
-  font-size: 18px;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  text-align: center;
-}
-
-.global-table {
-  width: 100%;
-  font-size: 14px;
-  border-collapse: collapse;
-  color: #eee;
-}
-
-.global-table th {
-  text-align: left;
-  padding: 6px 4px;
-  color: #ffcc55;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-}
-
-.global-table td {
-  padding: 4px 4px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-#overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-  z-index: 140;
-}
-
-#overlay.active {
-  opacity: 1;
-  pointer-events: all;
-}
-
-/* 🔥 SELECTORES DESTACADOS */
-#playerSelect,
-#factionFilter {
-  border: 1px solid #ffcc55;
-  box-shadow: 0 0 8px rgba(255, 204, 85, 0.6);
-  transition: all 0.25s ease;
-}
-
-/* Hover más intenso */
-#playerSelect:hover,
-#factionFilter:hover {
-  box-shadow: 0 0 14px rgba(255, 204, 85, 0.9);
-  border-color: #ffd700;
-}
-
-@keyframes glowPulse {
-  0%   { box-shadow: 0 0 4px rgba(255,204,85,0.4); }
-  50%  { box-shadow: 0 0 16px rgba(255,204,85,1); }
-  100% { box-shadow: 0 0 4px rgba(255,204,85,0.4); }
-}
-
-/* 🔥 animación activa */
-.select-highlight {
-  border: 1px solid #ffcc55 !important;
-  animation: glowPulse 1.6s infinite;
-}
-
-/* 🔥 FORZAR estilo negro en TODOS los selects */
-select{
-  background:#000 !important;
-  color:#fff !important;
-  border:1px solid rgba(255,255,255,0.15);
-}
-
-/* 🔥 opciones del desplegable */
-select option{
-  background:#000;
-  color:#fff;
-}
-
-select:focus{
-  outline:none;
-  border-color:#ffcc55;
-  box-shadow:0 0 10px rgba(255,204,85,0.6);
-}
-
-
-/* === Responsive === */
-
-@media (max-width: 700px){
-
-
-  .logo-liga {
-  width: 90%;
-  max-width: 320px;  /* 👈 límite real para mobile */
-  margin-top: 80px;
-}
-
- .menu-btn { 
-    width: 90px; 
-    left: 14px; 
-    top: 14px; 
-  }
-
-  .tabs{
-    display:flex;
-    justify-content:center;
-    gap:6px;
-    margin-top:-10px;
-    width:auto !important;     /* 🔥 clave */
-  }
-
-  .tab-btn{
-    flex:unset !important;     /* 🔥 rompe el flex:1 viejo */
-    width:auto !important;     /* 🔥 evita que ocupen todo */
-    display:inline-block;      /* 🔥 comportamiento tipo botón real */
-
-    padding:3px 8px;
-    font-size:10px;
-    border-radius:5px;
-  }
-
-.sidebar {
-    width: min(45%, 180px);
-    top: 75px;
-    max-height: calc(100vh - 80px);
-    overflow-y: auto; 
-  }
-
-.sidebar a {
-    font-size: 0.7rem;
-    white-space: normal;
-    height: auto;
-    padding: 10px 8px;
-    line-height: 1.2;
-    align-items: center;
-    justify-content: center;
-  }
-
-
+*{ box-sizing:border-box; margin:0; padding:0; }
 
 body{
-  align-items:center;
+  font-family:'Roboto Condensed',sans-serif;
+  background:url("15b67b48-6267-46f7-b131-7426668e5e33.png") no-repeat center center fixed;
+  background-size:cover; color:#eee;
+  display:flex; flex-direction:column; align-items:center;
+  min-height:100vh;
 }
 
-.column-titles{
-  display:none;
+/* ── Logo ── */
+.logo-liga{
+  display:block; width:600px; max-width:90%; margin:10px auto 1rem;
+  opacity:0; filter:drop-shadow(0 0 30px rgba(255,180,50,0.4));
+  animation:logoReveal 1.6s cubic-bezier(0.16,1,0.3,1) 0.2s forwards;
+  transition:transform 0.4s ease,filter 0.4s ease; z-index:10;
+}
+.logo-liga:hover{ transform:scale(1.03); filter:drop-shadow(0 0 50px rgba(255,200,80,0.7)); }
+@keyframes logoReveal{
+  0%{ opacity:0; transform:translateY(-30px) scale(0.95); }
+  100%{ opacity:1; transform:translateY(0) scale(1); }
 }
 
-
-  /* 🔥 Layout principal en columna */
-  .layout{
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-  }
-
-  .main-wrap{
-    padding:10px;
-  }
-
-  .left, .right{
-    width:100%;
-    padding:10px;
-  }
-
-
-  /* 🔥 Logo */
-  .logo-liga {
-    width: 90%;
-    max-width: 300px;
-    margin-top: 70px;
-  }
-
-  /* 🔥 Tabs */
-  .tabs{
-    flex-wrap:wrap;
-    gap:6px;
-  }
-
-  .tab-btn{
-    flex:1;
-    font-size:11px;
-    padding:6px;
-  }
-
-  /* 🔥 Selectores jugador */
-  .player-controls{
-    flex-direction: column;
-    align-items: stretch;
-    gap:8px;
-  }
-
-  .player-controls div{
-    width:100%;
-  }
-
-  #playerSelect,
-  #factionFilter{
-    width:100%;
-  }
-
-  /* 🔥 Resumen (cards) */
-  .resumen{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:8px;
-  }
-
-  .stat-card{
-    font-size:0.85rem;
-    padding:8px;
-  }
-
-  .stat-card .num{
-    font-size:1.3rem;
-  }
-
-  /* 🔥 Charts */
-  .chart-block{
-    margin-top:10px;
-  }
-
-  #mapBar{
-    width:100% !important;
-    height:240px !important;
-  }
-
-  .pie-small canvas{
-    width:160px !important;
-    height:120px !important;
-  }
-
-  /* 🔥 HISTORIAL (clave) */
-  .historial{
-    overflow-x:auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius:8px;
-  }
-
-  #historialTable{
-    min-width:850px;
-  }
-
-  .table th,
-  .table td{
-    font-size:0.72rem;
-    padding:6px 4px;
-    white-space:nowrap;
-  }
-
-  /* 🔥 Mejor alineación fila */
-  .table td{
-    vertical-align:middle;
-  }
-
-  /* 🔥 Flags y iconos más chicos */
-  .faction-icon{
-    width:18px;
-    height:12px;
-  }
-
-  .country-flag{
-    width:14px;
-    height:10px;
-  }
-
-  /* 🔥 Notas más compactas */
-  #notesArea{
-    font-size:0.8rem;
-    line-height:1.5em;
-  }
-
-  /* 🔥 Sidebar */
-  .sidebar {
-    width: min(60%, 220px);
-    top: 70px;
-  }
-
-  /* 🔥 Idioma */
-  .language-selector {
-    top: 10px;
-    right: 10px;
-  }
-
-  /* 🔥 Overlay fix */
-  #overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.3s;
-    z-index: 140;
-  }
-
-  #overlay.active {
-    opacity: 1;
-    pointer-events: all;
-  }
+/* ── Título ── */
+.titulo-temporada{
+  font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--ocre);
+  letter-spacing:4px;
+  text-shadow:0 0 12px rgba(255,204,85,0.9),0 0 28px rgba(255,204,85,0.5),
+    -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;
+  margin-bottom:.5rem; text-transform:uppercase; text-align:center;
 }
 
-.historial::-webkit-scrollbar {
-  height: 6px;
+/* ── Selector temporada ── */
+.selector-temporada{ display:flex; align-items:center; gap:.5rem; margin-bottom:.7rem; }
+#temporadaSelect{
+  background:rgba(8,5,2,0.85); color:#c0a870;
+  border:1px solid rgba(255,200,80,0.25); border-radius:6px;
+  padding:6px 10px; font-weight:600; font-family:'Rajdhani',sans-serif;
+  font-size:.9rem; cursor:pointer; transition:.3s; backdrop-filter:blur(4px);
+}
+#temporadaSelect:hover{ border-color:rgba(255,200,80,0.5); background:rgba(20,12,4,0.9); }
+#temporadaSelect.activo{ border-color:rgba(59,255,119,0.4); box-shadow:0 0 12px rgba(59,255,119,0.2); }
+
+/* ── Menú ── */
+.menu-btn{
+  position:fixed; top:22px; left:22px; width:110px; height:auto;
+  cursor:pointer; z-index:200; transition:transform .25s ease,filter .25s ease;
+  border-radius:6px; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+}
+.menu-btn:hover{ transform:scale(1.06); filter:brightness(1.3) drop-shadow(0 2px 10px rgba(255,200,80,0.3)); }
+.menu-btn:active{ transform:scale(0.97); }
+
+/* ── Sidebar ── */
+.sidebar{
+  position:fixed; top:95px; left:-100%; width:260px;
+  background:rgba(8,5,2,0.92); backdrop-filter:blur(8px);
+  box-shadow:4px 0 30px rgba(0,0,0,0.7);
+  transition:left .5s cubic-bezier(0.4,0,0.2,1); z-index:150;
+  display:flex; flex-direction:column;
+  border-top-right-radius:12px; border-bottom-right-radius:12px;
+  overflow:hidden; padding:10px 0;
+  border-right:1px solid rgba(255,200,80,0.15);
+  border-top:1px solid rgba(255,200,80,0.1);
+}
+.sidebar.active{ left:0; }
+.sidebar a{
+  position:relative; display:flex; align-items:center; gap:8px;
+  margin:4px 10px; padding:11px 14px; text-decoration:none;
+  font-family:'Rajdhani',sans-serif; font-weight:600; font-size:.9rem;
+  letter-spacing:.8px; text-transform:uppercase; color:#c0a870;
+  border-radius:4px; border:1px solid transparent; background:transparent;
+  transition:all .25s ease; overflow:hidden; text-shadow:none;
+}
+.sidebar a::before{
+  content:""; position:absolute; top:0; left:-80%; width:50%; height:100%;
+  background:linear-gradient(120deg,rgba(255,255,255,0.35),transparent);
+  transform:skewX(-25deg); transition:left .6s ease;
+}
+.sidebar a:hover::before{ left:140%; }
+.sidebar a:hover{
+  background:rgba(255,200,80,0.07); border-color:rgba(255,200,80,0.2);
+  color:#ffe8a0; padding-left:20px; box-shadow:inset 3px 0 0 var(--ocre);
 }
 
-.historial::-webkit-scrollbar-thumb {
-  background: #ffcc55;
-  border-radius: 4px;
+/* ── Idioma ── */
+.language-selector{
+  position:fixed; top:20px; right:20px;
+  display:flex; align-items:center; gap:8px; z-index:200;
+}
+.language-selector img.flag-icon{ width:22px; height:16px; object-fit:cover; border-radius:2px; }
+.language-selector select{
+  background:rgba(8,5,2,0.85); color:#c0a870;
+  border:1px solid rgba(255,200,80,0.25); border-radius:4px;
+  padding:5px 10px; cursor:pointer; font-family:'Rajdhani',sans-serif;
+  font-weight:600; font-size:.9rem; transition:.3s; backdrop-filter:blur(4px);
+}
+.language-selector select:hover{ border-color:rgba(255,200,80,0.5); background:rgba(20,12,4,0.9); }
+
+/* ── Overlay ── */
+#overlay{
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.6); opacity:0; pointer-events:none;
+  transition:opacity .4s ease; z-index:140;
+}
+#overlay.active{ opacity:1; pointer-events:all; }
+
+/* ── Footer ── */
+footer{
+  position:relative; z-index:10; width:100%; margin-top:auto;
+  color:#9a7a40; font-size:.9rem; text-align:center;
+  padding:2rem 1rem 1.5rem;
+  border-top:1px solid rgba(255,200,80,0.1); background:rgba(0,0,0,0.4);
+}
+footer p{ color:var(--ocre-dim); margin-bottom:4px; }
+.footer-legal{ margin-top:.8rem; color:#786040; font-size:.82rem; line-height:1.5; }
+.footer-legal strong{ color:#9a7a50; }
+
+/* ── TABS ── */
+.tabs{ display:flex; gap:10px; margin:10px 0; justify-content:center; flex-wrap:wrap; }
+.tab-btn{
+  font-family:'Orbitron',sans-serif; background:rgba(20,20,20,0.7); color:#ccc;
+  border:1px solid rgba(255,255,255,0.1); padding:10px 18px; border-radius:8px;
+  font-weight:700; letter-spacing:1px; font-size:.95rem;
+  cursor:pointer; transition:all .25s ease; text-transform:uppercase;
+}
+.tab-btn:hover{ transform:scale(1.05); }
+.tab-btn.active-platino{ color:#000; background:linear-gradient(145deg,#66e0ff,#00bcd4); box-shadow:0 0 14px rgba(0,200,255,0.8); border-color:#00bcd4; transform:scale(1.08); }
+.tab-btn.active-oro{ color:#000; background:linear-gradient(145deg,#ffd700,#ffb700); box-shadow:0 0 14px rgba(255,215,0,0.7); border-color:#ffd700; transform:scale(1.08); }
+.tab-btn.active-plata{ color:#000; background:linear-gradient(145deg,#d9d9d9,#a8a8a8); box-shadow:0 0 14px rgba(200,200,200,0.7); border-color:#ccc; transform:scale(1.08); }
+.tab-btn.active-bronce{ color:#000; background:linear-gradient(145deg,#cd7f32,#a0522d); box-shadow:0 0 14px rgba(205,127,50,0.8); border-color:#a0522d; transform:scale(1.08); }
+.liga-icon{ width:20px; height:20px; vertical-align:middle; margin-right:6px; filter:drop-shadow(0 0 3px rgba(0,0,0,0.7)); }
+
+/* ── Selects ── */
+select{
+  background:rgba(8,5,2,0.85); color:#c0a870;
+  border:1px solid rgba(255,200,80,0.25); border-radius:6px;
+  font-family:'Rajdhani',sans-serif; font-weight:600;
+}
+select option{
+  background:#15100a; color:#d8c89a;
+  font-family:'Rajdhani',sans-serif; font-weight:600;
+  padding:8px 10px;
+}
+select option:checked, select option:hover{ background:#2a1f0c; color:#ffcc55; }
+select:focus{ outline:none; border-color:#ffcc55; box-shadow:0 0 10px rgba(255,204,85,0.6); }
+#lang-select{ background:rgba(8,5,2,0.85); color:#c0a870; }
+#lang-select option{ background:#15100a; color:#d8c89a; }
+
+/* ── Layout ── */
+.main-wrap{
+  width:100%; max-width:1300px; margin:14px; padding:20px; border-radius:14px;
+  background:linear-gradient(180deg,rgba(0,0,0,0.3),rgba(0,0,0,0.15));
+  box-shadow:0 16px 50px rgba(0,0,0,0.7);
+}
+.layout{ display:grid; grid-template-columns:minmax(310px,33%) 1fr; gap:20px; }
+
+/* ══════════════════════════════════
+   PANEL IZQUIERDO – tablas globales
+══════════════════════════════════ */
+.left{
+  background:var(--panel); border-radius:12px;
+  border:1px solid var(--border-ocre);
+  box-shadow:0 0 30px rgba(0,0,0,0.5);
+  overflow:hidden;
 }
 
+/* Panel de stats global */
+.stats-panel{
+  padding:16px 14px 10px;
+  border-bottom:1px solid rgba(255,200,80,0.08);
+}
+.stats-panel:last-child{ border-bottom:none; }
 
-@media (max-width: 700px){
+.stats-panel-header{
+  display:flex; align-items:center; gap:8px;
+  margin-bottom:12px; padding-bottom:8px;
+  border-bottom:2px solid rgba(255,200,80,0.25);
+  position:relative;
+}
+.stats-panel-header::after{
+  content:""; position:absolute; bottom:-2px; left:0;
+  width:40px; height:2px;
+  background:linear-gradient(90deg,#ffcc55,transparent);
+}
+.stats-panel-header h3{
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.85rem;
+  color:#c0a870; text-transform:uppercase; letter-spacing:1.5px;
+}
+.stats-panel-icon{ font-size:1.1rem; }
 
-  body{
-    display: block;
-  }
+/* Tabla global (mapas) */
+.global-table{ width:100%; border-collapse:collapse; font-size:.82rem; }
+.global-table thead tr{ background:rgba(255,200,80,0.06); }
+.global-table th{
+  text-align:left; padding:6px 8px; color:#888; font-size:.7rem;
+  text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.global-table td{ padding:5px 8px; border-bottom:1px solid rgba(255,255,255,0.04); color:#ccc; }
+.global-table tbody tr:hover{ background:rgba(255,200,80,0.05); }
 
-  .main-wrap{
-    max-width: 420px;
-    margin: 0 auto;
-    padding: 8px 6px;
-  }
+/* fila con barra de progreso (mapas) */
+.gt-bar-cell{ position:relative; min-width:80px; }
+.gt-bar-bg{
+  position:absolute; left:0; top:50%; transform:translateY(-50%);
+  height:60%; border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,200,80,0.35),rgba(255,200,80,0.08));
+  transition:width .6s ease;
+}
+.gt-bar-val{ position:relative; z-index:1; font-weight:700; color:var(--ocre); padding-left:4px; }
 
+/* tabla doctrinas */
+.gt-doc-win{ color:var(--verde); font-weight:700; }
+.gt-doc-loss{ color:var(--rojo); font-weight:700; }
+.gt-badge{
+  display:inline-block; padding:1px 5px; border-radius:3px;
+  font-size:.7rem; font-weight:700; margin-right:3px;
+  vertical-align:middle;
+}
+.gt-badge-allied{ background:rgba(59,180,255,0.2); color:#66ccff; border:1px solid rgba(59,180,255,0.3); }
+.gt-badge-axis{ background:rgba(255,80,80,0.2); color:#ff9999; border:1px solid rgba(255,80,80,0.3); }
+.gt-badge-none{ background:rgba(150,150,150,0.15); color:#aaa; border:1px solid rgba(150,150,150,0.2); }
+
+/* Tabla de doctrinas: nombre en una sola línea, columnas numéricas compactas */
+#tablaDoctrinas th:first-child,
+#tablaDoctrinas td:first-child{ white-space:nowrap; }
+#tablaDoctrinas th:not(:first-child),
+#tablaDoctrinas td:not(:first-child){ width:1%; white-space:nowrap; text-align:center; }
+
+/* ══════════════════════════════════
+   PANEL DERECHO – stats jugador
+══════════════════════════════════ */
+.right{
+  background:var(--panel); border-radius:12px;
+  border:1px solid var(--border-ocre);
+  box-shadow:0 0 30px rgba(0,0,0,0.5);
+  padding:20px; display:flex; flex-direction:column; gap:18px;
 }
 
-/* 🔥 evitar que cualquier cosa rompa el ancho */
-.left, .right{
-  width: 100%;
-  min-width: 0; /* 👈 clave para flex/grid */
+/* ── Controles jugador ── */
+.player-controls{
+  display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+  background:rgba(255,200,80,0.04); border:1px solid rgba(255,200,80,0.12);
+  border-radius:10px; padding:12px 16px;
+}
+.player-controls label{
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.85rem;
+  color:#c0a870; letter-spacing:.5px; text-transform:uppercase;
 }
 
+/* ── Stat cards ── */
+.resumen{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
 
-/* 🔥 tablas nunca empujan el layout */
-.historial{
-  overflow-x: auto;
-  width: 100%;
+.stat-card{
+  position:relative; overflow:hidden;
+  background:linear-gradient(145deg,rgba(30,22,10,0.9),rgba(18,14,6,0.95));
+  border-radius:10px; padding:14px 12px 12px;
+  text-align:center; border:1px solid rgba(255,200,80,0.12);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.stat-card:hover{ transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.5); }
+.stat-card::before{
+  content:""; position:absolute; top:0; left:0; right:0; height:2px;
+}
+.stat-card.card-pj::before{ background:linear-gradient(90deg,#4499ff,#66bbff); }
+.stat-card.card-v::before{ background:linear-gradient(90deg,#22cc66,#3bff7a); }
+.stat-card.card-d::before{ background:linear-gradient(90deg,#cc2222,#ff4d4d); }
+.stat-card.card-wr::before{ background:linear-gradient(90deg,#cc9900,#ffcc55); }
+
+.stat-card-icon{ font-size:1.3rem; margin-bottom:4px; display:block; }
+.stat-card-label{
+  font-family:'Rajdhani',sans-serif; font-size:.7rem; letter-spacing:1.5px;
+  text-transform:uppercase; color:#777; font-weight:600;
+}
+.stat-card .num{
+  display:block; margin-top:6px; font-family:'Orbitron',sans-serif;
+  font-size:1.8rem; font-weight:700; line-height:1;
+}
+.card-pj .num{ color:#66bbff; text-shadow:0 0 14px rgba(100,180,255,0.5); }
+.card-v  .num{ color:#3bff7a; text-shadow:0 0 14px rgba(59,255,120,0.5); }
+.card-d  .num{ color:#ff4d4d; text-shadow:0 0 14px rgba(255,77,77,0.5); }
+.card-wr .num{ color:var(--ocre); text-shadow:0 0 14px rgba(255,204,85,0.5); }
+
+@keyframes countUp{
+  from{ opacity:0; transform:translateY(8px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+.num.animate{ animation:countUp .5s ease forwards; }
+
+/* ── Sección gráfico barras ── */
+.section-block{
+  background:rgba(0,0,0,0.3); border-radius:10px; padding:14px;
+  border:1px solid rgba(255,255,255,0.05);
+}
+.section-title{
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.8rem;
+  color:#888; text-transform:uppercase; letter-spacing:2px;
+  margin-bottom:10px; display:flex; align-items:center; gap:6px;
+}
+.section-title::before{
+  content:""; display:block; width:3px; height:14px; border-radius:2px;
+  background:linear-gradient(180deg,var(--ocre),transparent);
 }
 
-#historialTable{
-  min-width: 700px; /* podés bajar de 850 */
+.chart-block{ position:relative; }
+#mapBar{ width:100% !important; height:280px; display:block; }
+
+/* ── Donut pie ── */
+.pie-wrap{
+  display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+}
+.pie-small{
+  display:flex; flex-direction:column; align-items:center;
+  min-width:180px;
+}
+.pie-small canvas{ width:180px !important; height:180px !important; }
+
+.faction-legend-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:6px 16px; flex:1;
+}
+.faction-legend-item{
+  display:flex; align-items:center; gap:7px;
+  background:rgba(255,255,255,0.03); border-radius:6px; padding:6px 8px;
+  border:1px solid rgba(255,255,255,0.05);
+}
+.faction-legend-dot{ width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.faction-legend-name{ font-weight:700; font-size:.8rem; color:#ccc; }
+.faction-legend-pct{ font-weight:800; font-size:.9rem; margin-left:auto; color:var(--ocre); }
+
+/* ── Panel Análisis — diseño sobrio ── */
+.notes-grid{
+  display:flex; flex-direction:column; gap:0;
+}
+.analysis-section{
+  padding:10px 0 6px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.analysis-section:last-child{ border-bottom:none; padding-bottom:2px; }
+.analysis-section-title{
+  font-family:'Rajdhani',sans-serif; font-size:.65rem; font-weight:700;
+  color:#555; text-transform:uppercase; letter-spacing:2px;
+  margin-bottom:8px;
+}
+.analysis-rows{ display:flex; flex-direction:column; gap:6px; }
+.arow{
+  display:flex; align-items:center; gap:0;
+  min-height:28px;
+}
+.arow-label{
+  font-family:'Rajdhani',sans-serif; font-size:.72rem; font-weight:600;
+  color:#666; text-transform:uppercase; letter-spacing:.8px;
+  width:130px; flex-shrink:0;
+}
+.arow-val{
+  flex:1; font-size:.85rem; font-weight:600; color:#ccc; line-height:1.3;
+}
+.arow-val b{ color:#e8d9a8; font-weight:700; }
+.arow-val .wr-ok  { color:#6ec97a; }
+.arow-val .wr-mid { color:#d4b84a; }
+.arow-val .wr-ko  { color:#c96b6b; }
+.arow-detail{ color:#555; font-size:.8rem; font-weight:500; }
+.arow-bar{
+  width:60px; flex-shrink:0; margin-left:10px;
+  height:3px; border-radius:2px; background:rgba(255,255,255,0.07); overflow:hidden;
+}
+.arow-bar-fill{ height:100%; border-radius:2px; transition:width .7s ease; }
+
+.note-item-label{ font-size:.68rem; color:#666; text-transform:uppercase; letter-spacing:1px; font-weight:700; }
+.note-item-value{ font-size:.85rem; color:#ddd; font-weight:600; line-height:1.3; }
+.note-item-value b{ color:var(--ocre); }
+.note-item-value.ok{ color:var(--verde); }
+.note-item-value.ko{ color:var(--rojo); }
+.note-item-value.mid{ color:#ffd966; }
+.note-winbar{
+  height:4px; border-radius:2px; margin-top:4px; background:rgba(255,255,255,0.08);
+  overflow:hidden;
+}
+.note-winbar-fill{
+  height:100%; border-radius:2px; transition:width .8s ease;
 }
 
-* {
-  box-sizing: border-box;
+/* ── Historial ── */
+.historial-header{
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.8rem;
+  color:#888; text-transform:uppercase; letter-spacing:2px;
+  margin-bottom:10px; display:flex; align-items:center; gap:6px;
+}
+.historial-header::before{
+  content:""; display:block; width:3px; height:14px; border-radius:2px;
+  background:linear-gradient(180deg,var(--ocre),transparent);
+}
+.historial{ overflow-x:auto; border-radius:8px; }
+.historial::-webkit-scrollbar{ height:5px; }
+.historial::-webkit-scrollbar-track{ background:rgba(255,255,255,0.03); }
+.historial::-webkit-scrollbar-thumb{ background:rgba(255,200,80,0.4); border-radius:3px; }
+
+.table{ width:100%; border-collapse:collapse; min-width:1050px; }
+.table thead tr{
+  background:linear-gradient(90deg,rgba(255,200,80,0.07),rgba(255,200,80,0.03));
+}
+.table th{
+  padding:10px 10px; font-family:'Rajdhani',sans-serif; font-weight:700;
+  font-size:.68rem; text-transform:uppercase; letter-spacing:1px;
+  color:#888; border-bottom:1px solid rgba(255,200,80,0.12);
+  white-space:nowrap; text-align:center;
+}
+.table td{
+  padding:9px 10px; border-bottom:1px solid rgba(255,255,255,0.04);
+  font-size:.88rem; font-weight:600; text-align:center; vertical-align:middle;
+  white-space:nowrap; color:#bbb;
+}
+.table tbody tr:hover{ background:rgba(255,200,80,0.04); }
+.table tbody tr:last-child td{ border-bottom:none; }
+
+/* columna jugador propio — tinte dorado */
+.table td.col-own{
+  background:rgba(255,200,80,0.055);
+  color:#d4c080; font-weight:700;
+}
+/* columna oponente — tinte rojizo */
+.table td.col-rival{
+  background:rgba(255,70,70,0.055);
+  color:#c09090;
+}
+/* columna doctrina propia — tinte dorado suave */
+.table td.col-own-doc{
+  background:rgba(255,200,80,0.03);
+  color:#b8a878;
+}
+/* columna doctrina rival — tinte rojizo suave */
+.table td.col-rival-doc{
+  background:rgba(255,70,70,0.03);
+  color:#a88888;
 }
 
+.faction-icon{ width:24px; height:16px; vertical-align:middle; margin-right:4px; }
+.country-flag{ width:16px; height:11px; vertical-align:middle; margin-left:4px; border-radius:1px; }
+.result-v.ok{ color:var(--verde); font-weight:800; letter-spacing:.5px; }
+.result-v.ko{ color:var(--rojo); font-weight:800; letter-spacing:.5px; }
+.duration{ font-weight:700; color:#c0a870; font-family:'Orbitron',sans-serif; font-size:.75rem; }
+
+/* botón replay rediseñado */
+.replay-btn{
+  display:inline-flex; align-items:center; gap:5px;
+  padding:4px 10px; border-radius:5px; text-decoration:none;
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.75rem;
+  letter-spacing:.5px; text-transform:uppercase;
+  background:rgba(255,200,80,0.1); color:var(--ocre);
+  border:1px solid rgba(255,200,80,0.25);
+  transition:all .2s ease;
+}
+.replay-btn:hover{
+  background:rgba(255,200,80,0.22); color:#fff;
+  border-color:rgba(255,200,80,0.6);
+  box-shadow:0 0 10px rgba(255,200,80,0.25);
+  transform:translateY(-1px);
+}
+
+/* ── Selector de categoría (panel izquierdo) ── */
+.cat-filter-wrap{
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  padding:8px 14px 10px;
+  border-bottom:1px solid rgba(255,200,80,0.08);
+  background:rgba(255,200,80,0.02);
+}
+.cat-filter-label{
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.75rem;
+  color:#c0a870; text-transform:uppercase; letter-spacing:1px; white-space:nowrap;
+}
+#catFilter{
+  flex:1; min-width:0;
+  background:rgba(8,5,2,0.85); color:#c0a870;
+  border:1px solid rgba(255,200,80,0.25); border-radius:6px;
+  padding:5px 8px; font-weight:600; font-family:'Rajdhani',sans-serif;
+  font-size:.85rem; cursor:pointer; transition:.3s; backdrop-filter:blur(4px);
+}
+#catFilter:hover{ border-color:rgba(255,200,80,0.5); background:rgba(20,12,4,0.9); }
+#catFilter:focus{ outline:none; border-color:#ffcc55; box-shadow:0 0 8px rgba(255,204,85,0.4); }
+#catDropdown{ flex:1; min-width:0; }
+#catDropdownTrigger{ min-width:0; width:100%; box-sizing:border-box; font-size:.85rem; padding:5px 8px; }
+#catDropdownMenu{ width:100%; min-width:0; }
+img.cat-icon{ width:18px; height:18px; object-fit:contain; vertical-align:middle; flex-shrink:0; }
+
+/* badge de categoría activa */
+.cat-badge{
+  display:inline-block; padding:2px 8px; border-radius:4px;
+  font-size:.7rem; font-weight:700; letter-spacing:.5px; vertical-align:middle;
+  margin-left:6px; text-transform:uppercase;
+}
+.cat-badge-platino{ background:rgba(0,200,255,0.15); color:#66e0ff; border:1px solid rgba(0,200,255,0.3); }
+.cat-badge-oro    { background:rgba(255,215,0,0.15);  color:#ffd700; border:1px solid rgba(255,215,0,0.3); }
+.cat-badge-plata  { background:rgba(200,200,200,0.15);color:#d9d9d9; border:1px solid rgba(200,200,200,0.3); }
+.cat-badge-bronce { background:rgba(205,127,50,0.15); color:#cd7f32; border:1px solid rgba(205,127,50,0.3); }
+.cat-badge-todas  { background:rgba(255,200,80,0.1);  color:#ffcc55; border:1px solid rgba(255,200,80,0.2); }
+
+/* ── Custom dropdown de facción ── */
+.fac-dropdown{ position:relative; user-select:none; }
+.fac-dropdown-trigger{
+  display:flex; align-items:center; gap:6px; cursor:pointer;
+  background:rgba(8,5,2,0.85); color:#c0a870;
+  border:1px solid #ffcc55; border-radius:6px;
+  padding:5px 10px; min-width:130px;
+  font-weight:600; font-family:'Rajdhani',sans-serif;
+  font-size:.9rem; transition:.3s; backdrop-filter:blur(4px);
+  box-shadow:0 0 8px rgba(255,204,85,0.5);
+  animation:glowPulse 1.6s infinite;
+}
+.fac-dropdown-trigger:hover{ border-color:rgba(255,200,80,0.8); background:rgba(20,12,4,0.9); }
+.fac-dropdown-selected{ flex:1; display:flex; align-items:center; gap:6px; }
+.fac-dropdown-arrow{ font-size:.7rem; color:#c0a870; transition:transform .2s; }
+.fac-dropdown.open .fac-dropdown-arrow{ transform:rotate(180deg); }
+
+.fac-dropdown-menu{
+  display:none; position:absolute; top:calc(100% + 4px); left:0; z-index:300;
+  background:rgba(8,5,2,0.97); border:1px solid rgba(255,200,80,0.3);
+  border-radius:8px; overflow:hidden; min-width:160px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.7); backdrop-filter:blur(8px);
+}
+.fac-dropdown.open .fac-dropdown-menu{ display:block; }
+.fac-dropdown-item{
+  display:flex; align-items:center; gap:8px;
+  padding:8px 12px; cursor:pointer; color:#c0a870;
+  font-family:'Rajdhani',sans-serif; font-weight:600; font-size:.88rem;
+  transition:background .15s;
+}
+.fac-dropdown-item:hover{ background:rgba(255,200,80,0.1); color:#ffe8a0; }
+.fac-dropdown-item.selected{ background:rgba(255,200,80,0.08); color:#ffcc55; }
+.fac-dropdown-item img{ width:22px; height:22px; object-fit:contain; filter:drop-shadow(0 0 3px rgba(0,0,0,0.6)); }
+.fac-dropdown-item .fac-dd-all{ width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:1rem; }
+.country-flag-dd{ width:20px; height:14px; object-fit:cover; border-radius:2px; flex-shrink:0; }
+
+#playerDropdownTrigger{ min-width:200px; }
+#playerDropdownMenu{ min-width:200px; max-height:280px; overflow-y:auto; }
+
+/* ── Highlight selects ── */
+#playerSelect,#factionFilter{
+  border:1px solid #ffcc55 !important;
+  box-shadow:0 0 8px rgba(255,204,85,0.5);
+}
+#playerSelect{
+  padding:5px 10px; font-size:.9rem; line-height:normal;
+  font-family:'Rajdhani',sans-serif; font-weight:600;
+  cursor:pointer; transition:.3s; backdrop-filter:blur(4px);
+  border-radius:6px;
+}
+@keyframes glowPulse{
+  0%{ box-shadow:0 0 4px rgba(255,204,85,0.3); }
+  50%{ box-shadow:0 0 16px rgba(255,204,85,0.9); }
+  100%{ box-shadow:0 0 4px rgba(255,204,85,0.3); }
+}
+.select-highlight{ border:1px solid #ffcc55 !important; animation:glowPulse 1.6s infinite; }
+
+/* ── Responsive ── */
+@media(max-width:900px){
+  .resumen{ grid-template-columns:repeat(2,1fr); }
+  .notes-grid{ grid-template-columns:1fr; }
+  .pie-wrap{ flex-direction:column; }
+}
+@media(max-width:700px){
+  body{ display:block; }
+  .logo-liga{ width:90%; max-width:320px; margin-top:80px; }
+  .menu-btn{ width:90px; left:14px; top:14px; }
+  .sidebar{ width:min(50%,190px); top:72px; max-height:calc(100vh - 76px); overflow-y:auto; }
+  .sidebar a{ font-size:.75rem; padding:10px 8px; line-height:1.2; }
+  .tabs{ gap:6px; }
+  .tab-btn{ padding:6px 10px; font-size:10px; border-radius:5px; }
+  .layout{ display:flex; flex-direction:column; gap:14px; }
+  .main-wrap{ max-width:100%; margin:0; padding:8px 6px; border-radius:0; }
+  .left,.right{ width:100%; }
+  .resumen{ grid-template-columns:repeat(2,1fr); gap:8px; }
+  .stat-card .num{ font-size:1.4rem; }
+  #mapBar{ height:220px !important; }
+  .language-selector{ top:12px; right:12px; }
+  #playerSelect,#factionFilter{ width:100%; }
+}
 </style>
 </head>
 <body>
 
-<!-- Botón volver -->
-
-<img src="1811d0cb-36e3-4b23-9d1f-5b4f66ce2d8c-removebg-preview.png" alt="Liga Latina de COH" class="logo-liga">
-<h1 class="titulo-temporada">ESTADISTICAS</h1>
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
-
-<!-- Panel sidebar-->
 <img src="boton-menu.png" alt="Menú" class="menu-btn" id="menuToggle">
 
-<nav class="sidebar" id="sidebar"> 
+<nav class="sidebar" id="sidebar">
   <a href="index.html">🏠 Menu Principal</a>
   <a href="reglas.html">📏 Formato - Reglas</a>
-  <a href="cronograma.html">📅 Cronograma - Participantes</a>
+  <a href="cronograma.html">📅 Cronograma</a>
   <a href="resultados.html">📋 Resultados</a>
   <a href="ranking.html">🏆 Ranking</a>
   <a href="estadisticas.html">📊 Estadisticas</a>
@@ -767,1044 +609,1216 @@ body{
 
 <div id="overlay"></div>
 
-<div class="tabs">
-  <button class="tab-btn active-oro" data-liga="oro">🏅 Liga de Oro</button>
-  <button class="tab-btn" data-liga="plata">🥈 Liga de Plata</button>
-</div>
-
-
-
-<div class="selector-temporada">
-  <label>📜 Temporada:</label>
-  <select id="temporadaSelect">
-    <option value="1" selected>Temporada 1</option>
-    <option value="2" disabled>Temporada 2 (Próximamente)</option>
-  </select>
-</div>
-
- <!-- Selector de idioma -->
-<div class="language-selector" id="language-selector">
-  <img id="flagIcon" class="flag-icon" src="https://flagcdn.com/w20/es.png" alt="ES">
-  <select id="langSelect">
+<div class="language-selector">
+  <img id="current-flag" class="flag-icon" src="https://flagcdn.com/w20/es.png" alt="ES">
+  <select id="lang-select">
     <option value="es" data-flag="https://flagcdn.com/w20/es.png">Español</option>
     <option value="en" data-flag="https://flagcdn.com/w20/us.png">English</option>
   </select>
-</div> 
+</div>
+
+<img src="1811d0cb-36e3-4b23-9d1f-5b4f66ce2d8c-removebg-preview.png" alt="Liga Latina de COH" class="logo-liga">
+<h1 class="titulo-temporada" id="tituloPagina">ESTADISTICAS</h1>
+
+<div class="tabs" id="tabsContainer"></div>
+
+<div class="selector-temporada">
+  <label id="labelTemporada">📜 Temporada:</label>
+  <select id="temporadaSelect">
+    <option value="1" id="optTemp1">Temporada 1</option>
+    <option value="2" selected id="optTemp2">Temporada 2</option>
+  </select>
+</div>
 
 <div class="main-wrap">
- 
   <div class="layout">
-  
-  <!-- COLUMNA IZQUIERDA -->
-  <div class="left">
 
-    <!-- PANEL: Frecuencia de Mapas -->
-    <div class="stats-panel">
-      <h3>🗺️ Frecuencia Total Mapas (Temporada 1)</h3>
-      <table class="global-table" id="tablaMapas">
-        <thead>
-          <tr><th>Mapa</th><th>Veces elegido</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+    <!-- ══ COLUMNA IZQUIERDA ══ -->
+    <div class="left">
+
+      <!-- Selector de categoría -->
+      <div class="cat-filter-wrap">
+        <span class="cat-filter-label" id="catFilterLabel">🏅 Categoría:</span>
+        <!-- Custom dropdown con ícono de categoría -->
+        <div class="fac-dropdown" id="catDropdown">
+          <div class="fac-dropdown-trigger" id="catDropdownTrigger">
+            <span class="fac-dropdown-selected" id="catDropdownSelected">Todas</span>
+            <span class="fac-dropdown-arrow">▾</span>
+          </div>
+          <div class="fac-dropdown-menu" id="catDropdownMenu"></div>
+        </div>
+        <!-- select oculto para compatibilidad con el código existente -->
+        <select id="catFilter" style="display:none">
+          <option value="all">Todas</option>
+        </select>
+      </div>
+
+      <div class="stats-panel">
+        <div class="stats-panel-header">
+          <span class="stats-panel-icon">🗺️</span>
+          <h3 id="tituloMapas">Frecuencia de Mapas · T2</h3>
+        </div>
+        <table class="global-table" id="tablaMapas">
+          <thead><tr><th id="thMapa">Mapa</th><th id="thPartidas">Partidas</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="stats-panel">
+        <div class="stats-panel-header">
+          <span class="stats-panel-icon">⚔️</span>
+          <h3 id="tituloDoctrinas">Doctrinas · T2</h3>
+        </div>
+        <table class="global-table" id="tablaDoctrinas">
+          <thead><tr><th id="thDoctrina">Doctrina</th><th id="thUsos">Usos</th><th id="thV">V</th><th id="thD">D</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
     </div>
 
-    <!-- PANEL: Frecuencia de Doctrinas -->
-    <div class="stats-panel">
-      <h3>⚔️ Frecuencia total Doctrinas (Temporada 1)</h3>
-      <table class="global-table" id="tablaDoctrinas">
-        <thead>
-          <tr><th>Doctrina</th><th>Veces elegida</th><th>V</th><th>D</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+    <!-- ══ COLUMNA DERECHA ══ -->
+    <div class="right" id="rightPanel">
 
-  </div>
+      <!-- Controles -->
+      <div class="player-controls">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <label id="labelJugador">👤 Jugador</label>
+          <!-- Custom dropdown con bandera de nacionalidad -->
+          <div class="fac-dropdown" id="playerDropdown">
+            <div class="fac-dropdown-trigger" id="playerDropdownTrigger">
+              <span class="fac-dropdown-selected" id="playerDropdownSelected">Seleccionar jugador...</span>
+              <span class="fac-dropdown-arrow">▾</span>
+            </div>
+            <div class="fac-dropdown-menu" id="playerDropdownMenu"></div>
+          </div>
+          <!-- select oculto para compatibilidad con el código existente -->
+          <select id="playerSelect" style="display:none"><option value="">Seleccionar jugador...</option></select>
+        </div>
+        <div id="factionFilterContainer" style="display:none;align-items:center;gap:8px;">
+          <label id="labelFaccion">⚔️ Facción</label>
+          <!-- Custom dropdown con íconos de facción -->
+          <div class="fac-dropdown" id="facDropdown">
+            <div class="fac-dropdown-trigger" id="facDropdownTrigger">
+              <span class="fac-dropdown-selected" id="facDropdownSelected">Todas</span>
+              <span class="fac-dropdown-arrow">▾</span>
+            </div>
+            <div class="fac-dropdown-menu" id="facDropdownMenu"></div>
+          </div>
+          <!-- select oculto para compatibilidad con el código existente -->
+          <select id="factionFilter" style="display:none"><option value="all">Todas</option></select>
+        </div>
+      </div>
 
+      <!-- Stat cards -->
+      <div class="resumen">
+        <div class="stat-card card-pj">
+          <span class="stat-card-icon">🎮</span>
+          <span class="stat-card-label" id="statLabelPJ">Partidos</span>
+          <span id="statPJ" class="num">—</span>
+        </div>
+        <div class="stat-card card-v">
+          <span class="stat-card-icon">🏆</span>
+          <span class="stat-card-label" id="statLabelV">Victorias</span>
+          <span id="statV" class="num">—</span>
+        </div>
+        <div class="stat-card card-d">
+          <span class="stat-card-icon">💀</span>
+          <span class="stat-card-label" id="statLabelD">Derrotas</span>
+          <span id="statD" class="num">—</span>
+        </div>
+        <div class="stat-card card-wr">
+          <span class="stat-card-icon">📈</span>
+          <span class="stat-card-label" id="statLabelWR">Winrate</span>
+          <span id="statWR" class="num">—</span>
+        </div>
+      </div>
 
-  <!-- COLUMNA DERECHA -->
-  <div class="right" id="rightPanel">
+      <!-- Gráfico barras -->
+      <div class="section-block">
+        <div class="section-title" id="tituloBarChart">Victorias &amp; Derrotas por Mapa</div>
+        <div class="chart-block">
+          <canvas id="mapBar"></canvas>
+        </div>
+      </div>
 
-<!-- Selectores dentro del panel del jugador -->
-<div class="player-controls" style="display:flex; gap:16px; margin-bottom:12px; align-items:center; flex-wrap:wrap;">
+      <!-- Donut facción -->
+      <div class="section-block" id="pieSection">
+        <div class="section-title" id="tituloPie">Pick Rate de Facciones</div>
+        <div class="pie-wrap">
+          <div class="pie-small">
+            <canvas id="factionPie"></canvas>
+          </div>
+          <div class="faction-legend-grid" id="factionLegend"></div>
+        </div>
+      </div>
 
-  <div style="display:flex; gap:8px; align-items:center;">
-    <label style="font-weight:700;">👤 Jugador</label>
-    <select id="playerSelect">
-      <option value="">Seleccionar jugador...</option>
-    </select>
-  </div>
+      <!-- Notas -->
+      <div class="section-block">
+        <div class="section-title" id="tituloNotas">Análisis del Jugador</div>
+        <div id="notesArea" class="notes-grid">
+          <div class="note-item" style="grid-column:1/-1">
+            <span class="note-item-label">Estado</span>
+            <span class="note-item-value">Seleccioná un jugador para ver sus estadísticas.</span>
+          </div>
+        </div>
+      </div>
 
-  <div id="factionFilterContainer" style="display:none; align-items:center; gap:8px;">
-    <label style="font-weight:700;">⚔️ Facción</label>
-    <select id="factionFilter">
-      <option value="all">Todas</option>
-    </select>
-  </div>
+      <!-- Historial -->
+      <div>
+        <div class="historial-header" id="historialHeader">Historial de Partidas</div>
+        <div class="historial">
+          <table class="table" id="historialTable">
+            <thead>
+              <tr>
+                <th id="thFecha">Fecha</th><th id="thFaccion">Facción</th><th id="thDoctrinaH">Doctrina</th><th id="thOponente">Oponente</th>
+                <th id="thFacRival">Fac. Rival</th><th id="thDocRival">Doc. Rival</th><th id="thMapaH">Mapa</th>
+                <th id="thResultado">Resultado</th><th id="thDuracion">Duración</th><th id="thReplay">Replay</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
 
-</div>
+    </div><!-- /right -->
+  </div><!-- /layout -->
+</div><!-- /main-wrap -->
 
-
-
-    <div class="resumen">
-      <div class="stat-card">Partidos<span id="statPJ" class="num">-</span></div>
-      <div class="stat-card">Victorias<span id="statV" class="num">-</span></div>
-      <div class="stat-card">Derrotas<span id="statD" class="num">-</span></div>
-      <div class="stat-card">Winrate<span id="statWR" class="num">-</span></div>
-    </div>
-
-    <div class="chart-block">
-      <div style="font-weight:800;color:#ffdca8;margin-bottom:6px;">Victorias / Derrotas por Mapa</div>
-      <canvas id="mapBar"></canvas>
-    </div>
-
-    <div id="peorContra" style="font-weight:800;color:#ffdca8;margin-top:8px;"></div>
-
-    <div class="pie-small">
-      <div style="font-weight:800;color:#ffdca8;margin-bottom:6px;">Uso de Facciones (Pick Rate)</div>
-      <canvas id="factionPie"></canvas>
-      <div id="factionLegend" style="width:100%;margin-top:8px;"></div>
-    </div>
-
-    <div style="font-weight:800;color:#ffdca8;margin:10px 0;">Notas</div>
-    <div id="notesArea">Seleccioná un jugador para ver sus estadísticas.</div>
-
-    <div class="historial" style="margin-top:16px;">
-      <div style="font-weight:800;color:#ffdca8;margin-bottom:8px;">Historial (Fecha 1 → Fecha N)</div>
-      <table class="table" id="historialTable">
-        <thead>
-          <tr>
-            <th>Fecha</th><th>Facción (Jugador)</th><th>Doctrina</th><th>Oponente</th>
-            <th>Facción (Rival)</th><th>Doctrina Rival</th><th>Mapa</th><th>Resultado</th>
-            <th>Duración</th><th>Replay</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-  </div>
-</div>
-
-<!-- Footer -->
 <footer>
   <p>© Liga Latina de Company of Heroes</p>
   <div class="footer-legal">
-    <p>Este es un sitio web no oficial creado por fans de Company of Heroes 1.</p>
-    <p><strong>Company of Heroes</strong> es una marca registrada de <strong>Relic Entertainment</strong>.</p>
-    <p>Las imágenes y demás recursos de COH son propiedad de Relic Entertainment.</p>
+    <p id="footer-p1">Este es un sitio web no oficial creado por fans de Company of Heroes 1.</p>
+    <p id="footer-p2"><strong>Company of Heroes</strong> es una marca registrada de <strong>Relic Entertainment</strong>.</p>
+    <p id="footer-p3">Las imágenes y demás recursos de COH son propiedad de Relic Entertainment.</p>
   </div>
 </footer>
 
-
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
 <script>
-// -------------------- Config / Globals --------------------
-
-document.getElementById("playerSelect").classList.add("select-highlight");
-document.getElementById("factionFilter").classList.add("select-highlight");
-
-
-const CSV_URLS = {
+// ════════════════════════════════════════════
+// CONFIG
+// ════════════════════════════════════════════
+const LIGAS_CONFIG = {
   "1": {
-    oro: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDy3ZFnj4_YThlDsu8ZnzHec7GqwHH_0SePTjw2IMos-HhK8-Z7YAUcKHy1nXD7PY9aLSNr0UAKC9Z/pub?gid=203880403&single=true&output=csv",
-    plata: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDy3ZFnj4_YThlDsu8ZnzHec7GqwHH_0SePTjw2IMos-HhK8-Z7YAUcKHy1nXD7PY9aLSNr0UAKC9Z/pub?gid=1976553980&single=true&output=csv"
+    oro:   { nombre:'<img src="gold.png"     class="liga-icon"> Liga de Oro',   csv:"https://docs.google.com/spreadsheets/d/e/2PACX-1vTDy3ZFnj4_YThlDsu8ZnzHec7GqwHH_0SePTjw2IMos-HhK8-Z7YAUcKHy1nXD7PY9aLSNr0UAKC9Z/pub?gid=203880403&single=true&output=csv" },
+    plata: { nombre:'<img src="silver.png"   class="liga-icon"> Liga de Plata', csv:"https://docs.google.com/spreadsheets/d/e/2PACX-1vTDy3ZFnj4_YThlDsu8ZnzHec7GqwHH_0SePTjw2IMos-HhK8-Z7YAUcKHy1nXD7PY9aLSNr0UAKC9Z/pub?gid=1976553980&single=true&output=csv" }
+  },
+  "2": {
+    platino: { nombre:'<img src="platinum.png" class="liga-icon"> Liga de Platino', csv:"https://docs.google.com/spreadsheets/d/e/2PACX-1vSFj0PTRCVJO5qEByb2OFIvu85emTXl3kBpo8iBtFrsdP5ohyqbhaVZ9z7luW78Me50vBN-T8bSZPCR/pub?gid=863822460&single=true&output=csv" },
+    oro:     { nombre:'<img src="gold.png"     class="liga-icon"> Liga de Oro',      csv:"https://docs.google.com/spreadsheets/d/e/2PACX-1vSFj0PTRCVJO5qEByb2OFIvu85emTXl3kBpo8iBtFrsdP5ohyqbhaVZ9z7luW78Me50vBN-T8bSZPCR/pub?gid=203880403&single=true&output=csv" },
+    plata:   { nombre:'<img src="silver.png"   class="liga-icon"> Liga de Plata',   csv:"https://docs.google.com/spreadsheets/d/e/2PACX-1vSFj0PTRCVJO5qEByb2OFIvu85emTXl3kBpo8iBtFrsdP5ohyqbhaVZ9z7luW78Me50vBN-T8bSZPCR/pub?gid=1976553980&single=true&output=csv" },
+    bronce:  { nombre:'<img src="bronze.png"   class="liga-icon"> Liga de Bronce',  csv:"https://docs.google.com/spreadsheets/d/e/2PACX-1vSFj0PTRCVJO5qEByb2OFIvu85emTXl3kBpo8iBtFrsdP5ohyqbhaVZ9z7luW78Me50vBN-T8bSZPCR/pub?gid=1778618438&single=true&output=csv" }
   }
-  // futura temporada:
-  // "2": { oro: "...", plata: "..." }
-};
-const factionIcons = {
-  WM: 'armies/wm.png',
-  PE: 'armies/pe.png',
-  US: 'armies/us.png',
-  CW: 'armies/cw.png'
 };
 
-/* Temporada select (mismo comportamiento que en otras páginas) */
-let temporadaActual = "1"; // 👈 IMPORTANTE inicializar
+const FAC_COLORS  = { US:"#66ccff", CW:"#3bcc66", WM:"#ff4d4d", PE:"#cc44cc" };
+const FAC_NAMES_ES = { US:"Americanos", CW:"Británicos", WM:"Wehrmacht", PE:"Panzer Elite" };
+const FAC_NAMES_EN = { US:"US Forces", CW:"British Forces", WM:"Wehrmacht", PE:"Panzer Elite" };
+const FAC_ICONS   = { WM:'armies/wm.png', PE:'armies/pe.png', US:'armies/us.png', CW:'armies/cw.png' };
+function facName(code){ return (idiomaActual==='en'?FAC_NAMES_EN:FAC_NAMES_ES)[code] || code; }
 
-document.getElementById("temporadaSelect").addEventListener("change", (e)=>{
+const ALLIED_DOCS = ["infantería","aerotransportada","blindada","comandos","comandos reales","artillería real","ingenieros reales"];
+const AXIS_DOCS   = ["tierra quemada","luftwaffe","destructores de tanques","blitzkrieg","terror","defensiva"];
 
-  const nueva = e.target.value;
-
-  if(!CSV_URLS[nueva] || !CSV_URLS[nueva][ligaActual]){
-    alert("🔒 Temporada no disponible");
-    e.target.value = temporadaActual;
-    return;
-  }
-
-  temporadaActual = nueva;
-
-  actualizarColorTemporada();
-  loadAndProcess(); // 👈 ESTA es tu función real de carga
-});
-
-
-function actualizarColorTemporada(){
-  const select = document.getElementById("temporadaSelect");
-
-  if(select.value === "1"){
-    select.classList.add("activo");
-  } else {
-    select.classList.remove("activo");
-  }
+const DOC_NAMES_EN = {
+  "infantería": "Infantry",
+  "blindada": "Armor",
+  "aerotransportada": "Airborne",
+  "defensiva": "Defensive",
+  "destructores de tanques": "Tank Destroyers",
+  "artillería real": "Royal Artillery",
+  "comandos reales": "Royal Commandos",
+  "ingenieros reales": "Royal Engineers",
+  "tierra quemada": "Scorched Earth",
+  "comandos": "Commandos"
+};
+function docName(doc){
+  if(!doc) return doc;
+  const trimmed = doc.trim();
+  if(!trimmed) return doc;
+  if(idiomaActual!=='en') return doc;
+  if(/(^|\s)sin(\s|$)/i.test(trimmed)) return traducciones.en.sinDoctrina;
+  return DOC_NAMES_EN[trimmed.toLowerCase()] || doc;
 }
 
-actualizarColorTemporada();
+// ════════════════════════════════════════════
+// IDIOMA / NOMBRES DE LIGA
+// ════════════════════════════════════════════
+let idiomaActual = "es";
 
+const LIGA_NOMBRES = {
+  platino: { icon:"platinum.png", es:"Liga de Platino", en:"Platinum League" },
+  oro:     { icon:"gold.png",     es:"Liga de Oro",     en:"Gold League" },
+  plata:   { icon:"silver.png",   es:"Liga de Plata",   en:"Silver League" },
+  bronce:  { icon:"bronze.png",   es:"Liga de Bronce",  en:"Bronze League" }
+};
+function nombreLiga(key){
+  const o = LIGA_NOMBRES[key];
+  if(!o) return key;
+  return `<img src="${o.icon}" class="liga-icon"> ${o[idiomaActual]}`;
+}
+function nombreLigaTexto(key){
+  const o = LIGA_NOMBRES[key];
+  return o ? o[idiomaActual] : key;
+}
 
+let temporadaActual="2", ligaActual="platino";
 
-let ligaActual = 'oro';
-let csvMatrix = [];
-let parsedEntries = [];
-let currentPlayer = null;
-let pieChart = null;
-let mapChart = null;
+// ════════════════════════════════════════════
+// TRADUCCIONES
+// ════════════════════════════════════════════
+const traducciones = {
+  es: {
+    labelTemporada: "📜 Temporada:",
+    catFilterLabel: "🏅 Categoría:",
+    catTodas: "Todas las categorías",
+    catTodasBadge: "Todas",
+    labelJugador: "👤 Jugador",
+    labelFaccion: "⚔️ Facción",
+    statLabelPJ: "Partidos",
+    statLabelV: "Victorias",
+    statLabelD: "Derrotas",
+    statLabelWR: "Winrate",
+    tituloBarChart: "Victorias &amp; Derrotas por Mapa",
+    tituloPie: "Pick Rate de Facciones",
+    tituloNotas: "Análisis del Jugador",
+    historialHeader: "Historial de Partidas",
+    footerP1: "Este es un sitio web no oficial creado por fans de Company of Heroes 1.",
+    footerP2: "<strong>Company of Heroes</strong> es una marca registrada de <strong>Relic Entertainment</strong>.",
+    footerP3: "Las imágenes y demás recursos de COH son propiedad de Relic Entertainment.",
+    tituloMapas: "Frecuencia de Mapas",
+    tituloDoctrinas: "Doctrinas",
+    temporadaN: (n)=>`Temporada ${n}`,
+    tituloPagina: "ESTADISTICAS",
+    menuPrincipal:"🏠 Menu Principal",
+    reglas:"📏 Formato - Reglas",
+    cronograma:"📅 Cronograma",
+    resultados:"📋 Resultados",
+    ranking:"🏆 Ranking",
+    estadisticas:"📊 Estadisticas",
+    premios:"🎁 Premios",
+    donaciones:"💰 Donaciones",
+    inscripciones:"✍️ Inscripciones",
+    alertNoDisponible: "🔒 No disponible",
+    noDisponible: "No disponible",
+    errorCargar: "Error al cargar",
+    seleccionarJugador: "Seleccionar jugador...",
+    todasFem: "Todas",
+    sinDoctrina: "Sin Doctrina",
+    sinDoctrinaItalic: "Sin doctrina",
+    thMapa: "Mapa", thPartidas: "Partidas",
+    thDoctrina: "Doctrina", thUsos: "Usos", thV: "V", thD: "D",
+    thFecha: "Fecha", thFaccion: "Facción", thDoctrinaH: "Doctrina", thOponente: "Oponente",
+    thFacRival: "Fac. Rival", thDocRival: "Doc. Rival", thMapaH: "Mapa",
+    thResultado: "Resultado", thDuracion: "Duración", thReplay: "Replay",
+    sinPartidas: "Sin partidas registradas.",
+    partidas: "partidas",
+    victoria: "Victoria", derrota: "Derrota", empate: "Empate",
+    chartVictorias: "Victorias", chartDerrotas: "Derrotas",
+    wrSufijo: "de winrate",
+    secMapas: "Mapas", secFacciones: "Facciones", secDoctrinas: "Doctrinas",
+    secLocalVisitante: "Local · Visitante", secGeneral: "General",
+    masJugado: "Más jugado", mejorDesempeno: "Mejor desempeño", peorDesempeno: "Peor desempeño",
+    masUtilizada: "Más utilizada",
+    partidasDisputadas: "partidas disputadas",
+    victoriasYderrotasDe: (v,d,t)=>`${v} victorias y ${d} derrotas de ${t} partidas`,
+    comoLocal: "Como local", comoVisitante: "Como visitante",
+    duracionMedia: "Duración media de partidas",
+    promedioSobre: (n)=>`promedio sobre ${n} partida${n!==1?'s':''} con datos de duración`
+  },
+  en: {
+    labelTemporada: "📜 Season:",
+    catFilterLabel: "🏅 Category:",
+    catTodas: "All categories",
+    catTodasBadge: "All",
+    labelJugador: "👤 Player",
+    labelFaccion: "⚔️ Faction",
+    statLabelPJ: "Matches",
+    statLabelV: "Wins",
+    statLabelD: "Losses",
+    statLabelWR: "Winrate",
+    tituloBarChart: "Wins &amp; Losses by Map",
+    tituloPie: "Faction Pick Rate",
+    tituloNotas: "Player Analysis",
+    historialHeader: "Match History",
+    footerP1: "This is an unofficial fan-made website for Company of Heroes 1.",
+    footerP2: "<strong>Company of Heroes</strong> is a registered trademark of <strong>Relic Entertainment</strong>.",
+    footerP3: "Images and other COH assets are property of Relic Entertainment.",
+    tituloMapas: "Map Frequency",
+    tituloDoctrinas: "Doctrines",
+    temporadaN: (n)=>`Season ${n}`,
+    tituloPagina: "STATISTICS",
+    menuPrincipal:"🏠 Main Menu",
+    reglas:"📏 Format - Rules",
+    cronograma:"📅 Schedule",
+    resultados:"📋 Results",
+    ranking:"🏆 Ranking",
+    estadisticas:"📊 Statistics",
+    premios:"🎁 Prizes",
+    donaciones:"💰 Donations",
+    inscripciones:"✍️ Sign Up",
+    alertNoDisponible: "🔒 Not available",
+    noDisponible: "Not available",
+    errorCargar: "Failed to load",
+    seleccionarJugador: "Select player...",
+    todasFem: "All",
+    sinDoctrina: "No Doctrine",
+    sinDoctrinaItalic: "No doctrine",
+    thMapa: "Map", thPartidas: "Matches",
+    thDoctrina: "Doctrine", thUsos: "Uses", thV: "W", thD: "L",
+    thFecha: "Date", thFaccion: "Faction", thDoctrinaH: "Doctrine", thOponente: "Opponent",
+    thFacRival: "Opp. Faction", thDocRival: "Opp. Doctrine", thMapaH: "Map",
+    thResultado: "Result", thDuracion: "Duration", thReplay: "Replay",
+    sinPartidas: "No matches recorded.",
+    partidas: "matches",
+    victoria: "Win", derrota: "Loss", empate: "Draw",
+    chartVictorias: "Wins", chartDerrotas: "Losses",
+    wrSufijo: "winrate",
+    secMapas: "Maps", secFacciones: "Factions", secDoctrinas: "Doctrines",
+    secLocalVisitante: "Home · Away", secGeneral: "General",
+    masJugado: "Most played", mejorDesempeno: "Best performance", peorDesempeno: "Worst performance",
+    masUtilizada: "Most used",
+    partidasDisputadas: "matches played",
+    victoriasYderrotasDe: (v,d,t)=>`${v} wins and ${d} losses out of ${t} matches`,
+    comoLocal: "As home", comoVisitante: "As away",
+    duracionMedia: "Average match duration",
+    promedioSobre: (n)=>`average over ${n} match${n!==1?'es':''} with duration data`
+  }
+};
 
-
-
-
-document.querySelectorAll(".tab-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-
-    ligaActual = btn.dataset.liga;
-
-    document.querySelectorAll(".tab-btn").forEach(b => {
-      b.classList.remove("active-oro", "active-plata");
-    });
-
-    if (ligaActual === "oro") {
-      btn.classList.add("active-oro");
-    } else {
-      btn.classList.add("active-plata");
-    }
-
-    // 🔥 IMPORTANTE: recargar stats reales
-    loadAndProcess();
+function traducirHTMLFijo(){
+  const t = traducciones[idiomaActual];
+  document.documentElement.lang = idiomaActual;
+  const setText = (id, val) => { const el=document.getElementById(id); if(el) el.innerHTML = val; };
+  setText('labelTemporada', t.labelTemporada);
+  setText('catFilterLabel', t.catFilterLabel);
+  setText('labelJugador', t.labelJugador);
+  setText('labelFaccion', t.labelFaccion);
+  setText('statLabelPJ', t.statLabelPJ);
+  setText('statLabelV', t.statLabelV);
+  setText('statLabelD', t.statLabelD);
+  setText('statLabelWR', t.statLabelWR);
+  setText('tituloBarChart', t.tituloBarChart);
+  setText('tituloPie', t.tituloPie);
+  setText('tituloNotas', t.tituloNotas);
+  setText('historialHeader', t.historialHeader);
+  setText('footer-p1', t.footerP1);
+  setText('footer-p2', t.footerP2);
+  setText('footer-p3', t.footerP3);
+  setText('thMapa', t.thMapa); setText('thPartidas', t.thPartidas);
+  setText('thDoctrina', t.thDoctrina); setText('thUsos', t.thUsos); setText('thV', t.thV); setText('thD', t.thD);
+  setText('thFecha', t.thFecha); setText('thFaccion', t.thFaccion); setText('thDoctrinaH', t.thDoctrinaH); setText('thOponente', t.thOponente);
+  setText('thFacRival', t.thFacRival); setText('thDocRival', t.thDocRival); setText('thMapaH', t.thMapaH);
+  setText('thResultado', t.thResultado); setText('thDuracion', t.thDuracion); setText('thReplay', t.thReplay);
+  setText('optTemp1', t.temporadaN(1));
+  setText('optTemp2', t.temporadaN(2));
+  setText('tituloPagina', t.tituloPagina);
+  document.querySelectorAll('.sidebar a').forEach(a => {
+    const txt = a.textContent;
+    if(txt.includes('Menu Principal') || txt.includes('Main Menu'))     a.textContent = t.menuPrincipal;
+    else if(txt.includes('Formato') || txt.includes('Format'))          a.textContent = t.reglas;
+    else if(txt.includes('Cronograma') || txt.includes('Schedule'))     a.textContent = t.cronograma;
+    else if(txt.includes('Resultados') || txt.includes('Results'))      a.textContent = t.resultados;
+    else if(txt.includes('Ranking'))                                     a.textContent = t.ranking;
+    else if(txt.includes('Estad'))                                       a.textContent = t.estadisticas;
+    else if(txt.includes('Premios') || txt.includes('Prizes'))          a.textContent = t.premios;
+    else if(txt.includes('Donaciones') || txt.includes('Donations'))    a.textContent = t.donaciones;
+    else if(txt.includes('Inscripciones') || txt.includes('Sign'))      a.textContent = t.inscripciones;
   });
-});
+}
+let parsedEntries=[], currentPlayer=null, pieChart=null, mapChart=null;
 
+const playerSelect          = document.getElementById('playerSelect');
+const factionFilterContainer= document.getElementById('factionFilterContainer');
+const factionFilter         = document.getElementById('factionFilter');
 
-const playerSelect = document.getElementById('playerSelect');
-const factionFilterContainer = document.getElementById('factionFilterContainer');
-const factionFilter = document.getElementById('factionFilter'); // <-- ensure ref
-
-
-// ✅ Mantener panel visible siempre, solo refrescar stats
-factionFilter.addEventListener("change", () => {
-  if (!currentPlayer) return;
-  const fac = factionFilter.value;
-  updatePlayerStats(currentPlayer, fac);
-});
-
-
-// -------------------- CSV parse / normalize --------------------
-function parseCSVToMatrix(text){
-  text = text.replace(/^\uFEFF/,'').trim();
-  if(!text) return [];
-  const lines = text.split(/\r?\n/).filter(l => l.trim() !== '');
-  const delim = lines[0].includes(';') ? ';' : ',';
-  return lines.map(l => l.split(delim).map(c => c.trim()));
+// ════════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════════
+function generarTabs(){
+  const c=document.getElementById("tabsContainer"); c.innerHTML="";
+  const ligas=LIGAS_CONFIG[temporadaActual];
+  if(!ligas[ligaActual]) ligaActual=Object.keys(ligas)[0];
+  Object.keys(ligas).forEach(liga=>{
+    const btn=document.createElement("button");
+    btn.className="tab-btn"; btn.dataset.liga=liga; btn.innerHTML=nombreLiga(liga);
+    if(liga===ligaActual) btn.classList.add(`active-${liga}`);
+    btn.onclick=()=>{
+      document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active-platino","active-oro","active-plata","active-bronce"));
+      btn.classList.add(`active-${liga}`); ligaActual=liga; loadAndProcess();
+    };
+    c.appendChild(btn);
+  });
 }
 
-function findIndex(headers, patterns){
-  const h = headers.map(x => (x||'').toString().toLowerCase());
-  for(const p of patterns){
-    for(let i=0;i<h.length;i++){ if(h[i].includes(p)) return i; }
-  }
+// ════════════════════════════════════════════
+// TEMPORADA SELECT
+// ════════════════════════════════════════════
+document.getElementById("temporadaSelect").addEventListener("change",e=>{
+  const n=e.target.value;
+  if(!LIGAS_CONFIG[n]){ alert(traducciones[idiomaActual].alertNoDisponible); e.target.value=temporadaActual; return; }
+  temporadaActual=n;
+  if(!Object.keys(LIGAS_CONFIG[n]).includes(ligaActual)) ligaActual=Object.keys(LIGAS_CONFIG[n])[0];
+  e.target.classList.add("activo");
+  // Resetear selector de categoría y actualizar opciones
+  catFilter.value='all';
+  actualizarOpcionesCat();
+  generarTabs(); loadAndProcess(); cargarStatsGlobales();
+});
+
+// ════════════════════════════════════════════
+// CSV UTILS
+// ════════════════════════════════════════════
+function parseCSV(text){
+  text=text.replace(/^\uFEFF/,'').trim(); if(!text) return [];
+  const lines=text.split(/\r?\n/).filter(l=>l.trim()!=='');
+  const delim=lines[0].includes(';')?';':',';
+  return lines.map(l=>l.split(delim).map(c=>c.trim()));
+}
+function findIdx(h,pats){
+  const lh=h.map(x=>(x||'').toLowerCase());
+  for(const p of pats) for(let i=0;i<lh.length;i++) if(lh[i].includes(p)) return i;
   return -1;
 }
-
-function detectFactionCandidateCols(matrix){
-  if(!matrix||matrix.length<2)return[];
-  const headers=matrix[0];
-  const n=headers.length;
-  const counts=new Array(n).fill(0);
-  const rows=matrix.slice(1);
-  rows.forEach(r=>{
-    for(let c=0;c<n;c++){
-      const v=(r[c]||'').toString().trim().toUpperCase();
-      if(v==='WM'||v==='US'||v==='PE'||v==='CW')counts[c]++;
-    }
-  });
-  const candidates=[];
-  for(let i=0;i<n;i++){
-    if(counts[i]>=Math.max(1,Math.round(rows.length*0.20)))candidates.push(i);
-  }
-  if(candidates.length===0){
-    for(let i=0;i<n;i++)if(counts[i]>0)candidates.push(i);
-  }
-  return candidates;
+function detectFacCols(matrix){
+  if(!matrix||matrix.length<2) return[];
+  const n=matrix[0].length; const counts=new Array(n).fill(0);
+  matrix.slice(1).forEach(r=>{ for(let c=0;c<n;c++){ const v=(r[c]||'').trim().toUpperCase(); if(['WM','US','PE','CW'].includes(v)) counts[c]++; } });
+  let cands=[]; for(let i=0;i<n;i++) if(counts[i]>=Math.max(1,Math.round(matrix.slice(1).length*.15))) cands.push(i);
+  if(!cands.length) for(let i=0;i<n;i++) if(counts[i]>0) cands.push(i);
+  return cands;
 }
-
 function normalizeRows(matrix){
-  if(!matrix || matrix.length < 2) return [];
-  const headers = matrix[0];
-  const rows = matrix.slice(1);
-  const cols = {
-    jornada: findIndex(headers, ["fecha","jornada"]),
-    p1: findIndex(headers, ["jugador 1","player 1","local"]),
-    p2: findIndex(headers, ["jugador 2","player 2","visitante"]),
-    fac1: -1,
-    fac2: -1,
-    doc1: findIndex(headers, ["doctrina 1","doctrina local"]),
-    doc2: findIndex(headers, ["doctrina 2","doctrina rival"]),
-    mapa: findIndex(headers, ["mapa"]),
-    result1: findIndex(headers, ["resultado","result","score"]),
-    replay: findIndex(headers, ["replay","descarga","link"]),
-    dur: findIndex(headers, ["duración","duration","time"])
+  if(!matrix||matrix.length<2) return[];
+  const h=matrix[0]; const rows=matrix.slice(1);
+  const c={
+    jornada:findIdx(h,["fecha","jornada"]),
+    p1:findIdx(h,["jugador 1","player 1","local"]),
+    p2:findIdx(h,["jugador 2","player 2","visitante"]),
+    fac1:-1,fac2:-1,
+    doc1:findIdx(h,["doctrina 1","doctrina local"]),
+    doc2:findIdx(h,["doctrina 2","doctrina rival"]),
+    mapa:findIdx(h,["mapa"]),
+    res:findIdx(h,["resultado","result","score"]),
+    rep:findIdx(h,["replay","descarga","link"]),
+    dur:findIdx(h,["duración","duration","time"])
   };
-
-
-  const factionCandidates=detectFactionCandidateCols(matrix);
-  if(factionCandidates.length>=2){cols.fac1=factionCandidates[0];cols.fac2=factionCandidates[1];}
+  const fc=detectFacCols(matrix); if(fc.length>=2){c.fac1=fc[0];c.fac2=fc[1];}
   const data=[];
   for(const r of rows){
-    const jornada=r[cols.jornada]||"";
-    const p1=(r[cols.p1]||"").trim();
-    const p2=(r[cols.p2]||"").trim();
-    const f1=(r[cols.fac1]||"").toUpperCase();
-    const f2=(r[cols.fac2]||"").toUpperCase();
-    const d1=r[cols.doc1]||"";const d2=r[cols.doc2]||"";
-    const map=r[cols.mapa]||"";const res=r[cols.result1]||"";const rep=r[cols.replay]||"";const dur=r[cols.dur]||"";
-    if(!p1&&!p2)continue;
-    // IGNORAR FILAS SIN RESULTADO REAL
-if (!res || res.trim() === "" || /^-+$/.test(res.trim())) continue;
-
-    data.push({jornada,p1,p2,f1,f2,d1,d2,map,res,rep,dur});
+    const p1=(r[c.p1]||'').trim(), p2=(r[c.p2]||'').trim();
+    if(!p1&&!p2) continue;
+    const res=r[c.res]||'';
+    if(!res||res.trim()===''||/^-+$/.test(res.trim())) continue;
+    data.push({ jornada:r[c.jornada]||'', p1, p2,
+      f1:(r[c.fac1]||'').toUpperCase(), f2:(r[c.fac2]||'').toUpperCase(),
+      d1:r[c.doc1]||'', d2:r[c.doc2]||'',
+      map:r[c.mapa]||'', res, rep:r[c.rep]||'', dur:r[c.dur]||'' });
   }
   return data;
 }
-
-// -------------------- util: result parser --------------------
-function decideFromResultString(s, opts = {}) {
-  const r = (s || '').toString().trim();
-  if (!r) return { isWin: null, isDraw: false };
-  const rl = r.toLowerCase();
-  if (/empate|draw|tie/.test(rl)) return { isWin: null, isDraw: true };
-  if (/victoria|win|won|gana|gano|\bw\b/.test(rl)) return { isWin: true, isDraw: false };
-  if (/derrota|lose|lost|perd|\bl\b/.test(rl)) return { isWin: false, isDraw: false };
-  const m = r.match(/^\s*(\d+)\s*[-:]\s*(\d+)\s*$/);
-  if (m) {
-    const a = +m[1], b = +m[2];
-    if (a === b) return { isWin: null, isDraw: true };
-    if (opts.numericIsLocalFirst) return { isWin: a > b, isDraw: false };
-    return { numA: a, numB: b, isWin: null, isDraw: false };
-  }
-  return { isWin: null, isDraw: false };
+function resolveResult(s){
+  const r=(s||'').trim(); const rl=r.toLowerCase();
+  if(/empate|draw|tie/.test(rl)) return{isWin:null,isDraw:true};
+  if(/victoria|win|won|gana|\bw\b/.test(rl)) return{isWin:true,isDraw:false};
+  if(/derrota|lose|lost|perd|\bl\b/.test(rl)) return{isWin:false,isDraw:false};
+  const m=r.match(/^\s*(\d+)\s*[-:]\s*(\d+)\s*$/);
+  if(m){ const a=+m[1],b=+m[2]; if(a===b) return{isWin:null,isDraw:true}; return{numA:a,numB:b,isWin:null,isDraw:false}; }
+  return{isWin:null,isDraw:false};
 }
-
-// -------------------- normalization helpers --------------------
-function normalizeText(s){
-  if(!s && s !== 0) return "";
-  return s.toString().trim().toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,"") // quitar acentos
-    .replace(/\s+/g," ").trim();
+function resolveWin(g,isP1){
+  const r=resolveResult(g.res);
+  if(typeof r.isWin==='boolean') return isP1?r.isWin:!r.isWin;
+  const m=(g.res||'').match(/(\d+)\s*[-:]\s*(\d+)/);
+  if(m){ const a=+m[1],b=+m[2]; if(a!==b) return isP1?a>b:b>a; }
+  return null;
 }
+function esc(s){ return(s||'').toString().replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+function splitNC(raw){
+  if(!raw) return{name:'',cc:null};
+  const m=raw.toString().trim().match(/^(.*?)(?:\s+([A-Za-z]{2}))$/);
+  if(m) return{name:m[1].trim(),cc:m[2].toLowerCase()};
+  return{name:raw.toString().trim(),cc:null};
+}
+function stripCC(n){ return splitNC(n).name; }
 
-// -------------------- load & selector --------------------
+// ════════════════════════════════════════════
+// LOAD
+// ════════════════════════════════════════════
 async function loadAndProcess(){
-  try {
-    const url = CSV_URLS[temporadaActual][ligaActual];
-    const res=await fetch(url);
-    const text=await res.text();
-    csvMatrix=parseCSVToMatrix(text);
-    parsedEntries=normalizeRows(csvMatrix);
+  try{
+    const url=LIGAS_CONFIG[temporadaActual][ligaActual]?.csv;
+    if(!url){
+      const msg=traducciones[idiomaActual].noDisponible;
+      playerSelect.innerHTML=`<option value="">${msg}</option>`;
+      playerDropdownMenu.innerHTML='';
+      playerDropdownSelected.innerHTML=`<span>${esc(msg)}</span>`;
+      return;
+    }
+    const r=await fetch(url); const t=await r.text();
+    parsedEntries=normalizeRows(parseCSV(t));
     fillPlayerSelector();
-  } catch(err) {
-    console.error("Error cargando CSV:", err);
-    playerSelect.innerHTML = '<option value="">Error cargando CSV</option>';
+  }catch(e){
+    console.error(e);
+    const msg=traducciones[idiomaActual].errorCargar;
+    playerSelect.innerHTML=`<option value="">${msg}</option>`;
+    playerDropdownMenu.innerHTML='';
+    playerDropdownSelected.innerHTML=`<span>${esc(msg)}</span>`;
   }
 }
-
 
 function fillPlayerSelector(){
-  const players=new Set();
-
+  const playersMap=new Map(); // name(lowercase) -> {name, cc}
   parsedEntries.forEach(e=>{
-    if(e.p1) players.add(stripCountrySuffix(e.p1));
-    if(e.p2) players.add(stripCountrySuffix(e.p2));
+    [e.p1,e.p2].forEach(raw=>{
+      if(!raw) return;
+      const {name,cc}=splitNC(raw);
+      if(!name) return;
+      const key=name.toLowerCase();
+      if(!playersMap.has(key) || (!playersMap.get(key).cc && cc)) playersMap.set(key,{name,cc});
+    });
   });
-
-  const list=Array.from(players).sort((a,b)=>a.localeCompare(b));
-
-  // construir select
-  playerSelect.innerHTML =
-    '<option value="">Seleccionar jugador...</option>' +
-    list.map(p=>`<option value="${escapeHTML(p)}">${escapeHTML(p)}</option>`).join("");
-
-  // 🔥 AUTO-SELECCIONAR PRIMER JUGADOR
-  if(list.length > 0){
-    const primerJugador = list[0];
-
-    playerSelect.value = primerJugador;
-    currentPlayer = primerJugador;
-
-    renderPlayerStats(primerJugador); // 👈 esto dispara TODO (charts, tabla, etc)
-  }
+  const list=[...playersMap.values()].sort((a,b)=>a.name.localeCompare(b.name));
+  playerSelect.innerHTML=`<option value="">${traducciones[idiomaActual].seleccionarJugador}</option>`+list.map(p=>`<option value="${esc(p.name)}" data-cc="${p.cc||''}">${esc(p.name)}</option>`).join('');
+  buildPlayerDropdown(list);
+  if(list.length){ playerSelect.value=list[0].name; currentPlayer=list[0].name; selectPlayerDropdownItem(list[0].name,true); renderPlayerStats(list[0].name); }
 }
 
-// escape simple to avoid HTML injection in option text
-function escapeHTML(s){ return (s||'').toString().replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+// ════════════════════════════════════════════
+// CUSTOM PLAYER DROPDOWN (con bandera de nacionalidad)
+// ════════════════════════════════════════════
+const playerDropdown        = document.getElementById('playerDropdown');
+const playerDropdownTrigger = document.getElementById('playerDropdownTrigger');
+const playerDropdownMenu    = document.getElementById('playerDropdownMenu');
+const playerDropdownSelected= document.getElementById('playerDropdownSelected');
 
-// -------------------- helper: split name and country code --------------------
-function splitNameCountry(rawName){
-  if(!rawName) return {name:"", cc:null};
-  const s = rawName.toString().trim();
-  // look for a trailing " xx" where xx is 2-letter (like 'cl','ar','mx','ec','co','us')
-  const m = s.match(/^(.*?)(?:\s+([A-Za-z]{2}))$/);
-  if(m){
-    return { name: m[1].trim(), cc: m[2].toLowerCase() };
-  }
-  return { name: s, cc: null };
+function buildPlayerDropdown(list){
+  playerDropdownMenu.innerHTML = list.map(p=>{
+    const cc=p.cc&&p.cc.length===2?p.cc:null;
+    const flagHtml=cc?`<img class="country-flag-dd" src="https://flagcdn.com/w20/${cc}.png" alt="${cc}">`:'';
+    return `<div class="fac-dropdown-item" data-value="${esc(p.name)}">${flagHtml}<span>${esc(p.name)}</span></div>`;
+  }).join('');
+  playerDropdownMenu.querySelectorAll('.fac-dropdown-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      const val=item.dataset.value;
+      playerSelect.value=val;
+      playerSelect.dispatchEvent(new Event('change'));
+      selectPlayerDropdownItem(val,false);
+      closePlayerDropdown();
+    });
+  });
 }
-function stripCountrySuffix(rawName){ return splitNameCountry(rawName).name; }
-
-// -------------------- UI interactions --------------------
-playerSelect.addEventListener("change",()=>{
-  currentPlayer=stripCountrySuffix(playerSelect.value || playerSelect.options[playerSelect.selectedIndex]?.value);
-  if(!currentPlayer) return;
-  renderPlayerStats(currentPlayer);
+function selectPlayerDropdownItem(name,silent){
+  const opt=[...playerSelect.options].find(o=>o.value===name);
+  const cc=opt?opt.dataset.cc:null;
+  const flagHtml=cc?`<img class="country-flag-dd" src="https://flagcdn.com/w20/${cc}.png" alt="${cc}">`:'';
+  playerDropdownSelected.innerHTML = `${flagHtml}<span>${esc(name)}</span>`;
+  playerDropdownMenu.querySelectorAll('.fac-dropdown-item').forEach(i=>{
+    i.classList.toggle('selected', i.dataset.value===name);
+  });
+}
+function closePlayerDropdown(){ playerDropdown.classList.remove('open'); }
+playerDropdownTrigger.addEventListener('click', e=>{
+  e.stopPropagation();
+  closeFacDropdown(); closeCatDropdown();
+  playerDropdown.classList.toggle('open');
 });
+playerDropdownMenu.addEventListener('click', e=>e.stopPropagation());
 
-factionFilter.addEventListener("change",()=>{
-  if(!currentPlayer) return;
-  const fac=factionFilter.value;
-  updatePlayerStats(currentPlayer,fac);
+// ════════════════════════════════════════════
+// CUSTOM FACTION DROPDOWN
+// ════════════════════════════════════════════
+const facDropdown        = document.getElementById('facDropdown');
+const facDropdownTrigger = document.getElementById('facDropdownTrigger');
+const facDropdownMenu    = document.getElementById('facDropdownMenu');
+const facDropdownSelected= document.getElementById('facDropdownSelected');
+
+const FAC_DD_ICONS = {
+  US:'armies/us.png', WM:'armies/wm.png', CW:'armies/cw.png', PE:'armies/pe.png'
+};
+
+function facDDLabel(val){
+  return val==='all' ? traducciones[idiomaActual].todasFem : facName(val);
+}
+
+function buildFacDropdown(options){
+  // options: [{value:'all'}, {value:'US'}, ...]
+  facDropdownMenu.innerHTML = options.map(o => {
+    const isAll = o.value === 'all';
+    const icon = isAll
+      ? `<span class="fac-dd-all">⚔️</span>`
+      : `<img src="${FAC_DD_ICONS[o.value]||''}" alt="${o.value}" onerror="this.style.display='none'">`;
+    const label = facDDLabel(o.value);
+    return `<div class="fac-dropdown-item${o.selected?' selected':''}" data-value="${o.value}">
+      ${icon}<span>${label}</span>
+    </div>`;
+  }).join('');
+
+  facDropdownMenu.querySelectorAll('.fac-dropdown-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const val = item.dataset.value;
+      // sincronizar select oculto
+      factionFilter.value = val;
+      factionFilter.dispatchEvent(new Event('change'));
+      setFacDropdownValue(val);
+      closeFacDropdown();
+    });
+  });
+}
+
+function setFacDropdownValue(val){
+  const isAll = val === 'all';
+  const label = facDDLabel(val);
+  const iconHTML = isAll
+    ? `<span style="font-size:1rem">⚔️</span>`
+    : `<img src="${FAC_DD_ICONS[val]||''}" style="width:20px;height:20px;object-fit:contain" alt="${val}" onerror="this.style.display='none'">`;
+  facDropdownSelected.innerHTML = `${iconHTML}<span>${label}</span>`;
+  // marcar seleccionado en menu
+  facDropdownMenu.querySelectorAll('.fac-dropdown-item').forEach(i => {
+    i.classList.toggle('selected', i.dataset.value === val);
+  });
+}
+
+function closeFacDropdown(){ facDropdown.classList.remove('open'); }
+
+facDropdownTrigger.addEventListener('click', e => {
+  e.stopPropagation();
+  closePlayerDropdown(); closeCatDropdown();
+  facDropdown.classList.toggle('open');
 });
+document.addEventListener('click', () => { closeFacDropdown(); closePlayerDropdown(); closeCatDropdown(); });
+facDropdownMenu.addEventListener('click', e => e.stopPropagation());
 
-// -------------------- render player stats --------------------
+// ════════════════════════════════════════════
+// EVENTOS
+// ════════════════════════════════════════════
+playerSelect.addEventListener('change',()=>{ currentPlayer=stripCC(playerSelect.value); if(currentPlayer) renderPlayerStats(currentPlayer); });
+factionFilter.addEventListener('change',()=>{ if(currentPlayer) updatePlayerStats(currentPlayer,factionFilter.value); });
+
+// ════════════════════════════════════════════
+// RENDER JUGADOR
+// ════════════════════════════════════════════
 function renderPlayerStats(player){
-  // find games where either p1 or p2 equals player's name (strip country suffix before comparing)
-  const ownGames = parsedEntries.filter(g => stripCountrySuffix(g.p1) === player || stripCountrySuffix(g.p2) === player);
-  // factions used
-  const factionsUsed = [...new Set(ownGames.map(g => stripCountrySuffix(g.p1) === player ? (g.f1||'') : (g.f2||'')) )].filter(Boolean);
-  factionFilterContainer.style.display = ownGames.length ? "flex" : "none";
-  factionFilter.innerHTML = '<option value="all">Todas</option>' + factionsUsed.map(f=>`<option value="${f}">${f}</option>`).join("");
-  // default all
-  factionFilter.value = 'all';
-  updatePlayerStats(player, 'all');
+  const games=parsedEntries.filter(g=>stripCC(g.p1)===player||stripCC(g.p2)===player);
+  const facsUsed=[...new Set(games.map(g=>stripCC(g.p1)===player?g.f1:g.f2))].filter(Boolean);
+  factionFilterContainer.style.display=games.length?'flex':'none';
+  // Actualizar select oculto
+  factionFilter.innerHTML=`<option value="all">${traducciones[idiomaActual].todasFem}</option>`+facsUsed.map(f=>`<option value="${f}">${f}</option>`).join('');
+  factionFilter.value='all';
+  // Actualizar dropdown custom
+  buildFacDropdown([{value:'all',selected:true},...facsUsed.map(f=>({value:f,selected:false}))]);
+  setFacDropdownValue('all');
+  updatePlayerStats(player,'all');
 }
 
-function updatePlayerStats(player, faction){
-  const ownGames = parsedEntries.filter(g=>{
-    const me = (stripCountrySuffix(g.p1) === player || stripCountrySuffix(g.p2) === player);
-    if(!me) return false;
-    const myFac = stripCountrySuffix(g.p1) === player ? g.f1 : g.f2;
-    return (faction === "all" || myFac === faction);
-  });
+function animateNum(el,val){
+  el.classList.remove('animate');
+  void el.offsetWidth;
+  el.textContent=val;
+  el.classList.add('animate');
+}
 
-  // basic stats
-  const pj = ownGames.length;
-  let victorias = 0, derrotas = 0;
-  ownGames.forEach(g=>{
-    const isP1 = stripCountrySuffix(g.p1) === player;
-    const r = decideFromResultString(g.res);
-    let win = null;
-    if (typeof r.isWin === 'boolean') win = isP1 ? r.isWin : !r.isWin;
-    else {
-      const m = (g.res||'').toString().match(/(\d+)\s*[-:]\s*(\d+)/);
-      if (m){
-        const a = parseInt(m[1],10), b = parseInt(m[2],10);
-        if(!isNaN(a) && !isNaN(b) && a !== b) win = isP1 ? a > b : b > a;
-      }
-    }
-    if(win === true) victorias++;
-    if(win === false) derrotas++;
+function updatePlayerStats(player,faction){
+  const games=parsedEntries.filter(g=>{
+    if(!(stripCC(g.p1)===player||stripCC(g.p2)===player)) return false;
+    const myF=stripCC(g.p1)===player?g.f1:g.f2;
+    return faction==='all'||myF===faction;
   });
-
-  document.getElementById("statPJ").textContent = pj || 0;
-  document.getElementById("statV").textContent = victorias || 0;
-  document.getElementById("statD").textContent = derrotas || 0;
-  document.getElementById("statWR").textContent = pj ? ((victorias/pj*100).toFixed(1) + "%") : "0.0%";
+  let v=0,d=0;
+  games.forEach(g=>{ const w=resolveWin(g,stripCC(g.p1)===player); if(w===true)v++; if(w===false)d++; });
+  const pj=games.length;
+  animateNum(document.getElementById('statPJ'), pj||0);
+  animateNum(document.getElementById('statV'),  v||0);
+  animateNum(document.getElementById('statD'),  d||0);
+  animateNum(document.getElementById('statWR'), pj?((v/pj*100).toFixed(1)+'%'):'0.0%');
 
   // historial
-  const sorted = ownGames.sort((a,b)=>{
-    const ja = (a.jornada||'').toString().match(/(\d{1,3})/); const jb = (b.jornada||'').toString().match(/(\d{1,3})/);
-    return (ja?+ja[1]:0) - (jb?+jb[1]:0);
+  const sorted=[...games].sort((a,b)=>{
+    const ja=(a.jornada||'').match(/(\d+)/),jb=(b.jornada||'').match(/(\d+)/);
+    return (ja?+ja[1]:0)-(jb?+jb[1]:0);
   });
-
-
-  const tbody = document.querySelector("#historialTable tbody");
-  tbody.innerHTML = "";
+  const tbody=document.querySelector('#historialTable tbody'); tbody.innerHTML='';
   sorted.forEach(g=>{
-    const isP1 = stripCountrySuffix(g.p1) === player;
-    const facOwn = isP1 ? (g.f1 || '') : (g.f2 || '');
-    const facRival = isP1 ? (g.f2 || '') : (g.f1 || '');
-    const docOwn = isP1 ? g.d1 : g.d2;
-    const docRiv = isP1 ? g.d2 : g.d1;
-    // opponent name + country flag
-    const opponentRaw = isP1 ? g.p2 : g.p1;
-    const oppSplit = splitNameCountry(opponentRaw);
-    const opponentDisplay = escapeHTML(oppSplit.name);
-
-    // 🔧 Limpieza de código de país (por si hay espacios, mayúsculas o códigos no ISO válidos)
-    let cc = oppSplit.cc ? oppSplit.cc.trim().toLowerCase() : null;
-    let oppFlagHTML = '';
-    if (cc && cc.length === 2 && /^[a-z]{2}$/.test(cc)) {
-      oppFlagHTML = `<img class="country-flag" src="https://flagcdn.com/w20/${cc}.png" alt="${cc}">`;
-    }
-
-    // result
-    const r = decideFromResultString(g.res);
-    let win = null;
-    if (typeof r.isWin === 'boolean') win = isP1 ? r.isWin : !r.isWin;
-    else {
-      const m = (g.res||'').toString().match(/(\d+)\s*[-:]\s*(\d+)/);
-      if (m){
-        const a = parseInt(m[1],10), b = parseInt(m[2],10);
-        if(!isNaN(a) && !isNaN(b) && a !== b) win = isP1 ? a > b : b > a;
-      }
-    }
-    let resTxt = "-"; let cls = "";
-    if (win === true) { resTxt = "Victoria"; cls = "result-v ok"; }
-    if (win === false) { resTxt = "Derrota"; cls = "result-v ko"; }
-    if (r.isDraw) { resTxt = "Empate"; cls = ""; }
-
-    // faction icon for player only (small)
-    const iconOwn = factionIcons[(facOwn||'').toUpperCase()] || "";
-    const iconOwnHTML = iconOwn ? `<img src="${iconOwn}" class="faction-icon" style="width:22px;height:14px;margin-right:8px">` : '';
-
-    // faction icon for rival too
-    const iconRiv = factionIcons[(facRival||'').toUpperCase()] || "";
-    const iconRivHTML = iconRiv ? `<img src="${iconRiv}" class="faction-icon" style="width:22px;height:14px;margin-right:8px">` : '';
-
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${escapeHTML(g.jornada||'')}</td>
-      <td>${iconOwnHTML}${escapeHTML(stripCountrySuffix(isP1?g.p1:g.p2))}</td>
-      <td>${escapeHTML(docOwn||'')}</td>
-      <td>${opponentDisplay}${oppFlagHTML}</td>
-      <td>${iconRivHTML}${escapeHTML(facRival)}</td>
-      <td>${escapeHTML(docRiv||'')}</td>
-      <td>${escapeHTML(g.map||'')}</td>
+    const isP1=stripCC(g.p1)===player;
+    const facOwn=isP1?g.f1:g.f2, facRiv=isP1?g.f2:g.f1;
+    const docOwn=isP1?g.d1:g.d2, docRiv=isP1?g.d2:g.d1;
+    const opp=splitNC(isP1?g.p2:g.p1);
+    const cc=opp.cc&&opp.cc.length===2?opp.cc:null;
+    const flagHtml=cc?`<img class="country-flag" src="https://flagcdn.com/w20/${cc}.png" alt="${cc}">`:'';
+    const r=resolveResult(g.res); const win=resolveWin(g,isP1);
+    const t=traducciones[idiomaActual];
+    let resTxt='—',cls='';
+    if(win===true){resTxt=t.victoria;cls='result-v ok';}
+    if(win===false){resTxt=t.derrota;cls='result-v ko';}
+    if(r.isDraw){resTxt=t.empate;}
+    const iOwn=FAC_ICONS[(facOwn||'').toUpperCase()]||'';
+    const iRiv=FAC_ICONS[(facRiv||'').toUpperCase()]||'';
+    const iOwnH=iOwn?`<img src="${iOwn}" class="faction-icon">`:'';
+    const iRivH=iRiv?`<img src="${iRiv}" class="faction-icon">`:'';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>${esc(g.jornada)}</td>
+      <td class="col-own">${iOwnH}${esc(stripCC(isP1?g.p1:g.p2))}</td>
+      <td class="col-own-doc">${esc(docName(docOwn))||`<span style="color:#444;font-style:italic">${t.sinDoctrinaItalic}</span>`}</td>
+      <td class="col-rival">${esc(opp.name)}${flagHtml}</td>
+      <td class="col-rival">${iRivH}${esc(facRiv)}</td>
+      <td class="col-rival-doc">${esc(docName(docRiv))||`<span style="color:#444;font-style:italic">${t.sinDoctrinaItalic}</span>`}</td>
+      <td>${esc(g.map)}</td>
       <td class="${cls}">${resTxt}</td>
-      <td class="duration">${escapeHTML(g.dur||'-')}</td>
-      <td>${g.rep?`<a class="download-btn" href="${g.rep}" target="_blank" download>⬇️</a>`:""}</td>`;
+      <td class="duration">${esc(g.dur||'—')}</td>
+      <td>${g.rep?`<a class="replay-btn" href="${g.rep}" target="_blank">▶ Replay</a>`:''}</td>`;
     tbody.appendChild(tr);
   });
 
   // charts
-  // ✅ Mostrar/ocultar torta según filtro de facción
-const pieContainer = document.querySelector(".pie-small");
-
-if (faction === "all") {
-  pieContainer.style.display = "flex";
-  renderFactionPie(player, ownGames, faction);
-} else {
-  pieContainer.style.display = "none";
-  if (pieChart) pieChart.destroy();
-  pieChart = null;
+  if(faction==='all'){
+    document.getElementById('pieSection').style.display='block';
+    renderDonut(player,games);
+  } else {
+    document.getElementById('pieSection').style.display='none';
+    if(pieChart){pieChart.destroy();pieChart=null;}
+  }
+  renderMapBar(player,games);
+  renderNotes(player,games);
 }
 
-  renderMapBar(player, ownGames, faction);
-  updatePlayerNotes(player, ownGames);
-}
-
-// -------------------- charts --------------------
-function renderFactionPie(player,games,faction){
-  const ctx=document.getElementById("factionPie").getContext("2d");
-
+// ════════════════════════════════════════════
+// DONUT CHART
+// ════════════════════════════════════════════
+function renderDonut(player,games){
+  const ctx=document.getElementById('factionPie').getContext('2d');
   const counts={};
-  games.forEach(g=>{
-    const f = stripCountrySuffix(g.p1) === player ? g.f1 : g.f2;
-    if(!f) return;
-    counts[f] = (counts[f]||0)+1;
+  games.forEach(g=>{ const f=stripCC(g.p1)===player?g.f1:g.f2; if(f) counts[f]=(counts[f]||0)+1; });
+  const labels=Object.keys(counts), data=Object.values(counts), total=data.reduce((a,b)=>a+b,0);
+  // colores con transparencia para el gráfico
+  const bgColors=labels.map(l=>{
+    const c=FAC_COLORS[l]||'#888';
+    // convertir hex a rgba con opacidad reducida
+    const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16);
+    return `rgba(${r},${g},${b},0.55)`;
   });
-
-  const labels = Object.keys(counts);
-  const data = Object.values(counts);
-
-  // 🎨 COLORES POR FACCION
-  const colorMap = {
-    US: "#66ccff",   // celeste
-    CW: "#008000",   // violeta
-    WM: "#ff4d4d",   // rojo
-    PE: "#800080"    // marrón
-  };
-
-  const bgColors = labels.map(l => colorMap[l] || "#999");
-  const borderColors = labels.map(() => "#111"); // contorno oscuro fuerte
+  const fullColors=labels.map(l=>FAC_COLORS[l]||'#888');
 
   if(pieChart) pieChart.destroy();
-
-  pieChart = new Chart(ctx,{
-    type:"pie",
-    data:{
-      labels,
-      datasets:[{
-        data,
-        backgroundColor:bgColors,
-        borderColor:borderColors,
-        borderWidth:2, // 🔥 borde fuerte
-        hoverOffset:12 // 🔥 efecto al pasar mouse
-      }]
-    },
+  pieChart=new Chart(ctx,{
+    type:'doughnut',
+    data:{ labels, datasets:[{ data, backgroundColor:bgColors, borderColor:'rgba(0,0,0,0.5)', borderWidth:2, hoverOffset:10 }] },
     options:{
+      cutout:'62%',
       plugins:{
-        legend:{
-          position:"bottom",
-          labels:{
-            color:"#fff",
-            font:{weight:"bold", size:12}
-          }
+        legend:{display:false},
+        tooltip:{ backgroundColor:'#111', titleColor:'#ffcc55', bodyColor:'#ddd', borderColor:'rgba(255,200,80,0.3)', borderWidth:1,
+          callbacks:{ label:ctx=>` ${ctx.label}: ${ctx.parsed} ${traducciones[idiomaActual].partidas} (${(ctx.parsed/total*100).toFixed(1)}%)` }
         }
       }
     }
   });
+
+  // leyenda custom con ícono + circulito de color
+  const leg=document.getElementById('factionLegend'); leg.innerHTML='';
+  labels.forEach((l,i)=>{
+    const pct=(data[i]/total*100).toFixed(1);
+    const iconSrc=FAC_ICONS[l.toUpperCase()]||'';
+    const iconHtml=iconSrc
+      ? `<img src="${iconSrc}" style="width:22px;height:22px;object-fit:contain;filter:drop-shadow(0 0 3px rgba(0,0,0,0.7))" alt="${l}">`
+      : '';
+    leg.innerHTML+=`<div class="faction-legend-item">
+      <span style="width:10px;height:10px;border-radius:50%;background:${fullColors[i]};flex-shrink:0;display:inline-block;box-shadow:0 0 6px ${fullColors[i]}55"></span>
+      ${iconHtml}
+      <span class="faction-legend-name">${facName(l)}</span>
+      <span class="faction-legend-pct">${pct}%</span>
+    </div>`;
+  });
 }
 
-// grouped bars: victorias y derrotas por mapa (side-by-side)
-function renderMapBar(player, games, faction) {
-  const container = document.querySelector(".chart-block");
-  let oldCanvas = document.getElementById("mapBar");
-
-  // Destruir gráfico previo y canvas físico
-  if (mapChart) {
-    try { mapChart.destroy(); } catch(e){}
-    mapChart = null;
-  }
-  if (oldCanvas) oldCanvas.remove();
-
-  // Crear un canvas nuevo de dimensiones fijas
-  const newCanvas = document.createElement("canvas");
-  newCanvas.id = "mapBar";
-  newCanvas.width = 800;   // ancho fijo
-  newCanvas.height = 340;  // alto fijo
-  container.appendChild(newCanvas);
-
-  const ctx = newCanvas.getContext("2d");
-  const mapData = {};
-
-  // Agrupar victorias / derrotas
-  games.forEach(g => {
-    const mapName = (g.map || "Desconocido").toString().trim();
-    const isP1 = stripCountrySuffix(g.p1) === player;
-    const r = decideFromResultString(g.res);
-    let win = null;
-
-    if (typeof r.isWin === "boolean") {
-      win = isP1 ? r.isWin : !r.isWin;
-    } else {
-      const m = (g.res || "").match(/(\d+)\s*[-:]\s*(\d+)/);
-      if (m) {
-        const a = parseInt(m[1]), b = parseInt(m[2]);
-        if (a !== b) win = isP1 ? a > b : b > a;
-      }
-    }
-
-    if (!mapData[mapName]) mapData[mapName] = { V: 0, D: 0 };
-    if (win === true) mapData[mapName].V++;
-    if (win === false) mapData[mapName].D++;
+// ════════════════════════════════════════════
+// BAR CHART
+// ════════════════════════════════════════════
+function renderMapBar(player,games){
+  const container=document.querySelector('.chart-block');
+  const old=document.getElementById('mapBar'); if(old) old.remove();
+  if(mapChart){try{mapChart.destroy();}catch(e){} mapChart=null;}
+  const canvas=document.createElement('canvas'); canvas.id='mapBar'; container.appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+  const md={};
+  games.forEach(g=>{
+    const mn=(g.map||'Desconocido').trim();
+    const w=resolveWin(g,stripCC(g.p1)===player);
+    if(!md[mn]) md[mn]={V:0,D:0};
+    if(w===true) md[mn].V++; if(w===false) md[mn].D++;
   });
+  const labels=Object.keys(md);
+  const vData=labels.map(m=>md[m].V), dData=labels.map(m=>md[m].D);
+  const maxV=Math.max(1,...vData,...dData);
 
-  const labels = Object.keys(mapData);
-  const vData = labels.map(m => mapData[m].V);
-  const dData = labels.map(m => mapData[m].D);
-
-  // Escala segura y comprimida
-  const maxVal = Math.max(1, Math.max(...vData, ...dData));
-  const yMax = Math.ceil(maxVal * 1.1);
-
-  // Crear gráfico
-  mapChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [
-  {
-    label: "Victorias",
-    data: vData,
-    backgroundColor: "rgba(0,255,140,0.85)",   // verde más vivo
-    borderColor: "#00ff99",                    // borde brillante
-    borderWidth: 3,                            // 🔥 más grosor
-    barThickness: 28,
-    borderRadius: 4
-  },
-  {
-    label: "Derrotas",
-    data: dData,
-    backgroundColor: "rgba(255,60,60,0.85)",   // rojo más intenso
-    borderColor: "#ff2222",
-    borderWidth: 3,
-    barThickness: 28,
-    borderRadius: 4
-  }
-]
-    },
-    options: {
-      responsive: false,
-      animation: false,
-      plugins: {
-  legend: { 
-    position: "bottom", 
-    labels: { color: "#fff", font: { weight: "bold" } } 
-},
-  interaction: {
-  mode: "index",
-  intersect: false
-},  
-  tooltip: {
-    backgroundColor: "#000",
-    titleColor: "#ffcc55",
-    bodyColor: "#fff",
-    borderColor: "#ffcc55",
-    borderWidth: 1
-  }
-
+  mapChart=new Chart(ctx,{
+    type:'bar',
+    data:{ labels, datasets:[
+      { label:traducciones[idiomaActual].chartVictorias, data:vData,
+        backgroundColor:ctx=>{ const g=ctx.chart.ctx.createLinearGradient(0,0,0,280); g.addColorStop(0,'rgba(59,255,120,0.9)'); g.addColorStop(1,'rgba(20,120,60,0.7)'); return g; },
+        borderColor:'#3bff7a', borderWidth:2, barThickness:24, borderRadius:6, borderSkipped:false },
+      { label:traducciones[idiomaActual].chartDerrotas, data:dData,
+        backgroundColor:ctx=>{ const g=ctx.chart.ctx.createLinearGradient(0,0,0,280); g.addColorStop(0,'rgba(255,77,77,0.9)'); g.addColorStop(1,'rgba(120,20,20,0.7)'); return g; },
+        borderColor:'#ff4d4d', borderWidth:2, barThickness:24, borderRadius:6, borderSkipped:false }
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ position:'bottom', labels:{ color:'#aaa', usePointStyle:true, pointStyle:'circle', font:{weight:'700',size:12}, padding:20 } },
+        tooltip:{ backgroundColor:'rgba(10,8,4,0.95)', titleColor:'#ffcc55', bodyColor:'#ddd', borderColor:'rgba(255,200,80,0.3)', borderWidth:1, padding:10,
+          callbacks:{ afterLabel:ctx=>{ const map=labels[ctx.dataIndex]; const t=md[map].V+md[map].D; const wr=t>0?((md[map].V/t)*100).toFixed(1):'0.0'; return `WR: ${wr}%`; } }
+        }
       },
-      scales: {
-        x: {
-          ticks: { color: "#fff" },
-          grid: { color: "rgba(255,255,255,0.05)" }
-        },
-        y: {
-          beginAtZero: true,
-          max: yMax,
-          ticks: { color: "#fff", stepSize: 1 },
-          grid: { color: "rgba(255,255,255,0.05)" }
-        }
+      scales:{
+        x:{ ticks:{color:'#999',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'rgba(255,255,255,0.07)'} },
+        y:{ beginAtZero:true, max:Math.ceil(maxV*1.15)||2, ticks:{color:'#999',stepSize:1,font:{size:11}}, grid:{color:'rgba(255,255,255,0.06)'}, border:{color:'rgba(255,255,255,0.07)'} }
       }
     }
   });
 }
 
-// -------------------- notas del jugador --------------------
-
-function updatePlayerNotes(player, games) {
-  const notesDiv = document.getElementById("notesArea");
-  if (!games || games.length === 0) {
-    notesDiv.innerHTML = "Seleccioná un jugador para ver sus estadísticas.";
+// ════════════════════════════════════════════
+// NOTAS / ANÁLISIS
+// ════════════════════════════════════════════
+function renderNotes(player,games){
+  const div=document.getElementById('notesArea');
+  const t=traducciones[idiomaActual];
+  if(!games||!games.length){
+    div.innerHTML=`<div style="color:#555;font-size:.85rem;padding:8px 0">${t.sinPartidas}</div>`;
     return;
   }
 
-  const mapStats = {};
-  const facStats = {};
-  const docStats = {};
+  const mapS={},facS={},docS={};
+  let lV=0,lD=0,lT=0,aV=0,aD=0,aT=0,durT=0,durC=0;
+  const parseDur=d=>{ if(!d) return 0; const p=d.split(':').map(Number); return p.length===2?p[0]*60+p[1]:p.length===3?p[0]*3600+p[1]*60+p[2]:0; };
 
-  const facNames = {
-    "US": "Americanos",
-    "CW": "Británicos",
-    "WM": "Wehrmacht",
-    "PE": "Panzer Elite"
-  };
-
-  const alliedDocs = [
-    "Infantería","Aerotransportada","Blindada",
-    "Comandos","Comandos Reales","Artillería Real","Ingenieros Reales"
-  ];
-  const axisDocs = [
-    "Tierra Quemada","Luftwaffe","Destructores de Tanques",
-    "Blitzkrieg","Terror","Defensiva"
-  ];
-
-  // --- NUEVOS contadores de local/visitante y tiempo ---
-  let localV = 0, localD = 0, localTotal = 0;
-  let awayV = 0, awayD = 0, awayTotal = 0;
-  let totalDurSeconds = 0, countedDurations = 0;
-
-  // función auxiliar para convertir duración a segundos
-  const parseDuration = (dur) => {
-    if (!dur) return 0;
-    const parts = dur.split(":").map(n => parseInt(n, 10));
-    if (parts.length === 2) return parts[0] * 60 + parts[1];
-    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
-    return 0;
-  };
-
-  games.forEach(g => {
-    const isP1 = stripCountrySuffix(g.p1) === player;
-    const map = (g.map || "Desconocido").trim();
-    const fac = (isP1 ? g.f1 : g.f2) || "-";
-    let doc = (isP1 ? g.d1 : g.d2) || "";
-    if (!doc.trim()) doc = "Sin doctrina";
-
-    const res = decideFromResultString(g.res);
-    const dur = parseDuration(g.dur || "");
-    if (dur > 0) {
-      totalDurSeconds += dur;
-      countedDurations++;
-    }
-
-    if (!mapStats[map]) mapStats[map] = {V:0, D:0};
-    if (!facStats[fac]) facStats[fac] = {V:0, D:0};
-    if (!docStats[doc]) docStats[doc] = {V:0, D:0};
-
-    let win = null;
-    if (typeof res.isWin === "boolean") win = isP1 ? res.isWin : !res.isWin;
-    else {
-      const m = (g.res||"").match(/(\d+)\s*[-:]\s*(\d+)/);
-      if (m) {
-        const a = +m[1], b = +m[2];
-        if (!isNaN(a) && !isNaN(b) && a !== b)
-          win = isP1 ? a > b : b > a;
-      }
-    }
-
-    if (win === true) {
-      mapStats[map].V++; facStats[fac].V++; docStats[doc].V++;
-      if (isP1) localV++; else awayV++;
-    }
-    if (win === false) {
-      mapStats[map].D++; facStats[fac].D++; docStats[doc].D++;
-      if (isP1) localD++; else awayD++;
-    }
-
-    if (isP1) localTotal++; else awayTotal++;
+  games.forEach(g=>{
+    const isP1=stripCC(g.p1)===player;
+    const map=(g.map||'?').trim();
+    const fac=(isP1?g.f1:g.f2)||'?';
+    let doc=(isP1?g.d1:g.d2)||''; if(!doc.trim()||/(^|\s)sin(\s|$)/i.test(doc.trim())) doc=t.sinDoctrina;
+    const dur=parseDur(g.dur); if(dur>0){durT+=dur;durC++;}
+    if(!mapS[map]) mapS[map]={V:0,D:0};
+    if(!facS[fac]) facS[fac]={V:0,D:0};
+    if(!docS[doc]) docS[doc]={V:0,D:0};
+    const w=resolveWin(g,isP1);
+    if(w===true){ mapS[map].V++;facS[fac].V++;docS[doc].V++; if(isP1)lV++;else aV++; }
+    if(w===false){ mapS[map].D++;facS[fac].D++;docS[doc].D++; if(isP1)lD++;else aD++; }
+    if(isP1)lT++;else aT++;
   });
 
-  const totalGames = games.length;
-  const entries = Object.entries(mapStats);
+  const total=games.length;
+  const wr=(v,d)=>{ const t=v+d; return t?((v/t)*100):0; };
+  const wrFmt=(v,d)=>{ const t=v+d; return t?((v/t)*100).toFixed(1)+'%':'—'; };
+  const wrCls=w=>w>=60?'wr-ok':w>=40?'wr-mid':'wr-ko';
+  const wrTag=(v,d)=>{ const w=wr(v,d); return `<span class="${wrCls(w)}">${wrFmt(v,d)} ${t.wrSufijo}</span>`; };
 
-  // --- Mapa más jugado ---
-  const mapPlays = entries.map(([m, s]) => [m, s.V + s.D]);
-  const maxPlay = Math.max(...mapPlays.map(([_, c]) => c));
-  const mostPlayedMaps = mapPlays.filter(([_, c]) => c === maxPlay)
-    .map(([m, c]) => `${m} (${c} de ${totalGames} partidas)`);
+  const mapEntries=Object.entries(mapS);
+  const mostPlayedMap=mapEntries.slice().sort((a,b)=>(b[1].V+b[1].D)-(a[1].V+a[1].D))[0];
+  const bestMap=mapEntries.filter(([,s])=>s.V+s.D>=2).sort((a,b)=>wr(b[1].V,b[1].D)-wr(a[1].V,a[1].D))[0]
+                || mapEntries.slice().sort((a,b)=>b[1].V-a[1].V)[0];
+  const worstMap=mapEntries.filter(([,s])=>s.V+s.D>=2).sort((a,b)=>wr(a[1].V,a[1].D)-wr(b[1].V,b[1].D))[0]
+                 || mapEntries.slice().sort((a,b)=>b[1].D-a[1].D)[0];
 
-  // --- Mapa donde más ganó ---
-  const mapWins = entries.map(([m, s]) => [m, s.V, s.D]);
-  const maxWins = Math.max(...mapWins.map(([_, v]) => v));
-  const bestMaps = maxWins > 0
-    ? mapWins.filter(([_, v]) => v === maxWins)
-      .map(([m, v, d]) => {
-        const total = v + d;
-        const wr = total > 0 ? ((v / total) * 100).toFixed(1) : "0.0";
-        return `${m} (${v} victorias – ${wr}% winrate)`;
-      })
-    : ["Ninguno"];
+  const facEntries=Object.entries(facS);
+  const mainFac =facEntries.slice().sort((a,b)=>(b[1].V+b[1].D)-(a[1].V+a[1].D))[0];
+  const bestFac =facEntries.filter(([,s])=>s.V+s.D>0).sort((a,b)=>wr(b[1].V,b[1].D)-wr(a[1].V,a[1].D))[0];
+  const worstFac=facEntries.filter(([,s])=>s.V+s.D>0).sort((a,b)=>wr(a[1].V,a[1].D)-wr(b[1].V,b[1].D))[0];
 
-  // --- Mapa donde más perdió ---
-  const mapLosses = entries.map(([m, s]) => [m, s.V, s.D]);
-  const maxLosses = Math.max(...mapLosses.map(([_, __, d]) => d));
-  const worstMaps = maxLosses > 0
-    ? mapLosses.filter(([_, __, d]) => d === maxLosses)
-      .map(([m, v, d]) => {
-        const total = v + d;
-        const wr = total > 0 ? ((v / total) * 100).toFixed(1) : "0.0";
-        return `${m} (${d} derrotas – ${wr}% winrate)`;
-      })
-    : ["Ninguno"];
+  const docEntries=Object.entries(docS).filter(([d])=>d!==t.sinDoctrina);
+  const topDoc    =docEntries.slice().sort((a,b)=>(b[1].V+b[1].D)-(a[1].V+a[1].D))[0];
+  const bestDocWR =docEntries.filter(([,s])=>s.V+s.D>=2).sort((a,b)=>wr(b[1].V,b[1].D)-wr(a[1].V,a[1].D))[0];
+  const worstDocWR=docEntries.filter(([,s])=>s.V+s.D>=2).sort((a,b)=>wr(a[1].V,a[1].D)-wr(b[1].V,b[1].D))[0];
 
-  // --- Facción más usada ---
-  const facPlays = Object.entries(facStats).map(([f, s]) => [f, s.V + s.D]);
-  const maxFac = Math.max(...facPlays.map(([_, c]) => c));
-  const mostPlayedFactions = facPlays.filter(([_, c]) => c === maxFac)
-    .map(([f, _]) => {
-      const name = facNames[f] || f;
-      const plays = facStats[f].V + facStats[f].D;
-      return `${name} (${plays} de ${totalGames} partidas)`;
-    });
+  const avgSec=durC?durT/durC:0;
+  const avgFmt=avgSec?`${String(Math.floor(avgSec/60)).padStart(2,'0')}:${String(Math.round(avgSec%60)).padStart(2,'0')}`:'—';
 
-  // --- Facción con mejor winrate ---
-  const facRates = Object.entries(facStats)
-    .filter(([f, s]) => (s.V + s.D) > 0)
-    .map(([f, s]) => {
-      const wr = ((s.V / (s.V + s.D)) * 100).toFixed(1);
-      return { fac: f, wr: parseFloat(wr), label: `${facNames[f] || f} (${wr}%)` };
-    });
-  const maxFacWR = facRates.length ? Math.max(...facRates.map(f => f.wr)) : 0;
-  const bestFacWRs = facRates.filter(f => f.wr === maxFacWR).map(f => f.label.length ? f.label : "-");
+  const facIcon=(code)=>{ const src=FAC_ICONS[(code||'').toUpperCase()]||''; return src?`<img src="${src}" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:4px" alt="${code}">`:''; };
 
-  // --- Doctrinas aliadas / eje más usadas ---
-  const alliedDocsUsed = Object.entries(docStats).filter(([d]) =>
-    alliedDocs.some(x => x.toLowerCase() === d.toLowerCase())
-  );
-  const axisDocsUsed = Object.entries(docStats).filter(([d]) =>
-    axisDocs.some(x => x.toLowerCase() === d.toLowerCase())
-  );
+  const row=(label,html)=>`
+    <div class="arow">
+      <span class="arow-label">${label}</span>
+      <span class="arow-val">${html}</span>
+    </div>`;
 
-  const maxAllied = alliedDocsUsed.length ? Math.max(...alliedDocsUsed.map(([_, s]) => s.V + s.D)) : 0;
-  const maxAxis = axisDocsUsed.length ? Math.max(...axisDocsUsed.map(([_, s]) => s.V + s.D)) : 0;
+  div.innerHTML=`
+    <!-- MAPAS -->
+    <div class="analysis-section">
+      <div class="analysis-section-title">${t.secMapas}</div>
+      <div class="analysis-rows">
+        ${mostPlayedMap ? row(t.masJugado,
+          `<b>${mostPlayedMap[0]}</b>
+           <span class="arow-detail">${mostPlayedMap[1].V+mostPlayedMap[1].D} ${t.partidasDisputadas}</span>
+           &nbsp;·&nbsp; ${wrTag(mostPlayedMap[1].V,mostPlayedMap[1].D)}`) : ''}
+        ${bestMap ? row(t.mejorDesempeno,
+          `<b>${bestMap[0]}</b>
+           <span class="arow-detail">${bestMap[1].V}${t.thV} ${bestMap[1].D}${t.thD}</span>
+           &nbsp;·&nbsp; ${wrTag(bestMap[1].V,bestMap[1].D)}`) : ''}
+        ${worstMap && worstMap[0] !== bestMap?.[0] ? row(t.peorDesempeno,
+          `<b>${worstMap[0]}</b>
+           <span class="arow-detail">${worstMap[1].V}${t.thV} ${worstMap[1].D}${t.thD}</span>
+           &nbsp;·&nbsp; ${wrTag(worstMap[1].V,worstMap[1].D)}`) : ''}
+      </div>
+    </div>
 
-  const bestAlliedDocs = maxAllied > 0
-    ? alliedDocsUsed.filter(([_, s]) => (s.V + s.D) === maxAllied)
-      .map(([d, s]) => `${d} (${s.V + s.D} partidas)`)
-    : ["Ninguna"];
+    <!-- FACCIONES -->
+    <div class="analysis-section">
+      <div class="analysis-section-title">${t.secFacciones}</div>
+      <div class="analysis-rows">
+        ${mainFac ? row(t.masUtilizada,
+          `${facIcon(mainFac[0])}<b>${facName(mainFac[0])}</b>
+           <span class="arow-detail">${t.victoriasYderrotasDe(mainFac[1].V,mainFac[1].D,mainFac[1].V+mainFac[1].D)}</span>
+           &nbsp;·&nbsp; ${wrTag(mainFac[1].V,mainFac[1].D)}`) : ''}
+        ${bestFac ? row(t.mejorDesempeno,
+          `${facIcon(bestFac[0])}<b>${facName(bestFac[0])}</b>
+           <span class="arow-detail">${bestFac[1].V}${t.thV} ${bestFac[1].D}${t.thD}</span>
+           &nbsp;·&nbsp; ${wrTag(bestFac[1].V,bestFac[1].D)}`) : ''}
+        ${worstFac && worstFac[0] !== bestFac?.[0] ? row(t.peorDesempeno,
+          `${facIcon(worstFac[0])}<b>${facName(worstFac[0])}</b>
+           <span class="arow-detail">${worstFac[1].V}${t.thV} ${worstFac[1].D}${t.thD}</span>
+           &nbsp;·&nbsp; ${wrTag(worstFac[1].V,worstFac[1].D)}`) : ''}
+      </div>
+    </div>
 
-  const bestAxisDocs = maxAxis > 0
-    ? axisDocsUsed.filter(([_, s]) => (s.V + s.D) === maxAxis)
-      .map(([d, s]) => `${d} (${s.V + s.D} partidas)`)
-    : ["Ninguna"];
+    <!-- DOCTRINAS -->
+    ${topDoc||bestDocWR ? `
+    <div class="analysis-section">
+      <div class="analysis-section-title">${t.secDoctrinas}</div>
+      <div class="analysis-rows">
+        ${topDoc ? row(t.masUtilizada,
+          `<b>${docName(topDoc[0])}</b>
+           <span class="arow-detail">${t.victoriasYderrotasDe(topDoc[1].V,topDoc[1].D,topDoc[1].V+topDoc[1].D)}</span>
+           &nbsp;·&nbsp; ${wrTag(topDoc[1].V,topDoc[1].D)}`) : ''}
+        ${bestDocWR && bestDocWR[0] !== topDoc?.[0] ? row(t.mejorDesempeno,
+          `<b>${docName(bestDocWR[0])}</b>
+           <span class="arow-detail">${bestDocWR[1].V}${t.thV} ${bestDocWR[1].D}${t.thD} ${idiomaActual==='en'?'out of':'de'} ${bestDocWR[1].V+bestDocWR[1].D}</span>
+           &nbsp;·&nbsp; ${wrTag(bestDocWR[1].V,bestDocWR[1].D)}`) : ''}
+        ${worstDocWR && worstDocWR[0] !== bestDocWR?.[0] && worstDocWR[0] !== topDoc?.[0] ? row(t.peorDesempeno,
+          `<b>${docName(worstDocWR[0])}</b>
+           <span class="arow-detail">${worstDocWR[1].V}${t.thV} ${worstDocWR[1].D}${t.thD} ${idiomaActual==='en'?'out of':'de'} ${worstDocWR[1].V+worstDocWR[1].D}</span>
+           &nbsp;·&nbsp; ${wrTag(worstDocWR[1].V,worstDocWR[1].D)}`) : ''}
+      </div>
+    </div>` : ''}
 
-  // --- Doctrina aliada con mejor winrate ---
-  const alliedRates = alliedDocsUsed.map(([d, s]) => {
-    const wr = (s.V + s.D) > 0 ? ((s.V / (s.V + s.D)) * 100).toFixed(1) : "0.0";
-    return { d, wr: parseFloat(wr), label: `${d} (${wr}%)` };
-  });
-  const maxAlliedWR = alliedRates.length ? Math.max(...alliedRates.map(d => d.wr)) : 0;
-  const bestAlliedWRs = alliedRates.filter(d => d.wr === maxAlliedWR && maxAlliedWR > 0)
-    .map(d => d.label) || ["Ninguna"];
+    <!-- LOCAL / VISITANTE -->
+    <div class="analysis-section">
+      <div class="analysis-section-title">${t.secLocalVisitante}</div>
+      <div class="analysis-rows">
+        ${lT ? row(t.comoLocal,
+          `<span class="arow-detail">${t.victoriasYderrotasDe(lV,lD,lT)}</span>
+           &nbsp;·&nbsp; ${wrTag(lV,lD)}`) : ''}
+        ${aT ? row(t.comoVisitante,
+          `<span class="arow-detail">${t.victoriasYderrotasDe(aV,aD,aT)}</span>
+           &nbsp;·&nbsp; ${wrTag(aV,aD)}`) : ''}
+      </div>
+    </div>
 
-  // --- Doctrina alemana con mejor winrate ---
-  const axisRates = axisDocsUsed.map(([d, s]) => {
-    const wr = (s.V + s.D) > 0 ? ((s.V / (s.V + s.D)) * 100).toFixed(1) : "0.0";
-    return { d, wr: parseFloat(wr), label: `${d} (${wr}%)` };
-  });
-  const maxAxisWR = axisRates.length ? Math.max(...axisRates.map(d => d.wr)) : 0;
-  const bestAxisWRs = axisRates.filter(d => d.wr === maxAxisWR && maxAxisWR > 0)
-    .map(d => d.label) || ["Ninguna"];
-
-  // --- Item 10: ¿Es fuerte de local? ---
-  let localNote = "No hay datos suficientes.";
-  if (localTotal > 0) {
-    const localWR = (localV / localTotal) * 100;
-    if (localWR >= 60) localNote = `Sí, su winrate es ${localV} de ${localTotal} partidas como local (${localWR.toFixed(1)}%)`;
-    else if (localWR >= 40) localNote = `Más o menos, su winrate es ${localV} de ${localTotal} partidas como local (${localWR.toFixed(1)}%)`;
-    else localNote = `No, su winrate es ${localV} de ${localTotal} partidas como local (${localWR.toFixed(1)}%)`;
-  }
-
-  // --- Item 11: ¿Es fuerte de visitante? ---
-  let awayNote = "No hay datos suficientes.";
-  if (awayTotal > 0) {
-    const awayWR = (awayV / awayTotal) * 100;
-    if (awayWR >= 60) awayNote = `Sí, su winrate es ${awayV} de ${awayTotal} partidas como visitante (${awayWR.toFixed(1)}%)`;
-    else if (awayWR >= 40) awayNote = `Más o menos, su winrate es ${awayV} de ${awayTotal} partidas como visitante (${awayWR.toFixed(1)}%)`;
-    else awayNote = `No, su winrate es ${awayV} de ${awayTotal} partidas como visitante (${awayWR.toFixed(1)}%)`;
-  }
-
-  // --- Item 12: Duración promedio ---
-  const avgDur = countedDurations > 0 ? totalDurSeconds / countedDurations : 0;
-  const avgMin = Math.floor(avgDur / 60);
-  const avgSec = Math.round(avgDur % 60);
-  const avgFormatted = avgDur > 0 ? `${avgMin.toString().padStart(2,"0")}:${avgSec.toString().padStart(2,"0")} min` : "Sin datos";
-  const durationNote = `Duración promedio de sus enfrentamientos: ${avgFormatted}`;
-
-  const rombo = '<span style="color:#ffcc55;">◆</span>';
-  const fmtList = arr => arr.length ? arr.map(x=>`<b>${x}</b>`).join(", ") : "-";
-
-  const html = `
-    <ul style="padding-left:16px;line-height:1.6em;list-style:none;margin:0;">
-      <li>${rombo} Mapa más jugado: ${fmtList(mostPlayedMaps)}</li>
-      <li>${rombo} Mapa/s donde más ganó: ${fmtList(bestMaps)}</li>
-      <li>${rombo} Mapa/s donde más perdió: ${fmtList(worstMaps)}</li>
-      <li>${rombo} Facción más usada: ${fmtList(mostPlayedFactions)}</li>
-      <li>${rombo} Facción con mejor winrate: ${fmtList(bestFacWRs)}</li>
-      <li>${rombo} Doctrina aliada más utilizada: ${fmtList(bestAlliedDocs)}</li>
-      <li>${rombo} Doctrina aliada con mejor winrate: ${fmtList(bestAlliedWRs)}</li>
-      <li>${rombo} Doctrina alemana más utilizada: ${fmtList(bestAxisDocs)}</li>
-      <li>${rombo} Doctrina alemana con mejor winrate: ${fmtList(bestAxisWRs)}</li>
-      <li>${rombo} ¿Es fuerte de local?: ${localNote}</li>
-      <li>${rombo} ¿Es fuerte de visitante?: ${awayNote}</li>
-      <li>${rombo} ${durationNote}</li>
-    </ul>
+    <!-- GENERAL -->
+    <div class="analysis-section">
+      <div class="analysis-section-title">${t.secGeneral}</div>
+      <div class="analysis-rows">
+        ${avgFmt !== '—' ? row(t.duracionMedia,
+          `<b>${avgFmt} min</b> <span class="arow-detail">${t.promedioSobre(durC)}</span>`) : ''}
+      </div>
+    </div>
   `;
-  notesDiv.innerHTML = html;
 }
 
-// -------------------- start --------------------
-loadAndProcess();
+// ════════════════════════════════════════════
+// SELECTOR DE CATEGORÍA (panel izquierdo)
+// ════════════════════════════════════════════
+const catFilter = document.getElementById('catFilter');
+const catDropdown        = document.getElementById('catDropdown');
+const catDropdownTrigger = document.getElementById('catDropdownTrigger');
+const catDropdownMenu    = document.getElementById('catDropdownMenu');
+const catDropdownSelected= document.getElementById('catDropdownSelected');
 
-async function cargarStatsGlobales() {
-  const urls = [
-    CSV_URLS[temporadaActual].oro,
-    CSV_URLS[temporadaActual].plata
-  ];
+function catIconHTML(key){
+  if(key==='all') return `<span style="font-size:1rem">🏅</span>`;
+  const icon = LIGA_NOMBRES[key]?.icon;
+  return icon ? `<img src="${icon}" class="cat-icon" alt="${key}">` : '';
+}
+
+function actualizarOpcionesCat(){
+  const ligas = LIGAS_CONFIG[temporadaActual];
+  const t = traducciones[idiomaActual];
+  const valorPrevio = catFilter.value;
+  catFilter.innerHTML = `<option value="all">${t.catTodas}</option>`;
+  Object.keys(ligas).forEach(key => {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = nombreLigaTexto(key);
+    catFilter.appendChild(opt);
+  });
+  if([...catFilter.options].some(o=>o.value===valorPrevio)) catFilter.value = valorPrevio;
+
+  // poblar dropdown custom con iconos
+  const opciones = [{value:'all', label:t.catTodas}, ...Object.keys(ligas).map(key=>({value:key, label:nombreLigaTexto(key)}))];
+  catDropdownMenu.innerHTML = opciones.map(o=>
+    `<div class="fac-dropdown-item${o.value===catFilter.value?' selected':''}" data-value="${o.value}">${catIconHTML(o.value)}<span>${esc(o.label)}</span></div>`
+  ).join('');
+  catDropdownMenu.querySelectorAll('.fac-dropdown-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      const val=item.dataset.value;
+      catFilter.value=val;
+      catFilter.dispatchEvent(new Event('change'));
+      setCatDropdownValue(val);
+      closeCatDropdown();
+    });
+  });
+  setCatDropdownValue(catFilter.value);
+}
+
+function setCatDropdownValue(val){
+  const label = val==='all' ? traducciones[idiomaActual].catTodas : (nombreLigaTexto(val)||val);
+  catDropdownSelected.innerHTML = `${catIconHTML(val)}<span>${esc(label)}</span>`;
+  catDropdownMenu.querySelectorAll('.fac-dropdown-item').forEach(i=>{
+    i.classList.toggle('selected', i.dataset.value===val);
+  });
+}
+function closeCatDropdown(){ catDropdown.classList.remove('open'); }
+catDropdownTrigger.addEventListener('click', e=>{
+  e.stopPropagation();
+  closeFacDropdown(); closePlayerDropdown();
+  catDropdown.classList.toggle('open');
+});
+catDropdownMenu.addEventListener('click', e=>e.stopPropagation());
+
+catFilter.addEventListener('change', () => {
+  cargarStatsGlobales();
+});
+
+// ════════════════════════════════════════════
+// STATS GLOBALES (panel izquierdo)
+// ════════════════════════════════════════════
+async function cargarStatsGlobales(){
+  const ligas = LIGAS_CONFIG[temporadaActual];
+  const catSeleccionada = catFilter.value;
+  const t = traducciones[idiomaActual];
+
+  // Actualizar título con badge de categoría
+  const badgeClass = catSeleccionada === 'all' ? 'cat-badge-todas' : `cat-badge-${catSeleccionada}`;
+  const badgeLabel = catSeleccionada === 'all'
+    ? t.catTodasBadge
+    : (nombreLigaTexto(catSeleccionada) || catSeleccionada);
+  const badge = `<span class="cat-badge ${badgeClass}">${badgeLabel}</span>`;
+
+  const prefijoTemp = idiomaActual==='en' ? 'S' : 'T';
+  document.getElementById('tituloMapas').innerHTML    = `${t.tituloMapas} · ${prefijoTemp}${temporadaActual} ${badge}`;
+  document.getElementById('tituloDoctrinas').innerHTML = `${t.tituloDoctrinas} · ${prefijoTemp}${temporadaActual} ${badge}`;
+
+  // Determinar qué ligas cargar
+  const ligasACargar = catSeleccionada === 'all'
+    ? Object.values(ligas)
+    : (ligas[catSeleccionada] ? [ligas[catSeleccionada]] : Object.values(ligas));
+
   let partidas = [];
-
-  for (const url of urls) {
-    const res = await fetch(url);
-    const text = await res.text();
-    const matrix = parseCSVToMatrix(text);
-    const rows = normalizeRows(matrix);
-    rows.forEach(g => partidas.push(g));
+  for(const liga of ligasACargar){
+    try{
+      const r = await fetch(liga.csv);
+      const t = await r.text();
+      normalizeRows(parseCSV(t)).forEach(g => partidas.push(g));
+    }catch(e){ console.warn(e); }
   }
 
-  let mapas = {};
-  let doctrinas = {};
+  // MAPAS
+  const mapas = {};
+  partidas.forEach(g => { if(g.map) mapas[g.map] = (mapas[g.map] || 0) + 1; });
+  const maxM = Math.max(1, ...Object.values(mapas));
+  document.querySelector('#tablaMapas tbody').innerHTML =
+    Object.entries(mapas).sort((a,b) => b[1]-a[1]).map(([m,v]) => `
+      <tr>
+        <td>${m}</td>
+        <td class="gt-bar-cell">
+          <div class="gt-bar-bg" style="width:${Math.round(v/maxM*90)}%"></div>
+          <span class="gt-bar-val">${v}</span>
+        </td>
+      </tr>`).join('');
 
-  const ensureDoc = (name) => {
-    if (!doctrinas[name]) doctrinas[name] = { usos: 0, w: 0, l: 0 };
-  };
-
+  // DOCTRINAS
+  const docs = {};
+  const ensureD = n => { if(!docs[n]) docs[n] = {usos:0,w:0,l:0}; };
   partidas.forEach(g => {
-    // --- MAPA ---
-    mapas[g.map] = (mapas[g.map] || 0) + 1;
-
-    // raw de columnas J (d1) y K (d2)
-    const raw1 = (g.d1 || "").toString().trim();
-    const raw2 = (g.d2 || "").toString().trim();
-
-    // detecto sólo si es explícitamente "sin..." (según tu pedido)
-    const isSin1 = /(^|\s)sin(\s|$)/i.test(raw1);
-    const isSin2 = /(^|\s)sin(\s|$)/i.test(raw2);
-
-    // nombres que vamos a usar (pero sólo si hay contenido o dice "sin")
-    const name1 = isSin1 ? "Sin Doctrina" : (raw1 !== "" ? raw1 : null);
-    const name2 = isSin2 ? "Sin Doctrina" : (raw2 !== "" ? raw2 : null);
-
-    // asegurar objetos sólo para los que existan
-    if (name1) ensureDoc(name1);
-    if (name2) ensureDoc(name2);
-
-    // contar usos: sólo si la celda efectivamente contiene algo (o "sin")
-    if (name1) doctrinas[name1].usos++;
-    if (name2) doctrinas[name2].usos++;
-
-    // --- RESULTADO: 1-0 -> gana doctrina J (col1). 0-1 -> gana doctrina K (col2)
-    const match = (g.res || "").trim().match(/^\s*(\d+)\s*[-:]\s*(\d+)\s*$/);
-    if (match) {
-      const local = parseInt(match[1], 10);
-      const visitante = parseInt(match[2], 10);
-
-      if (local > visitante) {
-        // gana columna J
-        if (name1) doctrinas[name1].w++;
-        if (name2) doctrinas[name2].l++;
-      } else if (visitante > local) {
-        // gana columna K
-        if (name2) doctrinas[name2].w++;
-        if (name1) doctrinas[name1].l++;
-      }
+    const r1 = (g.d1||'').trim(), r2 = (g.d2||'').trim();
+    const n1 = /(^|\s)sin(\s|$)/i.test(r1) ? 'Sin Doctrina' : (r1||null);
+    const n2 = /(^|\s)sin(\s|$)/i.test(r2) ? 'Sin Doctrina' : (r2||null);
+    if(n1){ ensureD(n1); docs[n1].usos++; }
+    if(n2){ ensureD(n2); docs[n2].usos++; }
+    const m = (g.res||'').match(/^\s*(\d+)\s*[-:]\s*(\d+)\s*$/);
+    if(m){
+      const lo=+m[1], vi=+m[2];
+      if(lo>vi){ if(n1)docs[n1].w++; if(n2)docs[n2].l++; }
+      else if(vi>lo){ if(n2)docs[n2].w++; if(n1)docs[n1].l++; }
     }
-    // NOTA: si no hay match (por formato distinto), no tocamos w/l
   });
 
-  // --- TABLA MAPAS ---
-  document.querySelector("#tablaMapas tbody").innerHTML =
-    Object.entries(mapas)
-      .sort((a, b) => b[1] - a[1])
-      .map(([m, v]) => `<tr><td>${m}</td><td>${v}</td></tr>`)
-      .join("");
+  const alliedSet = new Set(ALLIED_DOCS);
+  const axisSet   = new Set(AXIS_DOCS);
+  const getBadge = d => {
+    const dl = d.toLowerCase();
+    if(alliedSet.has(dl)) return `<span class="gt-badge gt-badge-allied">${idiomaActual==='en'?'ALL':'ALI'}</span>`;
+    if(axisSet.has(dl))   return `<span class="gt-badge gt-badge-axis">${idiomaActual==='en'?'AXS':'EJE'}</span>`;
+    return '<span class="gt-badge gt-badge-none">—</span>';
+  };
 
-  // --- TABLA DOCTRINAS ---
-  document.querySelector("#tablaDoctrinas tbody").innerHTML =
-    Object.entries(doctrinas)
-      .sort((a, b) => b[1].usos - a[1].usos)
-      .map(([doc, stats]) => `
-        <tr>
-          <td>${doc}</td>
-          <td>${stats.usos}</td>
-          <td>${stats.w}</td>
-          <td>${stats.l}</td>
-        </tr>
-      `).join("");
+  document.querySelector('#tablaDoctrinas tbody').innerHTML =
+    Object.entries(docs).sort((a,b) => b[1].usos-a[1].usos).map(([doc,s]) => `
+      <tr>
+        <td>${getBadge(doc)}${doc==='Sin Doctrina'?t.sinDoctrina:docName(doc)}</td>
+        <td style="font-weight:700;color:var(--ocre)">${s.usos}</td>
+        <td class="gt-doc-win">${s.w}</td>
+        <td class="gt-doc-loss">${s.l}</td>
+      </tr>`).join('');
 }
 
-
-// Iniciar estadísticas globales
-cargarStatsGlobales();
-
-const menuToggle = document.getElementById("menuToggle");
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
-
-menuToggle.addEventListener("click", () => {
-  sidebar.classList.toggle("active");
-  overlay.classList.toggle("active");
+// ════════════════════════════════════════════
+// SIDEBAR / OVERLAY
+// ════════════════════════════════════════════
+document.getElementById('menuToggle').addEventListener('click',()=>{
+  document.getElementById('sidebar').classList.toggle('active');
+  document.getElementById('overlay').classList.toggle('active');
+});
+document.getElementById('overlay').addEventListener('click',()=>{
+  document.getElementById('sidebar').classList.remove('active');
+  document.getElementById('overlay').classList.remove('active');
 });
 
-overlay.addEventListener("click", () => {
-  sidebar.classList.remove("active");
-  overlay.classList.remove("active");
+playerDropdownTrigger.classList.add('select-highlight');
+
+// ════════════════════════════════════════════
+// SELECTOR DE IDIOMA
+// ════════════════════════════════════════════
+document.getElementById('lang-select').addEventListener('change', (e)=>{
+  idiomaActual = e.target.value;
+  localStorage.setItem('idioma', idiomaActual);
+  const sel = e.target.selectedOptions[0];
+  document.getElementById('current-flag').src = sel.dataset.flag;
+  traducirHTMLFijo();
+  actualizarOpcionesCat();
+  generarTabs();
+  cargarStatsGlobales();
+  if(currentPlayer) renderPlayerStats(currentPlayer);
 });
 
-
-
+// ════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  const idiomaGuardado = localStorage.getItem('idioma');
+  if(idiomaGuardado){
+    idiomaActual = idiomaGuardado;
+    const sel = document.getElementById('lang-select');
+    sel.value = idiomaGuardado;
+    document.getElementById('current-flag').src = sel.selectedOptions[0].dataset.flag;
+  }
+  traducirHTMLFijo();
+  document.getElementById('temporadaSelect').classList.add('activo');
+  actualizarOpcionesCat();
+  generarTabs();
+  loadAndProcess();
+  cargarStatsGlobales();
+});
 </script>
-
 </body>
 </html>
