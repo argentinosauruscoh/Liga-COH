@@ -1133,8 +1133,11 @@ function renderFiltrado(filtro=""){
     const bajasLiga = bajas[ligaActual] || [];
     const numFecha = parseInt((fechaKeyActual||"").replace("fecha","")) || 0;
 
-    const localEnBaja = bajasLiga.some(b => (localRaw||"").trim() === b.nombre && numFecha >= b.desdeFecha);
-    const visitanteEnBaja = bajasLiga.some(b => (visitanteRaw||"").trim() === b.nombre && numFecha >= b.desdeFecha);
+    const normalizarNombre = s => (s||"").trim().toLowerCase().replace(/\s+/g, " ");
+    const bajasNorm = bajasLiga.map(b => ({ ...b, nombre: b.nombre.trim().toLowerCase().replace(/\s+/g, " ") }));
+
+    const localEnBaja     = bajasNorm.some(b => normalizarNombre(localRaw)     === b.nombre && numFecha >= b.desdeFecha);
+    const visitanteEnBaja = bajasNorm.some(b => normalizarNombre(visitanteRaw) === b.nombre && numFecha >= b.desdeFecha);
 
     const tr = document.createElement("tr");
     const tdLocal     = `<td class="${localEnBaja ? 'fila-baja' : ''}">${local}</td>`;
